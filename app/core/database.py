@@ -1,18 +1,17 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from app.core.config import DATABASE_URL
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from contextlib import contextmanager
 
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=True
-)
-
-AsyncSessionLocal = sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+@contextmanager
+def db_connection():
+    conn = psycopg2.connect(
+        host="localhost",
+        port=5432,
+        database="erp_logistica",
+        user="postgres",
+        password="postgres"
+    )
+    try:
+        yield conn
+    finally:
+        conn.close()
