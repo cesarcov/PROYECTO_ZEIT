@@ -56,3 +56,36 @@ def test_planificacion_actividades(client, auth):
     r = client.get("/planificacion/actividades", headers=auth)
     assert r.status_code == 200, r.text[:300]
     assert isinstance(r.json(), list)
+
+
+# ── Export de Planificación con filtro por responsable (feature 001) ──────────
+
+def _assert_xlsx(r):
+    assert r.status_code == 200, r.text[:300]
+    # Un .xlsx es un ZIP: siempre empieza con la firma "PK".
+    assert r.content[:2] == b"PK", f"no parece un xlsx: {r.content[:16]!r}"
+
+
+def test_export_planificacion_base(client, auth):
+    """Sin filtro de responsable → export funciona igual que siempre (FR-004)."""
+    r = client.get("/planificacion/actividades/export", headers=auth)
+    _assert_xlsx(r)
+
+
+def test_export_planificacion_por_responsable(client, auth):
+    """Filtrar por una persona devuelve un xlsx válido (US1/US2, FR-002/FR-005)."""
+    acts = client.get("/planificacion/actividades", headers=auth).json()
+    rid = None
+    for a in acts:
+        rid = (a.get("responsables_ids") or "").split(",")[0].strip() or a.get("responsable_id")
+        if rid:
+            break
+    rid = rid or "00000000-0000-0000-0000-000000000000"
+    r = client.get(f"/planificacion/actividades/export?responsable={rid}", headers=auth)
+    _assert_xlsx(r)
+
+
+def test_export_planificacion_sin_responsable(client, auth):
+    """Opción 'sin responsable asignado' (US3, FR-007)."""
+    r = client.get("/planificacion/actividades/export?responsable=__none__", headers=auth)
+    _assert_xlsx(r)

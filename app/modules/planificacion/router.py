@@ -66,6 +66,7 @@ def export_actividades(
     prioridad: Optional[str] = Query(None),
     estado: Optional[str] = Query(None),
     cliente: Optional[str] = Query(None),
+    responsable: Optional[str] = Query(None),
     _=Depends(_PLAN_ADMIN),
 ):
     return service.export_planificacion_excel_service(
@@ -74,6 +75,7 @@ def export_actividades(
         prioridad=prioridad,
         estado=estado,
         cliente=cliente,
+        responsable=responsable,
     )
 
 
