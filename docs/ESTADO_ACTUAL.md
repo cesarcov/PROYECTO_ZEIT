@@ -1,7 +1,11 @@
 # Estado Actual del Proyecto
 
 > Actualizar esta sección al terminar cada sesión de desarrollo.
-> Última actualización: 2026-06-02
+> Última actualización: 2026-06-19
+
+## Cambios recientes (SDD)
+
+- **Feature 001 — Filtro por responsable en el Exportar de Planificación** (rama `001-export-filtro-responsable`, primer feature por el pipeline Spec Kit). El modal de Exportar de Planificación ahora permite filtrar por responsable (una persona) y por "Sin responsable asignado", además de los filtros de fecha/prioridad/estado/cliente. Endpoint `GET /planificacion/actividades/export` con parámetro `responsable` (id de usuario o `__none__`). Sin migración. Ver `specs/001-export-filtro-responsable/`.
 
 ---
 

@@ -275,6 +275,7 @@ def export_planificacion_excel_service(
     prioridad: str = None,
     estado: str = None,
     cliente: str = None,
+    responsable: str = None,
 ):
     from app.core.export_utils import (
         write_title_row, write_header_row, write_data_row,
@@ -291,6 +292,16 @@ def export_planificacion_excel_service(
             continue
         if cliente and cliente.lower() not in (a.get("cliente") or "").lower():
             continue
+        if responsable:
+            # Mismos criterios que el filtro de responsable del tablero:
+            # coincide si el id está en responsables_ids (multi) o es el responsable_id.
+            resp_ids = [x.strip() for x in (a.get("responsables_ids") or "").split(",") if x.strip()]
+            tiene_responsable = bool(resp_ids) or bool(a.get("responsable_id"))
+            if responsable == "__none__":
+                if tiene_responsable:
+                    continue
+            elif responsable not in resp_ids and a.get("responsable_id") != responsable:
+                continue
         ftarget = a.get("fecha_limite") or a.get("fecha_solicitud")
         if fecha_inicio and (not ftarget or ftarget < fecha_inicio):
             continue

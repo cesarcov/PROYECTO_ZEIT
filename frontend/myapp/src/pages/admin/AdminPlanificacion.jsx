@@ -374,7 +374,7 @@ export default function AdminPlanificacion() {
   const [activeTabFilter, setActiveTabFilter] = useState("activas"); // activas | completadas | canceladas
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportFilters, setExportFilters] = useState({
-    fechaInicio: "", fechaFin: "", prioridad: "", estado: "", cliente: "",
+    fechaInicio: "", fechaFin: "", prioridad: "", estado: "", cliente: "", responsable: "",
   });
   const [activityHistorial, setActivityHistorial] = useState([]);
 
@@ -577,6 +577,7 @@ export default function AdminPlanificacion() {
     if (cfg.prioridad) p.set("prioridad", cfg.prioridad);
     if (cfg.estado) p.set("estado", cfg.estado);
     if (cfg.cliente) p.set("cliente", cfg.cliente);
+    if (cfg.responsable) p.set("responsable", cfg.responsable);
     const qs = p.toString();
     return qs ? `?${qs}` : "";
   }
@@ -917,6 +918,7 @@ export default function AdminPlanificacion() {
                   prioridad: colFilters.prioridad,
                   estado: colFilters.estado,
                   cliente: colFilters.cliente,
+                  responsable: colFilters.responsable,
                 });
                 setShowExportModal(true);
               }}
@@ -1959,6 +1961,12 @@ export default function AdminPlanificacion() {
               <input value={exportFilters.cliente} onChange={e => setExportFilters(p => ({ ...p, cliente: e.target.value }))}
                 placeholder="Filtrar por cliente..."
                 style={{ border: "1px solid #D1D5DB", borderRadius: 8, padding: "8px 10px", fontSize: 13 }} />
+              <select value={exportFilters.responsable} onChange={e => setExportFilters(p => ({ ...p, responsable: e.target.value }))}
+                style={{ border: "1px solid #D1D5DB", borderRadius: 8, padding: "8px 10px", fontSize: 13 }}>
+                <option value="">Todos los responsables</option>
+                <option value="__none__">Sin responsable asignado</option>
+                {users.map(u => <option key={u.id} value={u.id}>{formatUsername(u.username)}</option>)}
+              </select>
             </div>
             <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
               <button onClick={() => setShowExportModal(false)}
