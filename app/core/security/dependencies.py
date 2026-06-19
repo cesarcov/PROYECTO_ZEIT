@@ -26,6 +26,7 @@ def get_current_user(
 
         user_id: str = payload.get("sub")
         permissions: list[str] = payload.get("permissions", [])
+        primary_module: str = payload.get("primary_module", "administracion")
 
         if not user_id:
             raise credentials_exception
@@ -47,13 +48,12 @@ def get_current_user(
 
     user = {
         "id": row[0],
-        "email": row[1],
-        "username": row[1].split("@")[0],  # o traelo directo de la DB
+        "username": row[1],
+        "email": row[2],
         "permissions": permissions,
+        "primary_module": primary_module,
     }
 
-
-    # 🔥 CLAVE ABSOLUTA
     request.state.user = user
 
     return user

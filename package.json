@@ -1,0 +1,13 @@
+{
+  "name": "ceshark-erp",
+  "version": "2.0.0",
+  "description": "CeShark ERP Modular - Scripts de desarrollo",
+  "scripts": {
+    "start": "concurrently --kill-others --names \"API,WEB\" --prefix-colors \"cyan.bold,green.bold\" \"npm run backend\" \"npm run frontend\"",
+    "backend": "venv\\Scripts\\uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "frontend": "npm --prefix frontend/myapp run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

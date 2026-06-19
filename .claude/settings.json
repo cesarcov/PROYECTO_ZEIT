@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -iE \"\\\\.env$|node_modules|__pycache__|/venv|/dist|\\\\.pyc|secret|credential\")",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

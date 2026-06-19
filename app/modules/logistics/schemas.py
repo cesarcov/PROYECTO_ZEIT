@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, Literal, List
 from uuid import UUID
 from datetime import datetime, date
+from decimal import Decimal
 
 # ============================================================
 # 📦 STOCK MOVEMENTS (MOVIMIENTOS)
@@ -130,9 +131,39 @@ class ToolMaintenanceCreate(BaseModel):
 class MaterialCreate(BaseModel):
     name: str
     code: str
-    min_stock: float = Field(..., ge=0)
-    category: str
-    aliases: Optional[List[str]] = []   # 👈 Hasta 3 nombres alternativos
+    min_stock: float = Field(default=0, ge=0)
+    category: Optional[str] = None
+    aliases: Optional[List[str]] = []
+    # Proveedor y costo
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    supplier_name: Optional[str] = None
+    supplier_contact: Optional[str] = None
+    unit_cost: Optional[float] = None
+    # Detalles de equipo
+    serial_number: Optional[str] = None
+    useful_life_years: Optional[int] = None
+    purchase_date: Optional[str] = None
+    warranty_expires: Optional[str] = None
+
+# -------------------------
+class MaterialUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    category: Optional[str] = None
+    min_stock: Optional[float] = None
+    aliases: Optional[List[str]] = None
+    # Proveedor y costo
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    supplier_name: Optional[str] = None
+    supplier_contact: Optional[str] = None
+    unit_cost: Optional[float] = None
+    # Detalles de equipo
+    serial_number: Optional[str] = None
+    useful_life_years: Optional[int] = None
+    purchase_date: Optional[str] = None
+    warranty_expires: Optional[str] = None
 
 # -------------------------
 # OUTPUT
@@ -173,23 +204,54 @@ class ProjectCreate(BaseModel):
 class ProjectResponse(ProjectCreate):
     id: UUID
 
-# ============================================================
-# 🏬 WAREHOUSES
-# ============================================================
-class WarehouseCreate(BaseModel):
-    code: str
-    name: str
-    location: Optional[str] = None
 
-class WarehouseResponse(WarehouseCreate):
-    id: UUID
+class StockReceptionCreate(BaseModel):
+    movement_id: UUID
+    warehouse_id: UUID
+    rack: str
+    level: str
+    box: str
+    position: Optional[str] = None
+    notes: Optional[str] = None
 
-# ============================================================
-# 🏗 PROJECTS
-# ============================================================
-class ProjectCreate(BaseModel):
-    code: str
-    name: str
+class DispatchItemCreate(BaseModel):
+    material_id: UUID
+    quantity: Decimal
 
-class ProjectResponse(ProjectCreate):
-    id: UUID
+class DispatchCreate(BaseModel):
+    reservation_id: UUID
+    recipient_user_id: Optional[UUID] = None
+    recipient_name: Optional[str] = None
+    notes: Optional[str] = None
+
+class DispatchStatusUpdate(BaseModel):
+    status: Literal["READY", "IN_TRANSIT"]
+
+class DispatchConfirmReceipt(BaseModel):
+    receipt_notes: Optional[str] = None
+
+
+class MaterialValidate(BaseModel):
+    name: Optional[str] = None
+    category: Optional[str] = None
+    unit_cost: Optional[float] = None
+    supplier_name: Optional[str] = None
+    supplier_contact: Optional[str] = None
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    logistics_notes: Optional[str] = None
+
+
+class ProponerMaterialCreate(BaseModel):
+    nombre: str
+    unidad: Optional[str] = None
+    categoria: Optional[str] = None
+    precio_referencia: Optional[float] = None
+    proveedor_referencia: Optional[str] = None
+    plan_id: Optional[str] = None
+
+
+class SubmissionItemReview(BaseModel):
+    logistics_status: Literal["APPROVED", "PARTIAL", "REJECTED"]
+    approved_quantity: Optional[float] = None
+    logistics_notes: Optional[str] = None

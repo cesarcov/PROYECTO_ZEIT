@@ -5,11 +5,23 @@ venv/
 __pycache__/
 *.pyc
 
+# Dependencias y build de Node (cualquier nivel)
+node_modules/
+dist/
+dist-ssr/
+*.log
+
 # Variables de entorno
 .env
 
 # Configuración local del editor
 .vscode/
+
+# Settings personales de Claude Code (no compartir)
+.claude/settings.local.json
+
+# Artefactos generados en runtime (exports, despachos)
+app/storage/
 
 # Archivos del sistema
 .DS_Store

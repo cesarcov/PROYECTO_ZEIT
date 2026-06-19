@@ -1,28 +1,45 @@
-from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
-from app.core.audit.service import log_audit_event
+from starlette.middleware.base import BaseHTTPMiddleware
+from app.core.audit.context import audit_context
+from app.core.audit.service import save_audit_log
+import time
 
 class AuditMiddleware(BaseHTTPMiddleware):
-
     async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
+        start_time = time.time()
 
-        if request.method in ("POST", "PUT", "PATCH", "DELETE"):
-            user = getattr(request.state, "user", None)
+        # Contexto base del request
+        context = {
+            "endpoint": request.url.path,
+            "method": request.method,
+            "ip_address": request.client.host if request.client else None,
+            "user_agent": request.headers.get("user-agent"),
+        }
 
-            self._audit(request, user)
+        audit_context.set(context)
 
-        return response
-
-    def _audit(self, request: Request, user):
         try:
-            log_audit_event(
-                user_id=user["id"] if user else None,
-                username=user["username"] if user else None,
-                action=request.method,
-                endpoint=request.url.path,
-                module=request.url.path.split("/")[1],
-                ip_address=request.client.host if request.client else None
-            )
+            response = await call_next(request)
+            status = "SUCCESS"
+            error = None
+            return response
+
         except Exception as e:
-            print(f"❌ ERROR EN AUDIT: {e}")
+            status = "FAIL"
+            error = str(e)
+            raise
+
+        finally:
+            elapsed = round(time.time() - start_time, 3)
+
+            base_ctx = audit_context.get().copy()
+            base_ctx.update({
+                "status": status,
+                "error_message": error,
+                "duration": elapsed,
+            })
+
+            try:
+                save_audit_log(base_ctx)
+            except Exception:
+                pass  # audit log failure never kills the HTTP response
