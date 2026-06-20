@@ -5,6 +5,7 @@
 
 ## Cambios recientes (SDD)
 
+- **Feature 002 — Sistema de temas (apariencia), tramo 002a: motor + armazón** (rama `002-tema-apariencia`). Tras el rebrand a **ZEIT SOLUTIONS ERP** (constitución v1.1.0), se agregó el motor de temas por **tokens CSS** (`frontend/.../theme/themes.css` con 5 temas: zeit-claro/oscuro/oscuro-energia/turquesa/grafito) + `ThemeProvider` (selector en Preferencias, "seguir el sistema", anti-parpadeo). Preferencia **persistida en la cuenta** vía `GET/PUT /auth/me/preferences` (migración `034_user_preferencias.sql`, columna `users.preferencias` JSONB). Identidad **ZEIT** (logo `ZeitLogo`) + crédito "Powered by CeShark · ERP Engine". Migrado el armazón (Layout/Login); las ~70 vistas de módulo se migran a tokens en tramos siguientes. Regla: el naranja nunca como color principal.
 - **Feature 001 — Filtro por responsable en el Exportar de Planificación** (rama `001-export-filtro-responsable`, primer feature por el pipeline Spec Kit). El modal de Exportar de Planificación ahora permite filtrar por responsable (una persona) y por "Sin responsable asignado", además de los filtros de fecha/prioridad/estado/cliente. Endpoint `GET /planificacion/actividades/export` con parámetro `responsable` (id de usuario o `__none__`). Sin migración. Ver `specs/001-export-filtro-responsable/`.
 
 ---

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CeSharkLogo from "../components/CeSharkLogo";
+import ZeitLogo from "../components/ZeitLogo";
 
 function decodeJwt(token) {
   try { return JSON.parse(atob(token.split(".")[1])); }
@@ -8,9 +8,9 @@ function decodeJwt(token) {
 }
 
 const BRAND_VALUES = [
-  { icon: "◈", title: "Liderazgo",  desc: "Siempre al frente, marcando el rumbo." },
-  { icon: "◎", title: "Fluidez",    desc: "Procesos que fluyen, resultados que avanzan." },
-  { icon: "◉", title: "Confianza",  desc: "Solidez y seguridad en cada decisión." },
+  { icon: "◈", title: "Confiabilidad",       desc: "Continuidad asegurada en sistemas críticos." },
+  { icon: "◎", title: "Innovación",          desc: "Tecnología aplicada a la industria real." },
+  { icon: "◉", title: "Excelencia Técnica",  desc: "Ingeniería rigurosa en cada proyecto." },
 ];
 
 export default function Login() {
@@ -44,7 +44,8 @@ export default function Login() {
       localStorage.setItem("role", role);
       localStorage.setItem("modules", JSON.stringify(modules));
       localStorage.setItem("username", username);
-      navigate("/inicio");
+      // Recarga completa para que el ThemeProvider lea el tema guardado en la cuenta.
+      window.location.href = "/inicio";
     } catch {
       setError("No se pudo conectar con el servidor");
     } finally {
@@ -58,14 +59,14 @@ export default function Login() {
     <div style={{
       minHeight: "100vh",
       display: "flex",
-      background: "#EEF2F7",
+      background: "var(--bg)",
     }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:translateY(0);} }
-        .login-input:focus { border-color: #4F7C82 !important; background: white !important; box-shadow: 0 0 0 3px rgba(79,124,130,0.12) !important; }
+        .login-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(0,58,140,0.18) !important; }
         .login-input { transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
-        .quick-btn:hover { background: #F0F4F8 !important; border-color: #D1D9E0 !important; }
+        .quick-btn:hover { background: var(--surface-2) !important; border-color: var(--border) !important; }
         @media (max-width: 768px) { .login-left { display: none !important; } .login-right { border-radius: 0 !important; } }
       `}</style>
 
@@ -73,7 +74,7 @@ export default function Login() {
       <div className="login-left" style={{
         width: "44%",
         minHeight: "100vh",
-        background: "linear-gradient(160deg, #0B2E33 0%, #0f3d44 50%, #083228 100%)",
+        background: "var(--sidebar-bg)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -83,13 +84,13 @@ export default function Login() {
         flexShrink: 0,
       }}>
         {/* Círculos decorativos de fondo */}
-        <div style={{ position: "absolute", top: -80, right: -80, width: 280, height: 280, borderRadius: "50%", background: "rgba(94,194,204,0.06)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: 60, left: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(94,194,204,0.05)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: "40%", right: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(94,194,204,0.04)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 280, height: 280, borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: 60, left: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "40%", right: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
 
         {/* Logo + Nombre */}
         <div style={{ animation: "fadeUp 0.6s ease" }}>
-          <CeSharkLogo size={56} onDark showText tagline />
+          <ZeitLogo width={180} onDark showText tagline />
         </div>
 
         {/* Valores de marca */}
@@ -106,10 +107,10 @@ export default function Login() {
               <div key={v.title} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                  background: "rgba(94,194,204,0.12)",
-                  border: "1px solid rgba(94,194,204,0.2)",
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "#5EC2CC", fontSize: 16,
+                  color: "var(--accent)", fontSize: 16,
                 }}>
                   {v.icon}
                 </div>
@@ -127,13 +128,9 @@ export default function Login() {
           <div style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",
             paddingTop: 20,
-            color: "rgba(184,227,233,0.35)",
-            fontSize: 11, fontStyle: "italic", lineHeight: 1.6,
+            color: "rgba(255,255,255,0.5)", fontSize: 11,
           }}>
-            "En el océano de los negocios,<br />lidera con <span style={{ color: "#5EC2CC", fontStyle: "normal", fontWeight: 600 }}>CeShark</span>."
-          </div>
-          <div style={{ color: "rgba(184,227,233,0.2)", fontSize: 10, marginTop: 10 }}>
-            © 2026 CeShark · ERP Modular v2.0
+            © 2026 ZEIT Solutions · Powered by <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 700 }}>CeShark</span> · ERP Engine
           </div>
         </div>
       </div>
@@ -157,25 +154,25 @@ export default function Login() {
             textAlign: "center",
             marginBottom: 28,
           }}>
-            <CeSharkLogo size={48} onDark={false} showText />
+            <ZeitLogo size={48} onDark={false} showText />
           </div>
 
           {/* Bienvenida */}
           <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 26, fontWeight: 900, color: "#0B2E33", margin: 0, letterSpacing: "-0.03em" }}>
+            <h1 style={{ fontSize: 26, fontWeight: 900, color: "var(--text)", margin: 0, letterSpacing: "-0.03em" }}>
               Bienvenido
             </h1>
-            <p style={{ fontSize: 14, color: "#6B7280", marginTop: 6, marginBottom: 0 }}>
+            <p style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 6, marginBottom: 0 }}>
               Ingresa tus credenciales para continuar
             </p>
           </div>
 
           {/* Card del formulario */}
           <div style={{
-            background: "white",
+            background: "var(--surface)",
             borderRadius: 20,
-            boxShadow: "0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)",
-            border: "1px solid rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 32px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10)",
+            border: "1px solid var(--border)",
             padding: "28px 28px 24px",
             marginBottom: 16,
           }}>
@@ -184,7 +181,7 @@ export default function Login() {
               <div style={{ marginBottom: 16 }}>
                 <label style={{
                   display: "block", fontSize: 11, fontWeight: 700,
-                  color: "#6B7280", textTransform: "uppercase",
+                  color: "var(--text-muted)", textTransform: "uppercase",
                   letterSpacing: "0.08em", marginBottom: 6,
                 }}>Usuario</label>
                 <input
@@ -196,9 +193,9 @@ export default function Login() {
                   placeholder="Nombre de usuario"
                   style={{
                     width: "100%", padding: "11px 14px",
-                    border: "1.5px solid #E5E7EB", borderRadius: 10,
-                    fontSize: 14, color: "#111827",
-                    background: "#FAFAFA", outline: "none",
+                    border: "1.5px solid var(--border)", borderRadius: 10,
+                    fontSize: 14, color: "var(--text)",
+                    background: "var(--surface-2)", outline: "none",
                     boxSizing: "border-box",
                   }}
                 />
@@ -208,7 +205,7 @@ export default function Login() {
               <div style={{ marginBottom: 20 }}>
                 <label style={{
                   display: "block", fontSize: 11, fontWeight: 700,
-                  color: "#6B7280", textTransform: "uppercase",
+                  color: "var(--text-muted)", textTransform: "uppercase",
                   letterSpacing: "0.08em", marginBottom: 6,
                 }}>Contraseña</label>
                 <input
@@ -220,9 +217,9 @@ export default function Login() {
                   placeholder="••••••••"
                   style={{
                     width: "100%", padding: "11px 14px",
-                    border: "1.5px solid #E5E7EB", borderRadius: 10,
-                    fontSize: 14, color: "#111827",
-                    background: "#FAFAFA", outline: "none",
+                    border: "1.5px solid var(--border)", borderRadius: 10,
+                    fontSize: 14, color: "var(--text)",
+                    background: "var(--surface-2)", outline: "none",
                     boxSizing: "border-box",
                   }}
                 />
@@ -248,13 +245,13 @@ export default function Login() {
                 style={{
                   width: "100%", padding: "13px 0",
                   background: loading
-                    ? "#9CA3AF"
-                    : "linear-gradient(135deg, #0B2E33 0%, #1a5260 100%)",
-                  color: "white",
+                    ? "var(--text-muted)"
+                    : "linear-gradient(135deg, var(--primary) 0%, #0050C8 100%)",
+                  color: "var(--primary-contrast)",
                   fontSize: 14, fontWeight: 700,
                   border: "none", borderRadius: 10,
                   cursor: loading ? "not-allowed" : "pointer",
-                  boxShadow: loading ? "none" : "0 4px 16px rgba(11,46,51,0.3)",
+                  boxShadow: loading ? "none" : "0 4px 16px rgba(0,58,140,0.35)",
                   transition: "opacity 0.15s, box-shadow 0.15s",
                   letterSpacing: "0.01em",
                 }}
@@ -277,14 +274,14 @@ export default function Login() {
 
           {/* Acceso rápido demo */}
           <div style={{
-            background: "white",
+            background: "var(--surface)",
             borderRadius: 16,
-            border: "1px solid rgba(0,0,0,0.06)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            border: "1px solid var(--border)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
             padding: "14px 18px",
           }}>
             <p style={{
-              fontSize: 10, fontWeight: 700, color: "#9CA3AF",
+              fontSize: 10, fontWeight: 700, color: "var(--text-muted)",
               textTransform: "uppercase", letterSpacing: "0.1em",
               margin: "0 0 10px",
             }}>
@@ -315,8 +312,8 @@ export default function Login() {
                   }}
                 >
                   <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 12, color: "#1F2937" }}>{user.u}</span>
-                    <span style={{ fontSize: 11, color: "#9CA3AF" }}>· {user.p}</span>
+                    <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 12, color: "var(--text)" }}>{user.u}</span>
+                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>· {user.p}</span>
                   </span>
                   <span style={{
                     fontSize: 9, fontWeight: 700, color: "white",

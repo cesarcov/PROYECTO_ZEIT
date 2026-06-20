@@ -13,6 +13,10 @@ from app.core.security.auth import (
     get_user_modules,
 )
 from app.core.security.dependencies import get_current_user
+from app.core.security.preferences_service import (
+    get_user_preferences,
+    update_user_preferences,
+)
 
 router = APIRouter(
     prefix="/auth",
@@ -105,3 +109,20 @@ def me(current_user=Depends(get_current_user)):
         "email": current_user["email"],
         "permissions": current_user["permissions"],
     }
+
+
+# ── Preferencias del usuario (incluye el tema de la interfaz) ──────────────────
+# Rutas literales /me/preferences: dato propio del usuario (solo-auth), mismo
+# patrón que los endpoints "/my"; no requiere require_permission.
+
+@router.get("/me/preferences")
+def get_preferences(current_user=Depends(get_current_user)):
+    return get_user_preferences(current_user["id"])
+
+
+@router.put("/me/preferences")
+def put_preferences(payload: dict, current_user=Depends(get_current_user)):
+    try:
+        return update_user_preferences(current_user["id"], payload or {})
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
