@@ -394,17 +394,15 @@ export default function Layout({ children }) {
           onClick={() => setCollapsed(c => !c)}
           title={collapsed ? "Expandir menú" : "Colapsar menú"}
           style={{
-            padding: collapsed ? "14px 0" : "12px 16px",
+            padding: collapsed ? "14px 0" : "16px 12px 12px",
             flexShrink: 0, display: "flex", alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
+            justifyContent: "center",
             cursor: "pointer", userSelect: "none",
           }}
         >
-          <ZeitLogo
-            size={collapsed ? 32 : 38}
-            onDark
-            showText={!collapsed}
-          />
+          {collapsed
+            ? <ZeitLogo size={32} onDark />
+            : <ZeitLogo width={140} onDark showText />}
         </div>
 
         {/* Módulos */}
@@ -638,7 +636,7 @@ export default function Layout({ children }) {
                 {/* Header usuario */}
                 <div style={{ padding: "14px 16px", background: "linear-gradient(135deg, #0B2E33, #1a4a52)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                    <ZeitLogo size={22} onDark showText />
+                    <ZeitLogo width={110} onDark showText />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{

@@ -11,6 +11,7 @@ import { getBrand } from "../branding/brand";
  */
 export default function ZeitLogo({
   size     = 40,
+  width    = null,   // si se define, manda sobre size (ancho fijo, alto auto)
   onDark   = true,
   showText = false,
   tagline  = false,
@@ -31,20 +32,19 @@ export default function ZeitLogo({
     }
     // Con texto → variante según el fondo (oscuro = texto blanco, claro = texto azul).
     const src = onDark ? (b.logoSrcDark || b.logoSrc) : b.logoSrc;
+    const imgStyle = width
+      ? { width, height: "auto", display: "block", flexShrink: 0 }
+      : { height: size, width: "auto", display: "block", flexShrink: 0 };
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: Math.round(size * 0.16) }}>
-        <img
-          src={src}
-          alt={b.appName}
-          style={{ height: size, width: "auto", display: "block", flexShrink: 0 }}
-        />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
+        <img src={src} alt={b.appName} style={imgStyle} />
         {tagline && b.tagline && (
           <div style={{
-            fontWeight: 600,
-            fontSize: Math.round(size * 0.2),
-            letterSpacing: "0.02em",
+            fontSize: 14,
+            fontWeight: 500,
+            lineHeight: 1.3,
+            maxWidth: width || undefined,
             color: onDark ? "rgba(255,255,255,0.72)" : "#003A8C",
-            whiteSpace: "nowrap",
           }}>
             {b.tagline}
           </div>

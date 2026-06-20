@@ -90,7 +90,7 @@ export default function Login() {
 
         {/* Logo + Nombre */}
         <div style={{ animation: "fadeUp 0.6s ease" }}>
-          <ZeitLogo size={56} onDark showText tagline />
+          <ZeitLogo width={180} onDark showText tagline />
         </div>
 
         {/* Valores de marca */}
@@ -128,12 +128,8 @@ export default function Login() {
           <div style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",
             paddingTop: 20,
-            color: "rgba(184,227,233,0.35)",
-            fontSize: 11, fontStyle: "italic", lineHeight: 1.6,
+            color: "rgba(255,255,255,0.5)", fontSize: 11,
           }}>
-            "Confiabilidad que impulsa la <span style={{ color: "#FF6B00", fontStyle: "normal", fontWeight: 600 }}>industria</span>."
-          </div>
-          <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 10 }}>
             © 2026 ZEIT Solutions · Powered by <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 700 }}>CeShark</span> · ERP Engine
           </div>
         </div>
