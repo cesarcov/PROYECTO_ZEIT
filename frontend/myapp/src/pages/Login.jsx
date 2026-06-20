@@ -133,8 +133,8 @@ export default function Login() {
           }}>
             "Confiabilidad que impulsa la <span style={{ color: "#FF6B00", fontStyle: "normal", fontWeight: 600 }}>industria</span>."
           </div>
-          <div style={{ color: "rgba(184,227,233,0.2)", fontSize: 10, marginTop: 10 }}>
-            © 2026 ZEIT Solutions · Powered by CeShark · ERP Engine
+          <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 10 }}>
+            © 2026 ZEIT Solutions · Powered by <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 700 }}>CeShark</span> · ERP Engine
           </div>
         </div>
       </div>

@@ -19,13 +19,37 @@ export default function ZeitLogo({
 
   // ── Logo en imagen (incluye el nombre) ──────────────────────────────────────
   if (b.logoSrc) {
-    const src = showText ? b.logoSrc : (b.logoIconSrc || b.logoSrc);
+    // Colapsado / sin texto → solo el globo.
+    if (!showText) {
+      return (
+        <img
+          src={b.logoIconSrc || b.logoSrc}
+          alt={b.appName}
+          style={{ height: size, width: "auto", display: "block", flexShrink: 0 }}
+        />
+      );
+    }
+    // Con texto → variante según el fondo (oscuro = texto blanco, claro = texto azul).
+    const src = onDark ? (b.logoSrcDark || b.logoSrc) : b.logoSrc;
     return (
-      <img
-        src={src}
-        alt={b.appName}
-        style={{ height: size, width: "auto", display: "block", flexShrink: 0 }}
-      />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: Math.round(size * 0.16) }}>
+        <img
+          src={src}
+          alt={b.appName}
+          style={{ height: size, width: "auto", display: "block", flexShrink: 0 }}
+        />
+        {tagline && b.tagline && (
+          <div style={{
+            fontWeight: 600,
+            fontSize: Math.round(size * 0.2),
+            letterSpacing: "0.02em",
+            color: onDark ? "rgba(255,255,255,0.72)" : "#003A8C",
+            whiteSpace: "nowrap",
+          }}>
+            {b.tagline}
+          </div>
+        )}
+      </div>
     );
   }
 

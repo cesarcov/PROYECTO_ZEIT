@@ -19,7 +19,8 @@ const DEFAULT_BRAND = {
   // Logo oficial (imagen, fondo transparente, servido desde public/).
   // Para otra empresa: reemplazá public/zeit-logo.png o cambiá esta ruta a null
   // (vuelve al SVG de respaldo).
-  logoSrc: "/zeit-logo.png",
+  logoSrc: "/zeit-logo.png",          // logo para fondos CLAROS (texto azul)
+  logoSrcDark: "/zeit-logo-dark.png", // logo para fondos OSCUROS (texto blanco)
   // Versión solo-ícono (globo) para espacios chicos (ej. sidebar colapsada).
   logoIconSrc: "/zeit-logo-icon.png",
   poweredBy: "Powered by CeShark · ERP Engine",

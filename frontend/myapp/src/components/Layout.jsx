@@ -560,8 +560,8 @@ export default function Layout({ children }) {
             </button>
           </TIP>
           {!collapsed && (
-            <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "rgba(199,210,229,0.4)", letterSpacing: "0.04em" }}>
-              Powered by <strong style={{ fontWeight: 700 }}>CeShark</strong> · ERP Engine
+            <div style={{ textAlign: "center", marginTop: 8, fontSize: 9.5, color: "rgba(199,210,229,0.6)", letterSpacing: "0.04em" }}>
+              Powered by <strong style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>CeShark</strong> · ERP Engine
             </div>
           )}
         </div>
