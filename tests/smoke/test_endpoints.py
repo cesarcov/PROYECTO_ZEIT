@@ -89,3 +89,21 @@ def test_export_planificacion_sin_responsable(client, auth):
     """Opción 'sin responsable asignado' (US3, FR-007)."""
     r = client.get("/planificacion/actividades/export?responsable=__none__", headers=auth)
     _assert_xlsx(r)
+
+
+# ── Preferencias de usuario / tema (feature 002) ──────────────────────────────
+
+def test_user_preferences_persiste(client, auth):
+    """PUT guarda el tema en la cuenta y GET lo devuelve (US2, FR-003)."""
+    r = client.put("/auth/me/preferences", headers=auth, json={"tema": "zeit-oscuro"})
+    assert r.status_code == 200, r.text[:300]
+    assert r.json().get("tema") == "zeit-oscuro"
+    r2 = client.get("/auth/me/preferences", headers=auth)
+    assert r2.status_code == 200, r2.text[:300]
+    assert r2.json().get("tema") == "zeit-oscuro"
+
+
+def test_user_preferences_rechaza_tema_invalido(client, auth):
+    """Un tema fuera del catálogo se rechaza (validación defensiva)."""
+    r = client.put("/auth/me/preferences", headers=auth, json={"tema": "no-existe"})
+    assert r.status_code == 422, r.text[:300]

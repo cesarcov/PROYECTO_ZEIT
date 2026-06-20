@@ -1,0 +1,106 @@
+/* ZEIT Solutions — Tokens de tema (variables CSS).
+   Cada tema se activa con [data-theme="<id>"] en <html>.
+   Regla FR-010: el Naranja Energía (#FF6B00) solo en --action / --accent / --sidebar-active,
+   nunca en --bg / --surface* / --primary / --sidebar-bg. */
+
+/* Fallback por defecto = ZEIT Claro */
+:root,
+[data-theme="zeit-claro"] {
+  --bg: #F4F6FA;
+  --surface: #FFFFFF;
+  --surface-2: #EEF2F8;
+  --text: #0F1B2D;
+  --text-muted: #5A6573;
+  --border: #E2E8F0;
+  --primary: #003A8C;
+  --primary-contrast: #FFFFFF;
+  --accent: #00D4D8;
+  --action: #FF6B00;
+  --sidebar-bg: #001F54;
+  --sidebar-text: #C7D2E5;
+  --sidebar-active: #003A8C;
+  --success: #16A34A;
+  --warning: #CA8A04;
+  --danger: #DC2626;
+  --info: #00D4D8;
+}
+
+[data-theme="zeit-oscuro"] {
+  --bg: #06152E;
+  --surface: #0C2350;
+  --surface-2: #143266;
+  --text: #EAF1FB;
+  --text-muted: #A7B6D0;
+  --border: #1B3D72;
+  --primary: #2D6FD6;
+  --primary-contrast: #FFFFFF;
+  --accent: #00D4D8;
+  --action: #FF6B00;
+  --sidebar-bg: #050F22;
+  --sidebar-text: #C7D2E5;
+  --sidebar-active: #00D4D8;
+  --success: #22C55E;
+  --warning: #EAB308;
+  --danger: #F87171;
+  --info: #00D4D8;
+}
+
+[data-theme="zeit-oscuro-energia"] {
+  --bg: #06152E;
+  --surface: #0C2350;
+  --surface-2: #143266;
+  --text: #EAF1FB;
+  --text-muted: #A7B6D0;
+  --border: #1B3D72;
+  --primary: #2D6FD6;
+  --primary-contrast: #FFFFFF;
+  --accent: #FF6B00;
+  --action: #FF6B00;
+  --sidebar-bg: #050F22;
+  --sidebar-text: #C7D2E5;
+  --sidebar-active: #FF6B00;
+  --success: #22C55E;
+  --warning: #EAB308;
+  --danger: #F87171;
+  --info: #00D4D8;
+}
+
+[data-theme="zeit-turquesa"] {
+  --bg: #F0FBFC;
+  --surface: #FFFFFF;
+  --surface-2: #E3F6F8;
+  --text: #0A2A2E;
+  --text-muted: #5A6573;
+  --border: #CDEBEE;
+  --primary: #003A8C;
+  --primary-contrast: #FFFFFF;
+  --accent: #00D4D8;
+  --action: #FF6B00;
+  --sidebar-bg: #053640;
+  --sidebar-text: #C7E9EC;
+  --sidebar-active: #00D4D8;
+  --success: #16A34A;
+  --warning: #CA8A04;
+  --danger: #DC2626;
+  --info: #00D4D8;
+}
+
+[data-theme="zeit-grafito"] {
+  --bg: #262B34;
+  --surface: #313742;
+  --surface-2: #3C4350;
+  --text: #F1F4F8;
+  --text-muted: #B2BBC8;
+  --border: #4B5362;
+  --primary: #4D8DF0;
+  --primary-contrast: #06121F;
+  --accent: #00D4D8;
+  --action: #FF6B00;
+  --sidebar-bg: #1E222B;
+  --sidebar-text: #C7CDD8;
+  --sidebar-active: #4D8DF0;
+  --success: #22C55E;
+  --warning: #EAB308;
+  --danger: #F87171;
+  --info: #00D4D8;
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, formatUsername } from "../hooks/useAuth";
-import CeSharkLogo from "./CeSharkLogo";
+import ZeitLogo from "./ZeitLogo";
 
 // ── Iconos SVG monocromáticos (Feather-style) ─────────────────────────────────
 function Icon({ name, size = 16 }) {
@@ -375,12 +375,12 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div style={{ background: "#EEF2F7", minHeight: "100vh" }}>
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
 
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <aside style={{
         position: "fixed", top: 0, left: 0, bottom: 0, width: W,
-        background: "linear-gradient(180deg, #0B2E33 0%, #0f3d45 60%, #0B2E33 100%)",
+        background: "var(--sidebar-bg)",
         display: "flex", flexDirection: "column", zIndex: 40,
         boxShadow: "2px 0 20px rgba(0,0,0,0.25)",
         transition: "width 0.22s ease",
@@ -400,7 +400,7 @@ export default function Layout({ children }) {
             cursor: "pointer", userSelect: "none",
           }}
         >
-          <CeSharkLogo
+          <ZeitLogo
             size={collapsed ? 32 : 38}
             onDark
             showText={!collapsed}
@@ -559,6 +559,11 @@ export default function Layout({ children }) {
               {!collapsed && <span>Cerrar sesión</span>}
             </button>
           </TIP>
+          {!collapsed && (
+            <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "rgba(199,210,229,0.4)", letterSpacing: "0.04em" }}>
+              Powered by <strong style={{ fontWeight: 700 }}>CeShark</strong> · ERP Engine
+            </div>
+          )}
         </div>
       </aside>
 
@@ -568,7 +573,7 @@ export default function Layout({ children }) {
         {/* Topbar */}
         <header style={{
           position: "sticky", top: 0, zIndex: 30,
-          background: "white", borderBottom: "1px solid #E5E7EB",
+          background: "var(--surface)", borderBottom: "1px solid var(--border)",
           boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
           padding: "0 24px", height: 56,
           display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -577,8 +582,8 @@ export default function Layout({ children }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
-              background: "#F3F4F6", padding: "5px 12px", borderRadius: 8,
-              fontSize: 13, fontWeight: 600, color: "#0B2E33",
+              background: "var(--surface-2)", padding: "5px 12px", borderRadius: 8,
+              fontSize: 13, fontWeight: 600, color: "var(--text)",
             }}>
               <Icon name={activeModule.icon} size={14} />
               <span>{activeModule.label}</span>
@@ -633,7 +638,7 @@ export default function Layout({ children }) {
                 {/* Header usuario */}
                 <div style={{ padding: "14px 16px", background: "linear-gradient(135deg, #0B2E33, #1a4a52)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                    <CeSharkLogo size={22} onDark showText />
+                    <ZeitLogo size={22} onDark showText />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{

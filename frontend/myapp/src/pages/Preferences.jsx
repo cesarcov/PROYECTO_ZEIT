@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
+import { useTheme } from "../theme/ThemeProvider";
 
 function Toggle({ value, onChange }) {
   return (
@@ -99,6 +100,8 @@ export default function Preferences() {
 
   const set = (key) => (val) => setPrefs((p) => ({ ...p, [key]: val }));
 
+  const { tema, setTema, temas } = useTheme();
+
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
@@ -120,6 +123,16 @@ export default function Preferences() {
             Personaliza tu experiencia en CeShark ERP
           </p>
         </div>
+
+        <SectionCard title="Apariencia">
+          <SelectRow
+            label="Tema"
+            desc="Color de la interfaz. 'Seguir el sistema' usa el modo claro/oscuro de tu equipo."
+            value={tema}
+            onChange={setTema}
+            options={temas.map((t) => ({ value: t.id, label: t.label }))}
+          />
+        </SectionCard>
 
         <SectionCard title="Visualización">
           <PreferenceRow
