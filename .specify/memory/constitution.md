@@ -1,4 +1,40 @@
-# Constitución del Proyecto: CeShark ERP Modular
+<!--
+SYNC IMPACT REPORT
+==================
+Versión: 1.0.0 → 1.1.0 (MINOR)
+Razón del bump: se AÑADEN el principio de Sistema de Temas (theming) y la
+Identidad de Marca (ZEIT SOLUTIONS); se EXPANDE el Art. 2 (Design System a base
+de tokens). Ningún principio fue removido; la paleta previa se conserva como
+"tema de marca por defecto".
+
+Modificados:
+- Título del proyecto: "CeShark ERP Modular" -> "ZEIT SOLUTIONS ERP" (Powered by CeShark)
+- Art. 2 (Frontend): "paleta fija con hex inline" -> "colores por tokens; tema claro
+  de marca por defecto + tema oscuro; configurable y persistido por usuario"
+
+Secciones añadidas:
+- Art. 2 -> "Identidad de Marca"
+- Art. 2 -> "Sistema de Temas (Theming)"
+
+Secciones removidas: ninguna.
+
+Plantillas / artefactos:
+- .specify/templates/plan-template.md   -> ✅ sin cambios (Constitution Check es genérico)
+- .specify/templates/spec-template.md   -> ✅ sin cambios
+- .specify/templates/tasks-template.md  -> ✅ sin cambios
+- CLAUDE.md (agent context)             -> ✅ sin cambios (apunta al plan activo)
+
+Follow-ups / TODOs:
+- ✅ Colores de marca ZEIT SOLUTIONS incorporados (Azul #003A8C, Azul Oscuro #001F54,
+  Turquesa #00D4D8, Naranja #FF6B00, Gris #5A6573) — reemplazan al teal previo.
+- ⚠ pending: migrar las cadenas/logos visibles "CeShark" del código y docs a
+  "ZEIT SOLUTIONS" + crédito "Powered by CeShark". Se hará como trabajo de feature,
+  no en esta enmienda.
+-->
+
+# Constitución del Proyecto: ZEIT SOLUTIONS ERP
+
+> Producto: **ZEIT SOLUTIONS ERP** · _Powered by CeShark_
 
 Este documento rige todas las decisiones de diseño, convenciones de código y tecnologías para este repositorio. Cualquier desarrollador o asistente de IA debe respetar estrictamente estas reglas.
 
@@ -15,13 +51,22 @@ Este documento rige todas las decisiones de diseño, convenciones de código y t
 ---
 
 ## 2. Convenciones del Frontend (React + Vite)
-*   **Paleta de Colores Corporativa (Design System):**
-    *   Fondo principal: `#0B2E33`
-    *   Color de acento: `#B8E3E9`
-    *   Elementos interactivos / botones secundarios: `#4F7C82`
+*   **Identidad de Marca:** El producto se presenta al usuario como **ZEIT SOLUTIONS ERP**. El crédito del desarrollador aparece SIEMPRE en segundo plano como **"Powered by CeShark"** (p. ej. en la pantalla de login y el footer), nunca como marca principal. Toda superficie visible al usuario MUST mostrar "ZEIT SOLUTIONS"; las cadenas y logos heredados "CeShark" se migran progresivamente a esta convención.
+*   **Sistema de Temas (Theming) — NO NEGOCIABLE para UI nueva:**
+    *   La interfaz MUST soportar temas configurables por el usuario, como mínimo **claro** y **oscuro**.
+    *   Los colores se consumen mediante **tokens / variables de tema** (variables CSS o un theme provider), **NUNCA** como valores hex literales dispersos por los componentes.
+    *   La preferencia de tema se **persiste por usuario** y se aplica de inmediato, sin recargar la página.
+    *   Introducir un componente con colores hardcodeados (fuera de los tokens) se considera incumplimiento de esta constitución.
+*   **Paleta de Marca ZEIT SOLUTIONS (oficial):** Los tokens base derivan de la paleta corporativa:
+    *   Azul Corporativo (primario): `#003A8C`
+    *   Azul Oscuro (superficies profundas / base del tema oscuro): `#001F54`
+    *   Turquesa Tecnológico (acento): `#00D4D8`
+    *   Naranja Energía (acción / resaltado activo / CTAs): `#FF6B00`
+    *   Gris Industrial (texto secundario / bordes): `#5A6573`
+    *   Cada tema (claro/oscuro) mapea estos colores corporativos a sus tokens; el tema oscuro usa el Azul Oscuro como base.
 *   **Estilos y Tailwind:**
     *   Se utiliza Tailwind CSS v4 para utilidades generales en componentes atómicos.
-    *   En las vistas principales (`pages/`), se priorizan **estilos inline usando objetos de Javascript** para componentes contenedores principales con el fin de asegurar flexibilidad en el diseño premium y evitar saturar el marcado HTML.
+    *   En las vistas principales (`pages/`), se permiten **estilos inline usando objetos de Javascript** para componentes contenedores principales; sin embargo, **los colores deben provenir de los tokens del tema activo**, no de literales hex, para asegurar flexibilidad de diseño y compatibilidad con el cambio de tema.
 *   **Autenticación y API:**
     *   La URL base de la API debe importarse desde las variables de entorno: `import.meta.env.VITE_API_URL ?? "http://localhost:8000"`.
     *   Toda petición HTTP autenticada debe incluir el encabezado `Authorization: Bearer <token>` extraído de `localStorage.getItem("access_token")`.
@@ -62,8 +107,9 @@ Este documento rige todas las decisiones de diseño, convenciones de código y t
 ---
 
 ## Governance
-*   Esta constitución prevalece sobre cualquier otra práctica del repositorio. Las enmiendas se documentan aquí con fecha y se versionan.
+*   Esta constitución prevalece sobre cualquier otra práctica del repositorio. Las enmiendas se documentan aquí con fecha y se versionan (SemVer: MAJOR cambios incompatibles de principios; MINOR principios/secciones nuevos o ampliados; PATCH aclaraciones).
+*   Los cambios de identidad de marca y de Design System son de nivel governance y se registran como enmiendas versionadas.
 *   Toda revisión de código (humana o IA) debe verificar el cumplimiento de estos artículos. La complejidad debe justificarse; ante la duda, aplicar YAGNI.
 *   La colaboración con Antigravity se mantiene según `COLLABORATION.md`: la spec es la fuente de verdad compartida.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-11
+**Version**: 1.1.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-19
