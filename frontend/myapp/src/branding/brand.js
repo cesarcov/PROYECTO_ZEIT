@@ -16,9 +16,12 @@ const DEFAULT_BRAND = {
   ],
   sub: "Solutions",
   tagline: "Confiabilidad que impulsa la industria",
-  // Ruta del logo oficial en imagen. Si es null, se usa el SVG de respaldo.
-  // Ej.: importá el PNG y poné aquí su URL, o serví /branding/logo.png.
-  logoSrc: null,
+  // Logo oficial (imagen, fondo transparente, servido desde public/).
+  // Para otra empresa: reemplazá public/zeit-logo.png o cambiá esta ruta a null
+  // (vuelve al SVG de respaldo).
+  logoSrc: "/zeit-logo.png",
+  // Versión solo-ícono (globo) para espacios chicos (ej. sidebar colapsada).
+  logoIconSrc: "/zeit-logo-icon.png",
   poweredBy: "Powered by CeShark · ERP Engine",
 };
 
