@@ -1,41 +1,40 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Versión: 1.2.1 → 1.3.0 (MINOR)
+Versión: 1.3.0 → 1.3.1 (PATCH)
 Fecha: 2026-06-24
-Razón del bump: se añade Art. 8 (Inventario Canónico de API) como resultado de la
-auditoría exhaustiva del backend solicitada bajo metodología SDD. El inventario
-documenta los 14 módulos de negocio, sus prefijos de ruta, el sistema de auth único,
-el puerto único, y las reglas de producción para /docs y /redoc.
+Razón del bump: cierre de los 3 TODOs del Art. 8; corrección del conteo de endpoints
+(276 tras eliminar dispatch-legacy); aclaración de patrón de auth a nivel de router;
+confirmación de que todos los endpoints reset están debidamente protegidos.
 
-Análisis de auditoría backend (2026-06-24):
-────────────────────────────────────────────
-✅ UN solo puerto: 8000 (uvicorn). No hay multi-port.
-✅ UN solo sistema de auth: JWT HS256, gestionado en /auth (6 endpoints).
-✅ 277 endpoints de usuario en 14 módulos de negocio.
-✅ Endpoints públicos justificados: solo GET /, GET /branding, POST /auth/logout,
-   POST /auth/refresh.
-✅ /logistics/admin/reset protegido con scope propio (logistics:admin:reset).
-⚠ TECH DEBT: /logistics/dispatches/{id}/dispatch-legacy — debe deprecarse.
-⚠ SEGURIDAD: /docs y /redoc son públicos por defecto de FastAPI — deshabilitar en prod.
-ℹ Módulo logistics (88 endpoints, 32% del total) candidato a sub-dividir a futuro.
+Segunda auditoría backend (2026-06-24) — resultado LIMPIO:
+────────────────────────────────────────────────────────────
+✅ dispatch-legacy ELIMINADO → 276 endpoints (era 277).
+✅ /docs, /redoc, /openapi.json deshabilitados en ENV=production (app/main.py).
+✅ /reporting/* — falso positivo de auditoría: auth aplicada a nivel de router
+   mediante dependencies=[Depends(get_current_user)]; todos protegidos.
+✅ /admin/reset-all protegido con require_permission("admin:users").
+✅ /logistics/admin/reset protegido con require_permission("logistics:admin:reset").
+✅ Endpoints públicos sin justificación: NINGUNO.
+✅ Violaciones Art.2/7 (API_BASE literal, localhost) corregidas en feature 003.
+ℹ Módulo logistics (87 endpoints, 31% del total) candidato a sub-dividir a futuro.
 
-Secciones añadidas: Art. 8 (Inventario Canónico de API)
-Secciones removidas: ninguna
+Secciones añadidas/removidas: ninguna (solo actualizaciones en Art. 8).
 
 Plantillas / artefactos:
-- .specify/templates/plan-template.md   -> ✅ sin cambios (Constitution Check genérico)
+- .specify/templates/plan-template.md   -> ✅ sin cambios
 - .specify/templates/spec-template.md   -> ✅ sin cambios
 - .specify/templates/tasks-template.md  -> ✅ sin cambios
-- CLAUDE.md (agent context)             -> ✅ apunta al plan activo (003)
 
 Follow-ups / TODOs:
-- ⚠ PENDIENTE: crear feature NNN-deprecar-dispatch-legacy para remover el endpoint
-  legacy y migrar el código que lo llame (verificar con grep antes de borrar).
-- ⚠ PENDIENTE: deshabilitar /docs y /redoc en producción (variable ENV=production
-  o condicional en app/main.py). Definir como tarea en próxima feature o hotfix.
-- ⚠ PENDIENTE: corregir brand.js, AdminBranding.jsx (API_BASE literal) y
-  Layout.jsx:297 (localhost) — violaciones Art. 2/7 detectadas en v1.2.1, aún abiertas.
+- ℹ INFO: patrón de auth a nivel de router (dependencies=[]) es válido y equivalente
+  a require_permission en cada función. Las auditorías futuras deben inspectar también
+  router.dependencies, no solo el cuerpo de la función.
+- ℹ INFO: módulo logistics (87 endpoints) es candidato a sub-dividir cuando el
+  mantenimiento lo justifique. No bloquea trabajo actual.
+- ✅ CERRADO: dispatch-legacy eliminado (commit 30b7917).
+- ✅ CERRADO: /docs y /redoc deshabilitados en producción (commit 7a6bf97).
+- ✅ CERRADO: violaciones API_BASE / localhost corregidas (feature 003, commit c7b409f).
 -->
 
 # Constitución del Proyecto: ZEIT SOLUTIONS ERP
@@ -197,10 +196,13 @@ estrictamente estas reglas.
 *   **Auth único**: JWT HS256. Un solo sistema, gestionado enteramente en `/auth`.
     Variables de entorno requeridas: `DATABASE_URL`, `SECRET_KEY`,
     `ACCESS_TOKEN_EXPIRE_MINUTES`, `ALGORITHM`.
-*   **Docs en producción**: los endpoints `/docs`, `/redoc` y `/openapi.json` DEBEN
-    deshabilitarse en producción (son públicos por defecto en FastAPI). Se habilitan
-    solo en entorno de desarrollo. Pendiente implementar mediante variable
-    `ENV=production` en `app/main.py`.
+*   **Docs en producción**: los endpoints `/docs`, `/redoc` y `/openapi.json` están
+    deshabilitados cuando `ENV=production` (condicional en `app/main.py`). En desarrollo
+    (default) siguen accesibles normalmente.
+*   **Auth a nivel de router**: algunos módulos aplican la dependencia de auth en el
+    constructor del router (`dependencies=[Depends(get_current_user)]`) en lugar de en
+    cada función. Esto es equivalente y válido; las auditorías deben inspectar ambos
+    niveles. Módulos que usan este patrón: `reporting`.
 
 ### 8.2 Endpoints públicos aprobados (sin autenticación)
 
@@ -221,7 +223,7 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 |--------|---------|-----------|-------------|
 | Auth | `/auth` | 6 | Login, logout, refresh, perfil, preferencias |
 | Admin | `/admin` | 17 | Usuarios, roles, permisos, auditoría |
-| Logística | `/logistics` | 88 | Stock, materiales, almacenes, despachos, herramientas, lotes, transferencias, inv. físico |
+| Logística | `/logistics` | 87 | Stock, materiales, almacenes, despachos, herramientas, lotes, transferencias, inv. físico |
 | Solicitudes | `/requests` | 13 | Pedidos de materiales, reservas, despachos |
 | Reportes | `/reporting` | 8 | KPIs, dashboards, exports |
 | Operaciones | `/operations` | 21 | Planes, grupos de materiales, envíos |
@@ -234,14 +236,13 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 | Gerencia | `/gerencia` | 2 | Aprobaciones gerenciales |
 | Requerimientos | `/requerimientos` | 7 | CRUD requerimientos, costos, KPIs |
 | Branding | `/branding` | 4 | Marca configurable white-label |
-| **TOTAL** | | **277** | |
+| **TOTAL** | | **276** | |
 
 ### 8.4 Deuda técnica registrada
 
-*   **`/logistics/dispatches/{id}/dispatch-legacy` [POST]** — endpoint legacy activo.
-    DEBE eliminarse en la próxima feature de mantenimiento. Verificar con
-    `grep -r "dispatch-legacy"` antes de borrar para identificar llamadores.
-*   **Módulo `logistics` (88 endpoints)** — candidato a subdivisión futura en módulos
+*   ~~**`/logistics/dispatches/{id}/dispatch-legacy`**~~ — **ELIMINADO** (commit
+    `30b7917`, 2026-06-24). No tenía llamadores en frontend ni backend.
+*   **Módulo `logistics` (87 endpoints)** — candidato a subdivisión futura en módulos
     más pequeños (ej. `stock`, `warehouses`, `tools`, `dispatches`) cuando el
     mantenimiento lo justifique. No bloquea el trabajo actual.
 
@@ -262,4 +263,4 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
     feature que agregue o elimine endpoints. El comando `/speckit-constitution` con
     solicitud de auditoría genera el inventario actualizado automáticamente.
 
-**Version**: 1.3.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-24
+**Version**: 1.3.1 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-24
