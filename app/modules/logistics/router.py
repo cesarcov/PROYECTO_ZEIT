@@ -73,7 +73,6 @@ from app.modules.logistics.service import (
     import_warehouses_from_excel,
     import_projects_from_excel,
     receive_stock_service,
-    dispatch_stock_service,
     add_dispatch_item_service,
     list_dispatches_service,
     create_dispatch_service,
@@ -601,14 +600,6 @@ def confirm_dispatch(
     current_user: dict = Depends(get_current_user)
 ):
     return confirm_dispatch_receipt_service(dispatch_id, current_user, payload.receipt_notes)
-
-
-@router.post("/dispatches/{dispatch_id}/dispatch-legacy")
-def dispatch_stock_legacy(
-    dispatch_id: str,
-    current_user: dict = Depends(get_current_user),
-):
-    return dispatch_stock_service(dispatch_id, current_user)
 
 
 @router.post("/dispatches/{dispatch_id}/items")
