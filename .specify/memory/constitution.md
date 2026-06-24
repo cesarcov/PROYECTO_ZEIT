@@ -1,7 +1,7 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Versión: 1.3.0 → 1.3.1 (PATCH)
+Versión: 1.3.1 → 1.4.0 (MINOR) — supercede 1.3.1
 Fecha: 2026-06-24
 Razón del bump: cierre de los 3 TODOs del Art. 8; corrección del conteo de endpoints
 (276 tras eliminar dispatch-legacy); aclaración de patrón de auth a nivel de router;
@@ -248,6 +248,179 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 
 ---
 
+## 9. Inventario Canónico de Base de Datos (auditoría 2026-06-24)
+
+### 9.1 Resumen
+
+*   **Base de datos única**: PostgreSQL — esquema `public`.
+*   **67 objetos totales**: 59 tablas base + 8 vistas (`vw_*`).
+*   **Tabla más activa**: `audit_logs` (9.631 filas — crece con cada operación).
+*   **Tabla más compleja**: `materials` (41 columnas — núcleo del módulo logistics).
+*   **Tabla más grande en sesiones**: `refresh_tokens` (276 filas — una por sesión activa).
+
+### 9.2 Tablas por dominio de negocio
+
+#### Seguridad y Auth (6 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `users` | 8 | 13 | Cuentas de usuario (email, password hash, username) |
+| `roles` | 2 | 12 | Catálogo de roles del sistema |
+| `permissions` | 2 | 53 | Catálogo de scopes de permisos |
+| `role_permissions` | 2 | 173 | Relación N:M rol ↔ permiso |
+| `user_roles` | 2 | 14 | Relación N:M usuario ↔ rol |
+| `refresh_tokens` | 8 | 276 | Tokens JWT de renovación (con hash, revocación, TTL) |
+
+#### Auditoría (1 tabla)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `audit_logs` | 18 | 9.631 | Registro automático de todas las operaciones (AuditMiddleware) |
+
+#### Materiales e Inventario (5 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `materials` | 41 | 106 | Catálogo central de materiales/equipos (⚠ 41 cols — tabla pivote) |
+| `material_aliases` | 3 | 3 | Nombres alternativos por material |
+| `material_groups` | 7 | — | Grupos reutilizables de materiales para planes |
+| `material_group_items` | 6 | — | Items de cada grupo (material + cantidad + desgaste) |
+| `stock_item_categories` | 7 | — | Categorías de movimiento (afecta stock, retornable, etc.) |
+
+#### Stock y Almacenes (11 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `warehouses` | 5 | 1 | Almacenes físicos |
+| `stock_locations` | 10 | 105 | Ubicación rack/level/box por material y almacén |
+| `stock_movements` | 13 | 105 | Historial de movimientos de stock (entrada/salida) |
+| `stock_lots` | 15 | — | Lotes de materiales (trazabilidad, vencimiento) |
+| `stock_lot_movements` | 7 | — | Movimientos asociados a lotes |
+| `stock_reservations` | 13 | — | Reservas de stock por proyecto/usuario |
+| `stock_dispatches` | 19 | — | Despachos de materiales a obras |
+| `stock_dispatch_items` | 8 | — | Items despachados |
+| `warehouse_transfers` | 12 | — | Transferencias entre almacenes |
+| `warehouse_transfer_items` | 8 | — | Items de cada transferencia |
+| `physical_inventories` | 11 | 1 | Inventarios físicos (conteo real vs sistema) |
+| `physical_inventory_items` | 11 | 105 | Items contados en cada inventario |
+
+#### Herramientas y Equipos (5 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `tool_assignments` | 11 | — | Asignación de herramienta a proyecto |
+| `tool_loans` | 8 | — | Préstamos de herramienta a usuario |
+| `tool_maintenance` | 7 | — | Plan de mantenimiento por herramienta |
+| `equipment_maintenance` | 5 | — | Última/próxima fecha de mantenimiento general |
+| `calibration_records` | 9 | 1 | Historial de calibración (certificados, vencimiento) |
+
+#### Solicitudes y Pedidos (5 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `material_requests` | 19 | — | Solicitudes de materiales (con estado/tipo enum) |
+| `material_request_items` | 4 | — | Items de cada solicitud |
+| `material_request_audit` | 8 | — | Historial de cambios de estado por solicitud |
+| `purchase_items` | 14 | — | Lista de compras pendientes (materiales a adquirir) |
+| `project_plan_submissions` | 9 | — | Envíos de plan de materiales a logística |
+| `project_plan_submission_items` | 15 | — | Items de cada envío |
+
+#### Proyectos y Planes (3 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `projects` | 4 | 1 | Proyectos (código + nombre) |
+| `project_plans` | 10 | 5 | Planes de materiales por proyecto (en borrador/activo) |
+| `project_plan_items` | 9 | 1 | Items del plan (material + cantidad + desgaste) |
+
+#### Planificación y Productividad (4 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `planificacion_semanal` | 18 | 38 | Actividades planificadas (tarea, cliente, responsable, fechas) |
+| `planificacion_subtareas` | 7 | 155 | Subtareas de cada actividad |
+| `planificacion_historial` | 5 | — | Snapshots JSON de actividades (historial de cambios) |
+| `registro_productividad` | 10 | 84 | Registro diario de horas/actividades por usuario |
+
+#### Compras y Proveedores (4 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `proveedores` | 11 | 1 | Catálogo de proveedores |
+| `ordenes_compra` | 17 | 1 | Órdenes de compra (con estado y recepción parcial) |
+| `ordenes_compra_items` | 8 | — | Items de cada OC (cantidad pedida/recibida) |
+| `material_proveedores` | 8 | — | Relación material ↔ proveedor (precio, tiempo entrega) |
+
+#### Órdenes de Trabajo (4 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `ordenes_trabajo` | 21 | 18 | OTs (vinculadas a plan/partida, con estado y técnicos) |
+| `ot_checklist` | 8 | 1 | Checklist de tareas por OT |
+| `ot_materiales` | 10 | — | Materiales planificados/reales consumidos por OT |
+| `ot_tiempos` | 7 | — | Registro de tiempo por técnico en cada OT |
+
+#### Cotizaciones y Presupuesto (8 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `presupuesto_config` | 21 | 4 | Config del presupuesto por plan (GG%, utilidad%, IGV%, moneda) |
+| `presupuesto_partidas` | 11 | 10 | Partidas/capítulos del presupuesto |
+| `presupuesto_apu_items` | 10 | 21 | Análisis de Precio Unitario por partida |
+| `apu_baules` | 7 | — | Biblioteca de APUs reutilizables |
+| `apu_baul_items` | 11 | — | Items de cada baúl APU |
+| `recursos_mo` | 8 | 1 | Catálogo de recursos de mano de obra (tarifa/hora) |
+| `tarifas_personal` | 14 | 10 | Tarifas por rol/contexto/modalidad |
+| `categorias_costo` | 8 | 8 | Categorías de costo (directo/indirecto, orden, color) |
+| `visitas_tecnicas` | 10 | 1 | Visitas técnicas asociadas a planes (costo, destino, estado) |
+
+#### Clientes (2 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `clientes` | 13 | 6 | Clientes (RUC, razón social, contacto principal) |
+| `cliente_contactos` | 8 | 7 | Contactos adicionales por cliente |
+
+#### Requerimientos de Servicio (2 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `servicio_requerimientos` | 9 | — | Requerimientos de servicio por cliente |
+| `servicio_requerimiento_costos` | 10 | — | Costos detallados por requerimiento |
+
+#### Canal Inter-módulo (2 tablas)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `canal_solicitudes` | 13 | 1 | Solicitudes inter-módulo (con código, estado, asignado) |
+| `canal_mensajes` | 5 | 3 | Mensajes dentro de cada solicitud |
+
+#### Gerencia (1 tabla)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `aprobaciones_gerencia` | 11 | 3 | Aprobaciones gerenciales (cotizaciones, OTs, requerimientos) |
+
+#### Branding (1 tabla)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `branding` | 12 | 1 | Marca configurable (singleton id=1; NULL = usar default ZEIT) |
+
+### 9.3 Vistas (8 vistas — solo lectura, sin persistencia propia)
+
+| Vista | Propósito |
+|-------|-----------|
+| `vw_kpi_material_requests_by_approver` | KPIs de aprobaciones por usuario |
+| `vw_kpi_material_requests_lead_time` | Lead time promedio/p95 de solicitudes |
+| `vw_kpi_material_requests_monthly` | Solicitudes por mes (aprobadas/rechazadas/pendientes) |
+| `vw_kpi_material_requests_sla` | Cumplimiento de SLA de solicitudes |
+| `vw_kpi_material_requests_summary` | Resumen global de solicitudes |
+| `vw_material_requests_operational` | Vista operacional enriquecida de solicitudes |
+| `vw_requests_kpi_summary` | KPI consolidado del módulo requests |
+| `vw_stock_availability` | Stock disponible (descontando reservas) por material/almacén |
+
+### 9.4 Observaciones y deuda técnica de datos
+
+*   **`materials` (41 cols)** — tabla pivote que concentra stock, calibración, herramientas
+    y equipos. A medida que el sistema crezca, considerar separar en `equipment` /
+    `consumables`. No bloquea el trabajo actual.
+*   **`tool_assignments` + `tool_loans`** — dos tablas con solapamiento conceptual
+    (asignación vs préstamo de herramienta). Evaluar unificación en futura feature de
+    mantenimiento.
+*   **`equipment_maintenance` + `tool_maintenance`** — idem, dos tablas para
+    mantenimiento de equipos. Candidatas a unificar.
+*   **`visitas_tecnicas`** — tabla existente pero no visible en el frontend actual.
+    Verificar si está integrada o es deuda técnica pendiente de UI.
+*   **Todas las PK son UUID** salvo `canal_solicitudes` y `canal_mensajes` que usan
+    `integer` auto-incremental — inconsistencia menor, sin impacto funcional actual.
+
+---
+
 ## Governance
 *   Esta constitución prevalece sobre cualquier otra práctica del repositorio. Las
     enmiendas se documentan aquí con fecha y se versionan (SemVer: MAJOR cambios
@@ -263,4 +436,4 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
     feature que agregue o elimine endpoints. El comando `/speckit-constitution` con
     solicitud de auditoría genera el inventario actualizado automáticamente.
 
-**Version**: 1.3.1 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-24
+**Version**: 1.4.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-24
