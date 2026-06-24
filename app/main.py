@@ -1,9 +1,14 @@
 import logging
 import os
+import time
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from app.core.rate_limit import limiter
 from app.modules.admin.router import router as admin_router
 from app.core.security.router import router as auth_router
 from app.modules.logistics.router import router as logistics_router
@@ -29,6 +34,8 @@ from app.core.database import db_connection
 logger = logging.getLogger(__name__)
 
 _dev = os.getenv("ENV", "development") != "production"
+_start_time = time.time()
+
 app = FastAPI(
     title="ERP Modular",
     docs_url="/docs" if _dev else None,
@@ -68,8 +75,12 @@ origins = [
     "http://127.0.0.1:5174",
 ]
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Orden importante: el último add_middleware es el primero en ejecutarse.
 # AuditMiddleware primero → CORS outermost (maneja preflight antes que auditoría)
+app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(AuditMiddleware)
 app.add_middleware(
     CORSMiddleware,
@@ -111,3 +122,23 @@ app.mount("/branding-assets", StaticFiles(directory=_BRANDING_DIR), name="brandi
 @app.get("/")
 def root():
     return {"message": "ERP running"}
+
+
+@app.get("/health")
+def health_check():
+    db_ok = False
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                db_ok = cur.fetchone()[0] == 1
+    except Exception:
+        pass
+    uptime_seconds = int(time.time() - _start_time)
+    status = "ok" if db_ok else "degraded"
+    return {
+        "status": status,
+        "db": "ok" if db_ok else "error",
+        "uptime_seconds": uptime_seconds,
+        "version": "1.0.0",
+    }

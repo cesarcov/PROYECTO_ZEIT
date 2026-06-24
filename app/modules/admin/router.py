@@ -61,12 +61,11 @@ def list_users(
                     u.username,
                     u.email,
                     u.is_active,
-                    array_agg(r.name) AS roles,
-                    u.plain_password
+                    array_agg(r.name) AS roles
                 FROM users u
                 LEFT JOIN user_roles ur ON ur.user_id = u.id
                 LEFT JOIN roles r ON r.id = ur.role_id
-                GROUP BY u.id, u.plain_password
+                GROUP BY u.id
                 ORDER BY u.username
             """)
             return [
@@ -76,7 +75,6 @@ def list_users(
                     "email": r[2],
                     "is_active": r[3],
                     "roles": r[4] or [],
-                    "plain_password": r[5]
                 }
                 for r in cur.fetchall()
             ]

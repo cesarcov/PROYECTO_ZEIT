@@ -12,6 +12,7 @@ email-validator==2.1.1
 python-jose==3.5.0
 bcrypt==3.2.2
 python-multipart==0.0.21
+slowapi==0.1.10
 
 # Base de datos
 psycopg2-binary==2.9.11

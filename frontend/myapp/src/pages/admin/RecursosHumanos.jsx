@@ -482,22 +482,6 @@ export default function RecursosHumanos() {
 
                                 <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "#4B5563" }}>
                                   <div><strong>Cargos / Roles:</strong> {u.roles && u.roles.length > 0 ? u.roles.join(" / ") : "Miembro"}</div>
-                                  {u.plain_password && (
-                                    <div style={{
-                                      background: "#FAFAFA",
-                                      border: "1px solid #E5E7EB",
-                                      borderRadius: 6,
-                                      padding: "4px 8px",
-                                      fontSize: 11,
-                                      marginTop: 6,
-                                      fontFamily: "monospace",
-                                      display: "flex",
-                                      justifyContent: "space-between"
-                                    }}>
-                                      <span>Contraseña: <strong>{u.plain_password}</strong></span>
-                                      <span style={{ color: "#9CA3AF", fontSize: 9 }}>Soporte TI</span>
-                                    </div>
-                                  )}
                                 </div>
                               </div>
 

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from app.core.rate_limit import limiter
 from app.core.security.auth import (
     authenticate_user,
     create_access_token,
@@ -30,7 +31,8 @@ class LogoutRequest(BaseModel):
 
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@limiter.limit("10/minute")
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(
         username=form_data.username,
         password=form_data.password

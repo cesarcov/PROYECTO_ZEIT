@@ -14,14 +14,13 @@ def create_user_service(payload):
 
             # 1️⃣ Crear usuario
             cur.execute("""
-                INSERT INTO users (username, email, hashed_password, plain_password, is_active)
-                VALUES (%s, %s, %s, %s, TRUE)
+                INSERT INTO users (username, email, hashed_password, is_active)
+                VALUES (%s, %s, %s, TRUE)
                 RETURNING id
             """, (
                 payload.username,
                 payload.email,
                 hashed_password,
-                payload.password
             ))
 
             user_id = cur.fetchone()[0]

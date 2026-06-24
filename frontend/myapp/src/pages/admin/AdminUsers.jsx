@@ -450,23 +450,7 @@ export default function AdminUsers() {
                     </td>
                     <td style={{ padding: "14px 20px", color: "#6B7280" }}>{u.email}</td>
                     <td style={{ padding: "14px 20px", color: "#6B7280" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{ fontFamily: "monospace", fontSize: 12 }}>
-                          {u.plain_password 
-                            ? (visiblePasswords.includes(u.id) ? u.plain_password : "••••••••")
-                            : "••••••••"
-                          }
-                        </span>
-                        <button
-                          onClick={() => togglePasswordVisibility(u.id)}
-                          style={{
-                            background: "none", border: "none", cursor: "pointer",
-                            fontSize: 11, color: "#4F7C82", fontWeight: 700, padding: 0
-                          }}
-                        >
-                          {visiblePasswords.includes(u.id) ? "Ocultar" : "Mostrar"}
-                        </button>
-                      </div>
+                      <span style={{ fontFamily: "monospace", fontSize: 12, color: "#9CA3AF" }}>••••••••</span>
                     </td>
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
