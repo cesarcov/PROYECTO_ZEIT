@@ -1,7 +1,9 @@
 import logging
+import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from app.modules.admin.router import router as admin_router
 from app.core.security.router import router as auth_router
 from app.modules.logistics.router import router as logistics_router
@@ -21,6 +23,7 @@ from app.modules.clientes.router import router as clientes_router
 from app.modules.planificacion.router import router as planificacion_router
 from app.modules.gerencia.router import router as gerencia_router
 from app.modules.requerimientos.router import router as requerimientos_router
+from app.modules.branding.router import router as branding_router
 from app.core.database import db_connection
 
 logger = logging.getLogger(__name__)
@@ -91,6 +94,12 @@ app.include_router(clientes_router)
 app.include_router(planificacion_router)
 app.include_router(gerencia_router)
 app.include_router(requerimientos_router)
+app.include_router(branding_router)
+
+# Estáticos de marca (logos subidos). El directorio es de runtime (gitignored).
+_BRANDING_DIR = os.path.join("app", "storage", "branding")
+os.makedirs(_BRANDING_DIR, exist_ok=True)
+app.mount("/branding-assets", StaticFiles(directory=_BRANDING_DIR), name="branding-assets")
 
 
 @app.get("/")

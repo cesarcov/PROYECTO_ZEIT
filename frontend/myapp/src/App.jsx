@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Materials from "./pages/Materials";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminBranding from "./pages/admin/AdminBranding";
 import AdminAudit from "./pages/admin/AdminAudit";
 import AdminRoles from "./pages/admin/AdminRoles";
 import AdminCategoriasCosto from "./pages/admin/AdminCategoriasCosto";
@@ -89,6 +90,14 @@ function App() {
           element={
             <ProtectedRoute requirePermission="admin:">
               <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/branding"
+          element={
+            <ProtectedRoute requirePermission="admin:">
+              <AdminBranding />
             </ProtectedRoute>
           }
         />

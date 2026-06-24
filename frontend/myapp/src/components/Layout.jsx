@@ -172,6 +172,7 @@ const MODULES = [
           { label: "Roles",     icon: "shield",     path: "/admin/roles" },
           { label: "Auditoría", icon: "eye",        path: "/admin/audit" },
           { label: "Reportes",  icon: "trendingUp", path: "/admin/reporting" },
+          { label: "Marca",     icon: "settings",   path: "/admin/branding" },
         ],
       },
       {
@@ -293,7 +294,7 @@ export default function Layout({ children }) {
     if (!mods.some(m => m === "logistics" || m === "admin")) return;
     const token = localStorage.getItem("access_token");
     if (!token) return;
-    fetch("http://localhost:8000/logistics/materials/pending-count", {
+    fetch(`${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/logistics/materials/pending-count`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

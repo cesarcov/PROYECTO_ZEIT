@@ -3,7 +3,10 @@
     "allow": [
       "Bash(grep -iE \"\\\\.env$|node_modules|__pycache__|/venv|/dist|\\\\.pyc|secret|credential\")",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "PowerShell(& \".specify\\\\scripts\\\\powershell\\\\check-prerequisites.ps1\" -Json -PathsOnly)",
+      "PowerShell(& \".specify\\\\scripts\\\\powershell\\\\setup-plan.ps1\" -Json)"
     ]
   }
 }

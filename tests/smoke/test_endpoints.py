@@ -107,3 +107,72 @@ def test_user_preferences_rechaza_tema_invalido(client, auth):
     """Un tema fuera del catálogo se rechaza (validación defensiva)."""
     r = client.put("/auth/me/preferences", headers=auth, json={"tema": "no-existe"})
     assert r.status_code == 422, r.text[:300]
+
+
+# ── Marca configurable / white-label (feature 003) ────────────────────────────
+
+@pytest.fixture(scope="module")
+def admin_auth(client):
+    r = client.post("/auth/login", data={"username": "admin", "password": "admin123"})
+    if r.status_code != 200:
+        pytest.skip("usuario admin (admin/admin123) no disponible")
+    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+
+def test_branding_publico(client):
+    """GET /branding es público (lo usa el login) y trae la marca + crédito."""
+    r = client.get("/branding")
+    assert r.status_code == 200, r.text[:300]
+    d = r.json()
+    assert d.get("appName") and d.get("poweredBy")
+
+
+def test_branding_requiere_admin_para_escribir(client):
+    """PUT /branding sin token es rechazado (US4, FR-001)."""
+    r = client.put("/branding", json={"nombre_producto": "X"})
+    assert r.status_code in (401, 403), r.text[:200]
+
+
+def test_branding_update_validacion_y_reset(client, admin_auth):
+    """Admin actualiza nombre (200), color inválido → 422, y restablece a ZEIT.
+
+    NOTA: este test restaura los campos de texto al terminar para no borrar la
+    configuración real del servidor. Los archivos de logo NO se pueden restaurar
+    automáticamente — el DELETE solo se ejecuta si no hay logos subidos.
+    """
+    # Guardar estado actual para restaurarlo al final (evitar destruir config real).
+    prev = client.get("/branding").json()
+    prev_colors = prev.get("colors") or {}
+    prev_logos = prev.get("logos") or {}
+    tiene_logos = any(v for v in prev_logos.values())
+
+    # Verificar que PUT actualiza el nombre.
+    r = client.put("/branding", headers=admin_auth, json={"nombre_producto": "ACME TEST"})
+    assert r.status_code == 200, r.text[:300]
+    assert r.json().get("appName") == "ACME TEST"
+
+    # Verificar que un color inválido devuelve 422.
+    r2 = client.put("/branding", headers=admin_auth, json={"color_primario": "noesuncolor"})
+    assert r2.status_code == 422, r2.text[:200]
+
+    if not tiene_logos:
+        # Solo llama DELETE si no había logos reales: evita borrar archivos del servidor.
+        r3 = client.delete("/branding", headers=admin_auth)
+        assert r3.status_code == 200, r3.text[:300]
+        assert r3.json().get("appName") == "ZEIT SOLUTIONS"
+    else:
+        # Con logos configurados: restaurar solo los campos de texto/colores.
+        restore: dict = {}
+        prev_name = prev.get("appName", "")
+        if prev_name and prev_name != "ZEIT SOLUTIONS":
+            restore["nombre_producto"] = prev_name
+        if prev.get("tagline"):
+            restore["eslogan"] = prev["tagline"]
+        if prev_colors.get("primary"):
+            restore["color_primario"] = prev_colors["primary"]
+        if prev_colors.get("accent"):
+            restore["color_acento"] = prev_colors["accent"]
+        if prev_colors.get("action"):
+            restore["color_accion"] = prev_colors["action"]
+        if restore:
+            client.put("/branding", headers=admin_auth, json=restore)
