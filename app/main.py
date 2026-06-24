@@ -28,7 +28,13 @@ from app.core.database import db_connection
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="ERP Modular")
+_dev = os.getenv("ENV", "development") != "production"
+app = FastAPI(
+    title="ERP Modular",
+    docs_url="/docs" if _dev else None,
+    redoc_url="/redoc" if _dev else None,
+    openapi_url="/openapi.json" if _dev else None,
+)
 
 
 @app.exception_handler(Exception)
