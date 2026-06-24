@@ -26,3 +26,7 @@ app/storage/
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+
+# Auditorías: baseline local y reporte latest (los timestamped sí se versionan)
+specs/audit/baseline.json
+specs/audit/latest.md
