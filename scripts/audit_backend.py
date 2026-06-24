@@ -33,12 +33,12 @@ LATEST_FILE = AUDIT_DIR / "latest.md"
 
 ALL_TABLES = [
     "users", "roles", "permissions", "user_roles", "role_permissions", "refresh_tokens", "audit_logs",
-    "materials", "material_aliases", "material_groups", "material_group_items", "stock_item_categories",
+    "materials", "material_aliases", "material_groups", "material_group_items",
     "warehouses", "stock_locations", "stock_movements", "stock_lots", "stock_lot_movements",
     "stock_reservations", "stock_dispatches", "stock_dispatch_items",
     "warehouse_transfers", "warehouse_transfer_items",
     "physical_inventories", "physical_inventory_items",
-    "tool_assignments", "tool_loans", "tool_maintenance", "equipment_maintenance", "calibration_records",
+    "tool_assignments", "tool_maintenance", "calibration_records",
     "material_requests", "material_request_items", "material_request_audit", "purchase_items",
     "project_plan_submissions", "project_plan_submission_items",
     "projects", "project_plans", "project_plan_items",
@@ -54,15 +54,13 @@ ALL_TABLES = [
 ]
 
 # Tablas confirmadas como zombie (sin código activo)
-ZOMBIE_TABLES = {
-    "tool_loans", "equipment_maintenance",
-    "material_request_items", "material_request_audit", "stock_item_categories",
-}
+# Actualizado 2026-06-24: tool_loans/equipment_maintenance/stock_item_categories eliminadas en migración 036
+# material_request_items y material_request_audit ACTIVADAS en feature 006
+ZOMBIE_TABLES: set = set()
 
 # Columnas muertas en materials
-DEAD_COLUMNS = {
-    "materials": ["alias1", "alias2", "alias3", "maintenance_interval_days", "last_maintenance"],
-}
+# Actualizado 2026-06-24: alias1/2/3 y maintenance_* eliminadas en migración 036
+DEAD_COLUMNS: dict = {}
 
 # ──────────────────────────────────────────────
 # SECCIÓN 1: SALUD DE BASE DE DATOS
@@ -363,13 +361,12 @@ def generate_recommendations(counts, smoke, logs):
     # Calidad de datos
     recs.append({
         "area": "Calidad de datos",
-        "priority": "ALTA",
-        "title": "Migración de limpieza: eliminar tablas/columnas zombie",
+        "priority": "MEDIA",
+        "title": "Eliminar columna plain_password de la tabla users (CRÍTICO seguridad)",
         "detail": (
-            "5 tablas (tool_loans, equipment_maintenance, material_request_items, "
-            "material_request_audit, stock_item_categories) y 5 columnas en materials "
-            "nunca se usan pero ocupan espacio y confunden. "
-            "Ejecutar migración 036_cleanup_zombie_tables.sql."
+            "La tabla users contiene una columna plain_password con contraseñas en texto plano. "
+            "Riesgo CRÍTICO: cualquier dump de DB expone todas las contraseñas. "
+            "Ejecutar: ALTER TABLE users DROP COLUMN IF EXISTS plain_password;"
         ),
     })
     recs.append({
@@ -601,7 +598,7 @@ def render_report(db, smoke, logs, debt, recs, baseline_diff, prev_ts):
     lines += [
         "## Proximos pasos sugeridos",
         "",
-        "1. Ejecutar migración `036_cleanup_zombie_tables.sql` (eliminar zombie tables/cols)",
+        "1. DROP COLUMN plain_password de users (CRÍTICO — contraseñas en texto plano)",
         "2. Agregar `GET /health` con estado de DB y versión",
         "3. Implementar rate limiting en `/auth/login` (slowapi)",
         "4. Crear job de limpieza de `refresh_tokens` expirados",
