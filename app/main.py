@@ -9,6 +9,8 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from app.core.rate_limit import limiter
+from app.core.security_headers import SecurityHeadersMiddleware
+from app.core.scheduler import start_scheduler, stop_scheduler
 from app.modules.admin.router import router as admin_router
 from app.core.security.router import router as auth_router
 from app.modules.logistics.router import router as logistics_router
@@ -64,6 +66,12 @@ def startup_check():
         print(f"[ERROR] Conexion a la base de datos fallida: {e}")
         print("  Verifica DATABASE_URL en tu archivo .env")
         raise SystemExit(1)
+    start_scheduler()
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    stop_scheduler()
 
 # ===============================
 # CORS (FRONTEND)
@@ -78,8 +86,9 @@ origins = [
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Orden importante: el último add_middleware es el primero en ejecutarse.
-# AuditMiddleware primero → CORS outermost (maneja preflight antes que auditoría)
+# Orden de middlewares (último en add_middleware = primero en ejecutarse):
+# SecurityHeaders → SlowAPI → Audit → CORS (outermost, maneja preflight)
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(AuditMiddleware)
 app.add_middleware(

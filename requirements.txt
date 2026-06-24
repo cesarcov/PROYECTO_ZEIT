@@ -13,6 +13,7 @@ python-jose==3.5.0
 bcrypt==3.2.2
 python-multipart==0.0.21
 slowapi==0.1.10
+apscheduler==3.10.4
 
 # Base de datos
 psycopg2-binary==2.9.11
