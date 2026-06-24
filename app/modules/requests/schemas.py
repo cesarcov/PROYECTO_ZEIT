@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -29,12 +29,36 @@ class ReservationResponse(BaseModel):
 # SOLICITUDES DE MATERIAL
 # ===============================
 
+class MaterialRequestItemCreate(BaseModel):
+    material_id: UUID
+    quantity: float = Field(..., gt=0)
+
 
 class MaterialRequestCreate(BaseModel):
-    related_material_id: UUID
-    quantity: float = Field(..., gt=0)
+    # Modo multi-item (nuevo)
+    items: Optional[List[MaterialRequestItemCreate]] = None
+    # Modo legacy — backward compat (se mantiene)
+    related_material_id: Optional[UUID] = None
+    quantity: Optional[float] = Field(None, gt=0)
     reason: str
     project_id: UUID
+
+
+class MaterialRequestItemOut(BaseModel):
+    material_id: UUID
+    material_name: str
+    material_code: str
+    quantity: float
+
+
+class MaterialRequestAuditOut(BaseModel):
+    id: UUID
+    action: str
+    old_status: Optional[str]
+    new_status: Optional[str]
+    actor_name: Optional[str]
+    source: str
+    created_at: datetime
 
 # ===============================
 # LÓGICA DE RECEPCIÓN

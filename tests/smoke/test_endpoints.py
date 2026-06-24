@@ -176,3 +176,120 @@ def test_branding_update_validacion_y_reset(client, admin_auth):
             restore["color_accion"] = prev_colors["action"]
         if restore:
             client.put("/branding", headers=admin_auth, json=restore)
+
+
+# ── Solicitudes multi-material y audit trail (feature 006) ───────────────────
+
+@pytest.fixture(scope="module")
+def _feature006_prereqs(client, auth):
+    """Obtiene 2 material IDs y 1 project_id reales para los tests de feature 006."""
+    r = client.get("/logistics/materials", headers=auth)
+    if r.status_code != 200:
+        pytest.skip("GET /logistics/materials no disponible — se omiten tests de feature 006")
+    mats = r.json() if isinstance(r.json(), list) else r.json().get("items", [])
+    if len(mats) < 2:
+        pytest.skip("Se necesitan al menos 2 materiales para los tests de feature 006")
+
+    # Obtener project_id desde la DB directamente
+    from app.core.database import db_connection
+    pid = None
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT id FROM projects LIMIT 1")
+                row = cur.fetchone()
+                if row:
+                    pid = str(row[0])
+    except Exception:
+        pass
+    if not pid:
+        pytest.skip("No se encontró project_id en la tabla projects — tests de feature 006 omitidos")
+
+    return str(mats[0]["id"]), str(mats[1]["id"]), str(pid)
+
+
+def test_material_request_multi_item(client, auth, _feature006_prereqs):
+    """POST crea solicitud con 2 materiales; GET /my la devuelve con items de longitud 2."""
+    mat1, mat2, pid = _feature006_prereqs
+    import datetime
+    ts = datetime.datetime.utcnow().isoformat()
+
+    r = client.post("/requests/material-requests", headers=auth, json={
+        "items": [
+            {"material_id": mat1, "quantity": 3},
+            {"material_id": mat2, "quantity": 1},
+        ],
+        "reason": f"[smoke-006] multi-item {ts}",
+        "project_id": pid,
+    })
+    assert r.status_code == 200, r.text[:300]
+    data = r.json()
+    assert data.get("status") == "PENDING"
+    request_id = data["id"]
+
+    r2 = client.get("/requests/material-requests/my", headers=auth)
+    assert r2.status_code == 200, r2.text[:300]
+    solicitudes = r2.json()
+    la_mia = next((s for s in solicitudes if s["id"] == request_id), None)
+    assert la_mia is not None, "La solicitud creada no aparece en GET /my"
+    assert "items" in la_mia, "La respuesta no contiene el campo 'items'"
+    assert len(la_mia["items"]) == 2, f"Se esperaban 2 items, hay {len(la_mia['items'])}"
+
+
+def test_material_request_audit_history(client, auth, admin_auth, _feature006_prereqs):
+    """Crear + aprobar solicitud → history tiene 1 evento APPROVED."""
+    mat1, _mat2, pid = _feature006_prereqs
+    import datetime
+    ts = datetime.datetime.utcnow().isoformat()
+
+    r = client.post("/requests/material-requests", headers=auth, json={
+        "items": [{"material_id": mat1, "quantity": 1}],
+        "reason": f"[smoke-006] audit {ts}",
+        "project_id": pid,
+    })
+    assert r.status_code == 200, r.text[:300]
+    request_id = r.json()["id"]
+
+    ra = client.post(f"/requests/material-requests/{request_id}/approve", headers=admin_auth)
+    assert ra.status_code == 200, ra.text[:300]
+
+    rh = client.get(f"/requests/material-requests/{request_id}/history", headers=admin_auth)
+    assert rh.status_code == 200, rh.text[:300]
+    history = rh.json()
+    assert isinstance(history, list) and len(history) >= 1, "history vacío después de aprobar"
+    assert history[0]["action"] == "APPROVED"
+    assert history[0]["old_status"] == "PENDING"
+    assert history[0]["new_status"] == "APPROVED"
+
+
+def test_material_request_duplicado_rechazado(client, auth, _feature006_prereqs):
+    """Solicitud con material_id duplicado devuelve 422."""
+    mat1, _mat2, pid = _feature006_prereqs
+    import datetime
+    ts = datetime.datetime.utcnow().isoformat()
+
+    r = client.post("/requests/material-requests", headers=auth, json={
+        "items": [
+            {"material_id": mat1, "quantity": 3},
+            {"material_id": mat1, "quantity": 2},
+        ],
+        "reason": f"[smoke-006] duplicado {ts}",
+        "project_id": pid,
+    })
+    assert r.status_code == 422, f"Se esperaba 422 pero devolvió {r.status_code}: {r.text[:200]}"
+
+
+def test_material_request_legacy_compat(client, auth, _feature006_prereqs):
+    """Modo legacy (related_material_id + quantity) sigue funcionando sin cambios."""
+    mat1, _mat2, pid = _feature006_prereqs
+    import datetime
+    ts = datetime.datetime.utcnow().isoformat()
+
+    r = client.post("/requests/material-requests", headers=auth, json={
+        "related_material_id": mat1,
+        "quantity": 5,
+        "reason": f"[smoke-006] legacy {ts}",
+        "project_id": pid,
+    })
+    assert r.status_code == 200, r.text[:300]
+    assert r.json().get("status") == "PENDING"

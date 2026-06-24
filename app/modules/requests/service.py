@@ -41,9 +41,66 @@ def list_my_reservations_service(user):
 # SOLICITUDES DE MATERIAL
 # ===============================
 
+def _insert_items(cur, request_id, items):
+    material_ids = [str(item.material_id) for item in items]
+    if len(material_ids) != len(set(material_ids)):
+        raise HTTPException(422, "No puede haber materiales duplicados en una misma solicitud")
+    for item in items:
+        cur.execute("SELECT id FROM materials WHERE id = %s", (str(item.material_id),))
+        if not cur.fetchone():
+            raise HTTPException(422, f"Material {item.material_id} no existe")
+        cur.execute("""
+            INSERT INTO material_request_items (id, request_id, material_id, quantity)
+            VALUES (gen_random_uuid(), %s, %s, %s)
+        """, (str(request_id), str(item.material_id), item.quantity))
+
+
+def _get_items_for_request(cur, request_id):
+    cur.execute("""
+        SELECT mri.material_id, m.name, m.code, mri.quantity
+        FROM material_request_items mri
+        JOIN materials m ON m.id = mri.material_id
+        WHERE mri.request_id = %s
+    """, (str(request_id),))
+    rows = cur.fetchall()
+    if rows:
+        return [{"material_id": str(r[0]), "material_name": r[1], "material_code": r[2], "quantity": float(r[3])} for r in rows]
+    cur.execute("""
+        SELECT mr.related_material_id, m.name, m.code, mr.quantity
+        FROM material_requests mr
+        JOIN materials m ON m.id = mr.related_material_id
+        WHERE mr.id = %s
+    """, (str(request_id),))
+    row = cur.fetchone()
+    if row:
+        return [{"material_id": str(row[0]), "material_name": row[1], "material_code": row[2], "quantity": float(row[3])}]
+    return []
+
+
+def _record_audit(cur, request_id, action, old_status, new_status, actor_id):
+    cur.execute("""
+        INSERT INTO material_request_audit
+            (id, material_request_id, action, old_status, new_status, actor_id, source, created_at)
+        VALUES
+            (gen_random_uuid(), %s, %s, %s, %s, %s, 'API', NOW())
+    """, (str(request_id), action, old_status, new_status, str(actor_id) if actor_id else None))
+
+
 def create_material_request_service(payload, user):
     request_id = uuid4()
     sla_due_at = datetime.utcnow() + timedelta(hours=72)
+
+    multi_item_mode = payload.items and len(payload.items) > 0
+
+    if multi_item_mode:
+        first_item = payload.items[0]
+        anchor_material_id = str(first_item.material_id)
+        anchor_quantity = first_item.quantity
+    else:
+        if not payload.related_material_id or not payload.quantity:
+            raise HTTPException(422, "Modo legacy requiere related_material_id y quantity")
+        anchor_material_id = str(payload.related_material_id)
+        anchor_quantity = payload.quantity
 
     with db_connection() as conn:
         with conn.cursor() as cur:
@@ -73,12 +130,15 @@ def create_material_request_service(payload, user):
             """, (
                 str(request_id),
                 str(user["id"]),
-                str(payload.related_material_id),
-                payload.quantity,
+                anchor_material_id,
+                anchor_quantity,
                 payload.reason,
                 sla_due_at,
                 str(payload.project_id)
             ))
+
+            if multi_item_mode:
+                _insert_items(cur, request_id, payload.items)
 
         conn.commit()
 
@@ -96,8 +156,6 @@ def list_my_material_requests_service(user):
             cur.execute("""
                 SELECT
                     mr.id,
-                    m.name AS material_name,
-                    mr.quantity,
                     mr.reason,
                     mr.status,
                     mr.priority,
@@ -108,31 +166,29 @@ def list_my_material_requests_service(user):
                     mr.project_id,
                     p.name AS project_name
                 FROM material_requests mr
-                JOIN materials m ON m.id = mr.related_material_id
                 LEFT JOIN projects p ON p.id = mr.project_id
                 WHERE mr.requested_by = %s
                 ORDER BY mr.created_at DESC
             """, (str(user["id"]),))
 
             rows = cur.fetchall()
-
-        return [
-            {
-                "id": r[0],
-                "material_name": r[1],
-                "quantity": float(r[2]),
-                "reason": r[3],
-                "status": r[4],
-                "priority": r[5],
-                "needed_by": r[6],
-                "created_at": r[7],
-                "approved_by": r[8],
-                "approved_at": r[9],
-                "project_id": str(r[10]) if r[10] else None,
-                "project_name": r[11],
-            }
-            for r in rows
-        ]
+            result = []
+            for r in rows:
+                items = _get_items_for_request(cur, r[0])
+                result.append({
+                    "id": r[0],
+                    "reason": r[1],
+                    "status": r[2],
+                    "priority": r[3],
+                    "needed_by": r[4],
+                    "created_at": r[5],
+                    "approved_by": r[6],
+                    "approved_at": r[7],
+                    "project_id": str(r[8]) if r[8] else None,
+                    "project_name": r[9],
+                    "items": items,
+                })
+        return result
 
 
 
@@ -142,9 +198,6 @@ def list_all_material_requests_service():
             cur.execute("""
                 SELECT
                     mr.id,
-                    mr.related_material_id AS material_id,
-                    m.name                 AS material_name,
-                    mr.quantity,
                     mr.reason,
                     mr.status,
                     mr.priority,
@@ -152,36 +205,33 @@ def list_all_material_requests_service():
                     mr.created_at,
                     mr.approved_at,
                     mr.rejected_at,
-                    u.username             AS requested_by,
+                    u.username  AS requested_by,
                     mr.project_id,
-                    p.name                 AS project_name
+                    p.name      AS project_name
                 FROM material_requests mr
-                JOIN materials m ON m.id = mr.related_material_id
-                JOIN users u     ON u.id = mr.requested_by
+                JOIN users u ON u.id = mr.requested_by
                 LEFT JOIN projects p ON p.id = mr.project_id
                 ORDER BY mr.created_at DESC
             """)
             rows = cur.fetchall()
-
-        return [
-            {
-                "id": r[0],
-                "material_id": str(r[1]),
-                "material_name": r[2],
-                "quantity": float(r[3]),
-                "reason": r[4],
-                "status": r[5],
-                "priority": r[6],
-                "sla_due_at": r[7],
-                "created_at": r[8],
-                "approved_at": r[9],
-                "rejected_at": r[10],
-                "requested_by": r[11],
-                "project_id": str(r[12]) if r[12] else None,
-                "project_name": r[13],
-            }
-            for r in rows
-        ]
+            result = []
+            for r in rows:
+                items = _get_items_for_request(cur, r[0])
+                result.append({
+                    "id": r[0],
+                    "reason": r[1],
+                    "status": r[2],
+                    "priority": r[3],
+                    "sla_due_at": r[4],
+                    "created_at": r[5],
+                    "approved_at": r[6],
+                    "rejected_at": r[7],
+                    "requested_by": r[8],
+                    "project_id": str(r[9]) if r[9] else None,
+                    "project_name": r[10],
+                    "items": items,
+                })
+        return result
 
 
 
@@ -227,6 +277,8 @@ def approve_material_request_service(request_id: str, current_user):
                     request_id
                 ))
 
+                _record_audit(cur, request_id, 'APPROVED', status, 'APPROVED', current_user["id"])
+
             conn.commit()
 
             return {
@@ -234,7 +286,7 @@ def approve_material_request_service(request_id: str, current_user):
                 "status": "APPROVED"
             }
 
-    except psycopg2.Error as e:
+    except Exception as e:
         raise HTTPException(
             status_code=400,
             detail=str(e).split("\n")[0]
@@ -284,6 +336,8 @@ def reject_material_request_service(request_id: str, user):
                     str(request_id)
                 ))
 
+                _record_audit(cur, request_id, 'REJECTED', status, 'REJECTED', user["id"])
+
             conn.commit()
 
             return {
@@ -295,6 +349,46 @@ def reject_material_request_service(request_id: str, user):
         except Exception:
             conn.rollback()
             raise
+
+def get_request_history_service(request_id, current_user):
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT id, requested_by FROM material_requests WHERE id = %s
+            """, (str(request_id),))
+            row = cur.fetchone()
+            if not row:
+                raise HTTPException(404, "Solicitud no encontrada")
+
+            request_owner = str(row[1])
+            user_id = str(current_user["id"])
+            user_permissions = current_user.get("permissions", [])
+
+            if user_id != request_owner and "logistics:stock:move" not in user_permissions:
+                raise HTTPException(403, "No tienes permiso para ver el historial de esta solicitud")
+
+            cur.execute("""
+                SELECT a.id, a.action, a.old_status, a.new_status,
+                       u.username AS actor_name, a.source, a.created_at
+                FROM material_request_audit a
+                LEFT JOIN users u ON u.id = a.actor_id
+                WHERE a.material_request_id = %s
+                ORDER BY a.created_at ASC
+            """, (str(request_id),))
+
+            return [
+                {
+                    "id": str(r[0]),
+                    "action": r[1],
+                    "old_status": r[2],
+                    "new_status": r[3],
+                    "actor_name": r[4],
+                    "source": r[5],
+                    "created_at": r[6],
+                }
+                for r in cur.fetchall()
+            ]
+
 
 ##########################################################################
 

@@ -18,6 +18,7 @@ from app.modules.requests.service import (
     list_operational_material_requests_service,
     release_reservation_service,
     list_my_dispatches_service,
+    get_request_history_service,
 )
 from app.core.security.dependencies import get_current_user
 
@@ -142,6 +143,14 @@ def reject_request(
     Rechazar solicitud de material.
     """
     return reject_material_request_service(request_id, current_user)
+
+
+@router.get("/material-requests/{request_id}/history")
+def get_request_history(
+    request_id: str,
+    current_user=Depends(get_current_user)
+):
+    return get_request_history_service(request_id, current_user)
 
 
 # @router.post(
