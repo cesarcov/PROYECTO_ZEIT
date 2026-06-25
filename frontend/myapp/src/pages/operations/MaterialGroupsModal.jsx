@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../../services/api";
 
 function fmtMoney(n) {
   return new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN", maximumFractionDigits: 2 }).format(n ?? 0);

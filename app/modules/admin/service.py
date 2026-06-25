@@ -1,5 +1,6 @@
 from app.core.database import db_connection
 from app.core.security.hashing import hash_password
+from psycopg2 import sql
 from uuid import UUID
 
 
@@ -340,12 +341,12 @@ def reset_all_data_service():
             for table in tables_in_order:
                 try:
                     cur.execute("SAVEPOINT sp_reset")
-                    cur.execute(f"DELETE FROM {table}")
+                    cur.execute(sql.SQL("DELETE FROM {}").format(sql.Identifier(table)))
                     deleted[table] = cur.rowcount
                     cur.execute("RELEASE SAVEPOINT sp_reset")
-                except Exception as e:
+                except Exception:
                     cur.execute("ROLLBACK TO SAVEPOINT sp_reset")
-                    deleted[table] = f"skip: tabla no existe"
+                    deleted[table] = "skip: tabla no existe"
         conn.commit()
 
     return {
@@ -373,6 +374,8 @@ def _friendly_action(action: str) -> str:
 
 
 def _audit_conditions(username=None, module=None, method=None, fecha_inicio=None, fecha_fin=None):
+    # Todas las condiciones son strings constantes; los valores van en params como %s.
+    # No hay interpolación de input de usuario en la estructura SQL.
     conditions = []
     params = []
     if username and username != "Todos":
@@ -396,8 +399,7 @@ def _audit_conditions(username=None, module=None, method=None, fecha_inicio=None
     if fecha_fin:
         conditions.append("created_at <= %s::timestamp")
         params.append(f"{fecha_fin} 23:59:59")
-    where = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-    return where, params
+    return conditions, params
 
 
 def list_audit_logs_service(
@@ -408,17 +410,26 @@ def list_audit_logs_service(
     fecha_inicio: str = None,
     fecha_fin: str = None,
 ):
-    where, params = _audit_conditions(username, module, method, fecha_inicio, fecha_fin)
+    conditions, params = _audit_conditions(username, module, method, fecha_inicio, fecha_fin)
     params.append(limit)
+
+    base = sql.SQL("""
+        SELECT username, action, endpoint, module, ip_address, created_at
+        FROM audit_logs
+        {where}
+        ORDER BY created_at DESC
+        LIMIT %s
+    """)
+    if conditions:
+        where_clause = sql.SQL("WHERE ") + sql.SQL(" AND ").join(
+            sql.SQL(c) for c in conditions
+        )
+    else:
+        where_clause = sql.SQL("")
+
     with db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"""
-                SELECT username, action, endpoint, module, ip_address, created_at
-                FROM audit_logs
-                {where}
-                ORDER BY created_at DESC
-                LIMIT %s
-            """, params)
+            cur.execute(base.format(where=where_clause), params)
             return [
                 {
                     "username": r[0],

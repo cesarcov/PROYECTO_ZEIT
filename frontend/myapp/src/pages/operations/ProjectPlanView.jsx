@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import MaterialGroupsModal from "./MaterialGroupsModal";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../../services/api";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function fmtMoney(n) {

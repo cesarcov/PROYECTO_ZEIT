@@ -2,7 +2,7 @@
 // arrancar (GET /branding) con fallback a los defaults ZEIT. Editable por el
 // admin desde el panel; ningún rebrand requiere tocar código.
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+import { BASE_URL as API_BASE } from "../services/api";
 
 const DEFAULT_BRAND = {
   appName: "ZEIT SOLUTIONS",

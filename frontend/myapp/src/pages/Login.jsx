@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ZeitLogo from "../components/ZeitLogo";
+import { BASE_URL } from "../services/api";
 
 function decodeJwt(token) {
   try { return JSON.parse(atob(token.split(".")[1])); }
@@ -25,7 +26,7 @@ export default function Login() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/login", {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username, password }),

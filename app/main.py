@@ -10,6 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from app.core.rate_limit import limiter
 from app.core.security_headers import SecurityHeadersMiddleware
+from app.core.tenant_middleware import TenantMiddleware
 from app.core.scheduler import start_scheduler, stop_scheduler
 from app.modules.admin.router import router as admin_router
 from app.core.security.router import router as auth_router
@@ -31,6 +32,7 @@ from app.modules.planificacion.router import router as planificacion_router
 from app.modules.gerencia.router import router as gerencia_router
 from app.modules.requerimientos.router import router as requerimientos_router
 from app.modules.branding.router import router as branding_router
+from app.modules.superadmin.router import router as superadmin_router
 from app.core.database import db_connection
 
 logger = logging.getLogger(__name__)
@@ -87,8 +89,9 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Orden de middlewares (último en add_middleware = primero en ejecutarse):
-# SecurityHeaders → SlowAPI → Audit → CORS (outermost, maneja preflight)
+# SecurityHeaders → Tenant → SlowAPI → Audit → CORS (outermost, maneja preflight)
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(TenantMiddleware)
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(AuditMiddleware)
 app.add_middleware(
@@ -96,7 +99,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization", "X-Tenant-ID"],
 )
 
 # ===============================
@@ -121,6 +124,7 @@ app.include_router(planificacion_router)
 app.include_router(gerencia_router)
 app.include_router(requerimientos_router)
 app.include_router(branding_router)
+app.include_router(superadmin_router)
 
 # Estáticos de marca (logos subidos). El directorio es de runtime (gitignored).
 _BRANDING_DIR = os.path.join("app", "storage", "branding")

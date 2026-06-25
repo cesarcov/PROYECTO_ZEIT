@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, formatUsername } from "../hooks/useAuth";
 import ZeitLogo from "./ZeitLogo";
+import { BASE_URL } from "../services/api";
 
 // ── Iconos SVG monocromáticos (Feather-style) ─────────────────────────────────
 function Icon({ name, size = 16 }) {
@@ -294,7 +295,7 @@ export default function Layout({ children }) {
     if (!mods.some(m => m === "logistics" || m === "admin")) return;
     const token = localStorage.getItem("access_token");
     if (!token) return;
-    fetch(`${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/logistics/materials/pending-count`, {
+    fetch(`${BASE_URL}/logistics/materials/pending-count`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
@@ -333,7 +334,7 @@ export default function Layout({ children }) {
   const handleLogout = () => {
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
-      fetch("http://127.0.0.1:8000/auth/logout", {
+      fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh_token: refreshToken }),

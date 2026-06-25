@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../../services/api";
 const token = () => localStorage.getItem("access_token");
 
 const STATUS_LABELS = { PENDING: "Pendiente", APPROVED: "Aprobada", IN_TRANSIT: "En tránsito", RECEIVED: "Recibida", CANCELLED: "Cancelada" };

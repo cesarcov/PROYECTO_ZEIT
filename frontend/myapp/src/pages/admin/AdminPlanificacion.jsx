@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import ExportExcelButton from "../../components/ExportExcelButton";
-import { apiFetch } from "../../services/api";
+import { apiFetch, BASE_URL } from "../../services/api";
 import { formatUsername } from "../../hooks/useAuth";
 
 const PRIORIDADES = ["Alta", "Media", "Baja"];
@@ -556,7 +556,7 @@ export default function AdminPlanificacion() {
     formData.append("file", file);
     const token = localStorage.getItem("access_token");
     try {
-      const res = await fetch("http://localhost:8000/planificacion/import-excel", {
+      const res = await fetch(`${BASE_URL}/planificacion/import-excel`, {
         method: "POST", headers: { Authorization: `Bearer ${token}` }, body: formData,
       });
       const data = await res.json();

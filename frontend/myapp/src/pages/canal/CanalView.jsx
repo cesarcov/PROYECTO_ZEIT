@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useAuth, formatUsername } from "../../hooks/useAuth";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../../services/api";
 
 // ── Constantes de dominio ─────────────────────────────────────────────────────
 

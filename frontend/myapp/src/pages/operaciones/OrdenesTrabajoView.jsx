@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../components/Layout";
-import { apiFetch } from "../../services/api";
+import { apiFetch, BASE_URL as API } from "../../services/api";
 import ExportExcelButton from "../../components/ExportExcelButton";
-
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const TOKEN = () => localStorage.getItem("access_token");
 
 // ── Design tokens ─────────────────────────────────────────────────────────────

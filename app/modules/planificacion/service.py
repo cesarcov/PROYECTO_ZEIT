@@ -1,6 +1,7 @@
 import json
 from datetime import date, datetime
 from typing import Optional
+from psycopg2 import sql
 from app.core.database import db_connection
 
 
@@ -217,10 +218,12 @@ def update_actividad_service(actividad_id: str, data, user):
                 fields["responsable_id"] = get_first_id(fields["responsables_ids"])
             if "seguimientos_ids" in fields:
                 fields["seguimiento_id"] = get_first_id(fields["seguimientos_ids"])
-            sets = ", ".join(f"{k} = %s" for k in fields) + ", updated_at = NOW()"
+            dyn = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in fields
+            )
             cur.execute(
-                f"UPDATE planificacion_semanal SET {sets} WHERE id = %s",
-                list(fields.values()) + [actividad_id]
+                sql.SQL("UPDATE planificacion_semanal SET {}, updated_at = NOW() WHERE id = %s").format(dyn),
+                list(fields.values()) + [actividad_id],
             )
         conn.commit()
     return get_actividad_service(actividad_id)

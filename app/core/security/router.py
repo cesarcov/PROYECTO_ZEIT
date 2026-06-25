@@ -44,17 +44,25 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
             detail="Credenciales inválidas"
         )
 
-    # 🔐 Crear refresh token
-    refresh_token = create_refresh_token()
-    store_refresh_token(str(user["id"]), refresh_token)
-
     # 🔐 Crear access token
     access_token = create_access_token(
         user_id=str(user["id"]),
         permissions=user["permissions"],
         primary_module=user["primary_module"],
         modules=user.get("modules", [user["primary_module"]]),
+        role=user.get("role"),
     )
+
+    # El superadmin no tiene refresh token (no existe en ninguna DB de tenant)
+    if user.get("role") == "superadmin":
+        return {
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+
+    # 🔐 Crear refresh token para usuarios normales
+    refresh_token = create_refresh_token()
+    store_refresh_token(str(user["id"]), refresh_token)
 
     return {
         "access_token": access_token,

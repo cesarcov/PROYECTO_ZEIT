@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { apiFetch } from "../../services/api";
+import { apiFetch, BASE_URL as BASE } from "../../services/api";
 import { loadBrandFromServer } from "../../branding/brand";
-
-const BASE = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
 
 const LOGO_VARIANTS = [
   { key: "claro",   label: "Logo (fondo claro)" },

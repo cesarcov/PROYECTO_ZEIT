@@ -1,4 +1,5 @@
 from datetime import datetime
+from psycopg2 import sql
 
 
 def generate_sequential_code(
@@ -15,11 +16,13 @@ def generate_sequential_code(
     with conn.cursor() as cur:
         if year_based:
             cur.execute(
-                f"SELECT COUNT(*) FROM {table} WHERE EXTRACT(YEAR FROM created_at) = %s",
+                sql.SQL("SELECT COUNT(*) FROM {} WHERE EXTRACT(YEAR FROM created_at) = %s").format(
+                    sql.Identifier(table)
+                ),
                 (year,),
             )
         else:
-            cur.execute(f"SELECT COUNT(*) FROM {table}")
+            cur.execute(sql.SQL("SELECT COUNT(*) FROM {}").format(sql.Identifier(table)))
         seq = cur.fetchone()[0] + 1
 
     num = str(seq).zfill(pad)

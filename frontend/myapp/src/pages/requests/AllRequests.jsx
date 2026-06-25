@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Layout from "../../components/Layout";
 import Modal from "../../components/Modal";
-import { apiFetch } from "../../services/api";
+import { apiFetch, BASE_URL as API } from "../../services/api";
 
 const STATUS = {
   PENDING:  { label: "Pendiente",  bg: "#FEF9C3", color: "#854D0E", dot: "#EAB308" },
@@ -252,7 +252,6 @@ function SubmissionCard({ sub, onReviewItem, onRefresh }) {
     if (!expanded && !detail) {
       setLoadingDetail(true);
       try {
-        const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
         const res = await fetch(`${API}/logistics/project-submissions/${sub.id}`, { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
         setDetail(data);
@@ -263,7 +262,6 @@ function SubmissionCard({ sub, onReviewItem, onRefresh }) {
   };
 
   const handleReviewItem = async (itemId, status, approvedQty, notes) => {
-    const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
     await fetch(`${API}/logistics/project-submissions/${sub.id}/items/${itemId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

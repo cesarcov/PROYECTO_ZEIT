@@ -18,7 +18,9 @@ def _parse_db_url(url: str) -> dict:
 
 @contextmanager
 def db_connection():
-    _db = _parse_db_url(settings.DATABASE_URL)
+    from app.core.tenant_context import get_tenant_db
+    tenant_url = get_tenant_db()
+    _db = _parse_db_url(tenant_url if tenant_url else settings.DATABASE_URL)
     try:
         conn = psycopg2.connect(**_db)
     except UnicodeDecodeError:

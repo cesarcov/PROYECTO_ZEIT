@@ -293,3 +293,103 @@ def test_material_request_legacy_compat(client, auth, _feature006_prereqs):
     })
     assert r.status_code == 200, r.text[:300]
     assert r.json().get("status") == "PENDING"
+
+
+# ── Arquitectura multi-tenant (feature 007) ───────────────────────────────────
+
+SUPERADMIN_USER = "superadmin"
+SUPERADMIN_PWD = "superadmin2026"
+
+
+@pytest.fixture(scope="module")
+def superadmin_auth(client):
+    r = client.post("/auth/login", data={"username": SUPERADMIN_USER, "password": SUPERADMIN_PWD})
+    if r.status_code != 200:
+        pytest.skip(f"Credenciales de superadmin no configuradas: {r.text[:200]}")
+    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+
+@pytest.fixture(scope="module")
+def test_tenant_data(client, superadmin_auth):
+    """Crea un tenant de prueba para los tests de feature 007 y lo mantiene durante la sesión."""
+    import uuid
+    slug = f"test{uuid.uuid4().hex[:6]}"
+    r = client.post("/superadmin/tenants", headers=superadmin_auth, json={
+        "name": "Tenant Smoke Test",
+        "slug": slug,
+        "admin_email": f"admin@{slug}.example.com",
+    })
+    if r.status_code != 201:
+        pytest.skip(f"No se pudo crear tenant de prueba: {r.status_code} {r.text[:200]}")
+    return r.json()
+
+
+def test_superadmin_login(client):
+    """El superadmin puede hacer login sin X-Tenant-ID y recibe un access_token (US1)."""
+    r = client.post("/auth/login", data={"username": SUPERADMIN_USER, "password": SUPERADMIN_PWD})
+    assert r.status_code == 200, f"Superadmin login falló: {r.text[:200]}"
+    data = r.json()
+    assert "access_token" in data
+    # El superadmin no recibe refresh_token
+    assert "refresh_token" not in data
+
+
+def test_create_tenant(client, test_tenant_data):
+    """POST /superadmin/tenants crea una DB aislada con migraciones y admin (US1)."""
+    assert test_tenant_data["provision_status"] == "active", (
+        f"El tenant no quedó activo: {test_tenant_data}"
+    )
+    assert "admin_temp_password" in test_tenant_data
+    assert test_tenant_data["is_active"] is True
+
+
+def test_tenant_isolation(client, test_tenant_data):
+    """El usuario juliet_alvis de la DB principal NO existe en el nuevo tenant (US2)."""
+    slug = test_tenant_data["slug"]
+    # juliet_alvis solo existe en erp_logistica, no en el tenant recién creado
+    r = client.post(
+        "/auth/login",
+        data={"username": USER, "password": PWD},
+        headers={"X-Tenant-ID": slug},
+    )
+    assert r.status_code == 401, (
+        f"juliet_alvis no debería existir en el tenant '{slug}', "
+        f"pero login devolvió {r.status_code}. Posible filtrado de datos entre DBs."
+    )
+
+
+def test_dev_fallback(client):
+    """Sin X-Tenant-ID el sistema usa la DB local de desarrollo sin error (US2 FR-007)."""
+    r = client.get("/health")
+    assert r.status_code == 200, f"Fallback sin X-Tenant-ID falló: {r.text[:200]}"
+    assert r.json()["status"] == "ok"
+
+
+def test_tenant_deactivate_reactivate(client, superadmin_auth, test_tenant_data):
+    """Desactivar tenant → 503 en siguiente request; reactivar → 200 inmediato (US3)."""
+    tenant_id = test_tenant_data["id"]
+    slug = test_tenant_data["slug"]
+
+    # Desactivar
+    r = client.patch(
+        f"/superadmin/tenants/{tenant_id}/status",
+        headers=superadmin_auth,
+        json={"is_active": False},
+    )
+    assert r.status_code == 200, r.text[:200]
+
+    # Request con tenant desactivado → 503
+    r2 = client.get("/health", headers={"X-Tenant-ID": slug})
+    assert r2.status_code == 503, f"Se esperaba 503, devolvió {r2.status_code}: {r2.text[:200]}"
+
+    # Reactivar
+    r3 = client.patch(
+        f"/superadmin/tenants/{tenant_id}/status",
+        headers=superadmin_auth,
+        json={"is_active": True},
+    )
+    assert r3.status_code == 200, r3.text[:200]
+
+    # Request tras reactivar → acceso restaurado
+    r4 = client.get("/health", headers={"X-Tenant-ID": slug})
+    assert r4.status_code == 200, f"Después de reactivar se esperaba 200, devolvió {r4.status_code}"

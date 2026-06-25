@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../services/api";
 
 /**
  * Botón reutilizable para descargar un endpoint como archivo Excel (.xlsx).

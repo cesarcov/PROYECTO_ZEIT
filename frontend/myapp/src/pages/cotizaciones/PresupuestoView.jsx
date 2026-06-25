@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
-import { apiFetch } from "../../services/api";
+import { apiFetch, BASE_URL as API } from "../../services/api";
 
 const PRIMARY = "#0B2E33";
 const ACCENT  = "#4F7C82";
 const LIGHT   = "#EEF7F8";
-const API     = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const TOKEN   = () => localStorage.getItem("access_token");
 
 // Helpers dinámicos — usan las categorías cargadas del backend

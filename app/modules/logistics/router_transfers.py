@@ -158,17 +158,15 @@ def update_transfer_status(
             if not row:
                 raise HTTPException(404, "Transferencia no encontrada")
 
-            extra_col = ""
             if body.status == "APPROVED":
-                extra_col = ", approved_by = %s::uuid, approved_at = NOW()"
                 cur.execute(
-                    f"UPDATE warehouse_transfers SET status = %s {extra_col} WHERE id = %s::uuid",
-                    (body.status, user["id"], transfer_id)
+                    "UPDATE warehouse_transfers SET status = %s, approved_by = %s::uuid, approved_at = NOW() WHERE id = %s::uuid",
+                    (body.status, user["id"], transfer_id),
                 )
             else:
                 cur.execute(
                     "UPDATE warehouse_transfers SET status = %s WHERE id = %s::uuid",
-                    (body.status, transfer_id)
+                    (body.status, transfer_id),
                 )
         conn.commit()
     return {"ok": True}

@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
-import { apiFetch } from "../../services/api";
-
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { apiFetch, BASE_URL as API } from "../../services/api";
 const TOKEN = () => localStorage.getItem("access_token");
 
 // ── Design tokens ─────────────────────────────────────────────────────────────

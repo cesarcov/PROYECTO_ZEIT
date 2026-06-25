@@ -129,3 +129,17 @@ def excel_response(wb, filename: str) -> StreamingResponse:
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+def save_and_upload_to_sharepoint(wb, filename: str) -> str:
+    """
+    Serializa el Workbook y lo sube automáticamente a SharePoint Online,
+    devolviendo la URL de acceso web para visualizarlo.
+    """
+    from app.core.sharepoint import upload_file_to_sharepoint
+    buf = io.BytesIO()
+    wb.save(buf)
+    file_bytes = buf.getvalue()
+    
+    # Sube el archivo y retorna la URL
+    return upload_file_to_sharepoint(file_bytes, filename)

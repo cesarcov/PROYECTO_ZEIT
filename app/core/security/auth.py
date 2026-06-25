@@ -48,6 +48,19 @@ def authenticate_user(username: str, password: str):
     4. Determina primary_module para routing del frontend
     5. Devuelve user + permissions + primary_module
     """
+    # Rama superadmin: credenciales en env, no en DB de ningún tenant
+    if settings.SUPERADMIN_USERNAME and username == settings.SUPERADMIN_USERNAME:
+        if verify_password(password, settings.SUPERADMIN_PASSWORD_HASH):
+            return {
+                "id": "superadmin",
+                "username": "superadmin",
+                "role": "superadmin",
+                "tenant": "__master__",
+                "permissions": ["superadmin:*"],
+                "primary_module": "superadmin",
+                "modules": ["superadmin"],
+            }
+        return None
 
     with db_connection() as conn:
         with conn.cursor() as cur:
@@ -103,7 +116,8 @@ def create_access_token(
     permissions: list[str],
     primary_module: str = "operations",
     modules: list[str] | None = None,
-    expires_delta: timedelta | None = None
+    expires_delta: timedelta | None = None,
+    role: str | None = None,
 ):
     expire = datetime.utcnow() + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -117,6 +131,8 @@ def create_access_token(
         "iat": datetime.utcnow(),
         "exp": expire,
     }
+    if role:
+        payload["role"] = role
 
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 

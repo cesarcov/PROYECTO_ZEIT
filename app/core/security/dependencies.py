@@ -27,12 +27,26 @@ def get_current_user(
         user_id: str = payload.get("sub")
         permissions: list[str] = payload.get("permissions", [])
         primary_module: str = payload.get("primary_module", "administracion")
+        role: str | None = payload.get("role")
 
         if not user_id:
             raise credentials_exception
 
     except JWTError:
         raise credentials_exception
+
+    # Superadmin: token especial, no existe en ninguna DB de tenant
+    if role == "superadmin":
+        user = {
+            "id": "superadmin",
+            "username": "superadmin",
+            "email": None,
+            "permissions": permissions,
+            "primary_module": primary_module,
+            "role": "superadmin",
+        }
+        request.state.user = user
+        return user
 
     with db_connection() as conn:
         with conn.cursor() as cur:

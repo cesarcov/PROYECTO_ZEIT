@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
-import { apiFetch } from "../../services/api";
-
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { apiFetch, BASE_URL as API } from "../../services/api";
 
 const STATUS_CFG = {
   PENDING:    { label: "Pendiente",    bg: "#FEF9C3", color: "#854D0E", dot: "#EAB308" },

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { BASE_URL as API_BASE } from "../services/api";
 
 // Catálogo de temas (id → etiqueta). "system" sigue el tema del sistema operativo.
 export const TEMAS = [
@@ -12,7 +13,6 @@ export const TEMAS = [
 
 const TEMAS_VALIDOS = TEMAS.map((t) => t.id);
 const STORAGE_KEY = "zeit_tema";
-const API_BASE = "http://127.0.0.1:8000";
 
 // Resuelve el tema efectivo (si es "system", mira la preferencia del SO).
 function resolverEfectivo(tema) {

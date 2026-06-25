@@ -1,7 +1,8 @@
-from fastapi import HTTPException
-from app.core.database import db_connection
 from datetime import datetime
 from uuid import uuid4
+from fastapi import HTTPException
+from psycopg2 import sql
+from app.core.database import db_connection
 
 
 # ============================================================
@@ -287,11 +288,13 @@ def update_plan_item_service(plan_id: str, item_id: str, payload, user):
             if not updates:
                 return {"status": "no_changes"}
 
-            set_clause = ", ".join(f"{k} = %s" for k in updates)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in updates
+            )
             values = list(updates.values()) + [item_id]
             cur.execute(
-                f"UPDATE project_plan_items SET {set_clause}, updated_at = NOW() WHERE id = %s",
-                values
+                sql.SQL("UPDATE project_plan_items SET {}, updated_at = NOW() WHERE id = %s").format(set_clause),
+                values,
             )
             cur.execute("UPDATE project_plans SET updated_at = NOW() WHERE id = %s", (plan_id,))
             conn.commit()
@@ -676,11 +679,13 @@ def update_plan_service(plan_id: str, payload, user):
             if not updates:
                 return {"status": "no_changes"}
 
-            set_clause = ", ".join(f"{k} = %s" for k in updates)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in updates
+            )
             values = list(updates.values()) + [plan_id]
             cur.execute(
-                f"UPDATE project_plans SET {set_clause}, updated_at = NOW() WHERE id = %s",
-                values
+                sql.SQL("UPDATE project_plans SET {}, updated_at = NOW() WHERE id = %s").format(set_clause),
+                values,
             )
             conn.commit()
 
@@ -872,11 +877,13 @@ def update_material_group_service(group_id: str, payload):
             updates = {k: v for k, v in payload.model_dump(exclude_unset=True).items() if v is not None}
             if not updates:
                 return {"status": "no_changes"}
-            set_clause = ", ".join(f"{k} = %s" for k in updates)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in updates
+            )
             values = list(updates.values()) + [group_id]
             cur.execute(
-                f"UPDATE material_groups SET {set_clause}, updated_at = NOW() WHERE id = %s",
-                values
+                sql.SQL("UPDATE material_groups SET {}, updated_at = NOW() WHERE id = %s").format(set_clause),
+                values,
             )
             conn.commit()
     return {"status": "updated"}

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from typing import Optional
 from uuid import UUID
 from app.core.database import db_connection
+from app.core.rate_limit import limiter
 from app.core.security.permissions import require_permission
 from app.modules.admin.schemas import (
     UserCreate,
@@ -261,9 +262,10 @@ def remove_user_from_role(
 # ============================
 @router.post(
     "/reset-all",
-    dependencies=[Depends(require_permission("admin:users"))]
+    dependencies=[Depends(require_permission("admin:users"))],
 )
-def reset_all_data():
+@limiter.limit("3/minute")
+def reset_all_data(request: Request):
     return reset_all_data_service()
 
 
@@ -272,29 +274,40 @@ def reset_all_data():
 # ============================
 @router.get("/audit-logs/export")
 def export_audit_logs(
-    username: Optional[str] = Query(None),
-    module: Optional[str] = Query(None),
-    method: Optional[str] = Query(None),
+    username: Optional[str] = Query(None, max_length=100),
+    module: Optional[str] = Query(None, max_length=100),
+    method: Optional[str] = Query(None, max_length=20),
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None),
     _=Depends(require_permission("admin:audit")),
 ):
+    if fecha_inicio and not _DATE_RE.match(fecha_inicio):
+        raise HTTPException(400, "fecha_inicio debe tener formato YYYY-MM-DD")
+    if fecha_fin and not _DATE_RE.match(fecha_fin):
+        raise HTTPException(400, "fecha_fin debe tener formato YYYY-MM-DD")
     return export_audit_logs_excel_service(
         username=username, module=module, method=method,
         fecha_inicio=fecha_inicio, fecha_fin=fecha_fin,
     )
 
 
+_DATE_RE = __import__("re").compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
 @router.get("/audit-logs")
 def list_audit_logs(
     limit: int = Query(500, ge=1, le=10000),
-    username: Optional[str] = Query(None),
-    module: Optional[str] = Query(None),
-    method: Optional[str] = Query(None),
+    username: Optional[str] = Query(None, max_length=100),
+    module: Optional[str] = Query(None, max_length=100),
+    method: Optional[str] = Query(None, max_length=20),
     fecha_inicio: Optional[str] = Query(None),
     fecha_fin: Optional[str] = Query(None),
     _=Depends(require_permission("admin:audit")),
 ):
+    if fecha_inicio and not _DATE_RE.match(fecha_inicio):
+        raise HTTPException(400, "fecha_inicio debe tener formato YYYY-MM-DD")
+    if fecha_fin and not _DATE_RE.match(fecha_fin):
+        raise HTTPException(400, "fecha_fin debe tener formato YYYY-MM-DD")
     return list_audit_logs_service(
         limit=limit,
         username=username,

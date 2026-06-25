@@ -1,6 +1,7 @@
 from datetime import datetime
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
+from psycopg2 import sql
 from app.core.database import db_connection
 from app.core.utils import generate_sequential_code
 import io
@@ -75,10 +76,14 @@ def update_categoria_costo_service(categoria_id: str, payload) -> dict:
             fields = {k: v for k, v in payload.model_dump().items() if v is not None}
             if not fields:
                 raise HTTPException(400, "No hay campos para actualizar")
-            set_clause = ", ".join(f"{k} = %s" for k in fields)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in fields
+            )
             cur.execute(
-                f"UPDATE categorias_costo SET {set_clause} WHERE id = %s "
-                "RETURNING id, codigo, nombre, es_directo, orden, color_hex, activo, created_at",
+                sql.SQL(
+                    "UPDATE categorias_costo SET {} WHERE id = %s "
+                    "RETURNING id, codigo, nombre, es_directo, orden, color_hex, activo, created_at"
+                ).format(set_clause),
                 (*fields.values(), categoria_id)
             )
             r = cur.fetchone()

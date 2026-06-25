@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Layout from "../../components/Layout";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { BASE_URL as API } from "../../services/api";
 
 const STATUS_CFG = {
   PENDING:    { label: "Pendiente",    bg: "#FEF9C3", color: "#854D0E", dot: "#EAB308" },

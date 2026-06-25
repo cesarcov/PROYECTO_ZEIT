@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth, formatUsername } from "../hooks/useAuth";
 import Layout from "../components/Layout";
+import { BASE_URL } from "../services/api";
 
 const ROLE_LABELS = {
   admin:      "Administrador",
@@ -37,7 +38,7 @@ export default function Profile() {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    fetch("http://127.0.0.1:8000/auth/me", {
+    fetch(`${BASE_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())

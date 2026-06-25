@@ -63,7 +63,7 @@ CREATE INDEX IF NOT EXISTS idx_stock_lots_status ON stock_lots(status);
 
 -- Ahora agregar FK de stock_movements.lot_id
 ALTER TABLE stock_movements
-    ADD CONSTRAINT IF NOT EXISTS fk_stock_movements_lot
+    ADD CONSTRAINT fk_stock_movements_lot
     FOREIGN KEY (lot_id) REFERENCES stock_lots(id);
 
 

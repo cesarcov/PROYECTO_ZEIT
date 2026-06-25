@@ -7,6 +7,8 @@ import os
 import re
 from io import BytesIO
 
+from psycopg2 import sql
+
 from app.core.database import db_connection
 
 STORAGE_DIR = os.path.join("app", "storage", "branding")
@@ -37,7 +39,11 @@ POWERED_BY = "Powered by CeShark · ERP Engine"
 def _raw():
     with db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"SELECT {', '.join(_COLS)} FROM branding WHERE id = 1")
+            cur.execute(
+                sql.SQL("SELECT {} FROM branding WHERE id = 1").format(
+                    sql.SQL(", ").join(sql.Identifier(c) for c in _COLS)
+                )
+            )
             row = cur.fetchone()
     return dict(zip(_COLS, row)) if row else {}
 
@@ -80,11 +86,13 @@ def update_branding(data: dict) -> dict:
                 "color_primario", "color_acento", "color_accion")
     fields = {k: v for k, v in data.items() if k in editable}
     if fields:
-        sets = ", ".join(f"{k} = %s" for k in fields)
+        sets = sql.SQL(", ").join(
+            sql.SQL("{} = %s").format(sql.Identifier(k)) for k in fields
+        )
         with db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    f"UPDATE branding SET {sets}, updated_at = NOW() WHERE id = 1",
+                    sql.SQL("UPDATE branding SET {}, updated_at = NOW() WHERE id = 1").format(sets),
                     list(fields.values()),
                 )
             conn.commit()

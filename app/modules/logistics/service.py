@@ -1,9 +1,10 @@
 import app.core.security
-from uuid import UUID
-from typing import Optional, Dict
-from fastapi import HTTPException
-from decimal import Decimal
 import json
+from decimal import Decimal
+from typing import Optional, Dict
+from uuid import UUID
+from fastapi import HTTPException
+from psycopg2 import sql
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
@@ -803,9 +804,14 @@ def update_material_service(material_id: str, payload):
 
             field_map = {k: v for k, v in data.items() if k != "aliases" and v is not None}
             if field_map:
-                set_clause = ", ".join(f"{k} = %s" for k in field_map)
+                set_clause = sql.SQL(", ").join(
+                    sql.SQL("{} = %s").format(sql.Identifier(k)) for k in field_map
+                )
                 values = list(field_map.values()) + [material_id]
-                cur.execute(f"UPDATE materials SET {set_clause} WHERE id = %s;", values)
+                cur.execute(
+                    sql.SQL("UPDATE materials SET {} WHERE id = %s;").format(set_clause),
+                    values,
+                )
 
             if "aliases" in data and data["aliases"] is not None:
                 cur.execute("DELETE FROM material_aliases WHERE material_id = %s;", (material_id,))
@@ -1579,9 +1585,14 @@ def update_warehouse_service(warehouse_id: str, payload):
                 cur.execute("SELECT id FROM warehouses WHERE code = %s AND id != %s;", (data["code"], warehouse_id))
                 if cur.fetchone():
                     raise HTTPException(400, "Ya existe un almacén con ese código")
-            fields = ", ".join(f"{k} = %s" for k in data)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in data
+            )
             values = list(data.values()) + [warehouse_id]
-            cur.execute(f"UPDATE warehouses SET {fields} WHERE id = %s RETURNING id, code, name, location;", values)
+            cur.execute(
+                sql.SQL("UPDATE warehouses SET {} WHERE id = %s RETURNING id, code, name, location;").format(set_clause),
+                values,
+            )
             row = cur.fetchone()
             conn.commit()
     return {"id": str(row[0]), "code": row[1], "name": row[2], "location": row[3]}
@@ -1615,9 +1626,14 @@ def update_project_service(project_id: str, payload):
                 cur.execute("SELECT id FROM projects WHERE code = %s AND id != %s;", (data["code"], project_id))
                 if cur.fetchone():
                     raise HTTPException(400, "Ya existe un proyecto con ese código")
-            fields = ", ".join(f"{k} = %s" for k in data)
+            set_clause = sql.SQL(", ").join(
+                sql.SQL("{} = %s").format(sql.Identifier(k)) for k in data
+            )
             values = list(data.values()) + [project_id]
-            cur.execute(f"UPDATE projects SET {fields} WHERE id = %s RETURNING id, code, name;", values)
+            cur.execute(
+                sql.SQL("UPDATE projects SET {} WHERE id = %s RETURNING id, code, name;").format(set_clause),
+                values,
+            )
             row = cur.fetchone()
             conn.commit()
     return {"id": str(row[0]), "code": row[1], "name": row[2]}

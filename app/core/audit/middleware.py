@@ -1,8 +1,13 @@
+import logging
+import time
+
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
+
 from app.core.audit.context import audit_context
 from app.core.audit.service import save_audit_log
-import time
+
+logger = logging.getLogger(__name__)
 
 class AuditMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -41,5 +46,5 @@ class AuditMiddleware(BaseHTTPMiddleware):
 
             try:
                 save_audit_log(base_ctx)
-            except Exception:
-                pass  # audit log failure never kills the HTTP response
+            except Exception as exc:
+                logger.error("Fallo guardando audit log: %s", exc)
