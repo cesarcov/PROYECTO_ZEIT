@@ -78,12 +78,16 @@ def shutdown_event():
 # ===============================
 # CORS (FRONTEND)
 # ===============================
+# Los locales quedan para desarrollo; en producción se añade(n) el/los dominio(s)
+# del frontend (Vercel) vía la env var CORS_ORIGINS (lista separada por comas),
+# sin tocar código. Ej: CORS_ORIGINS=https://mi-erp.vercel.app
 origins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
 ]
+origins += [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
