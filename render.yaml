@@ -1,0 +1,37 @@
+# Render Blueprint — backend FastAPI del ERP.
+# Despliegue: en Render → New + → Blueprint → selecciona el repo cesarcov/PROYECTO_ZEIT.
+# Render leerá este archivo y pedirá los valores marcados con "sync: false" (los
+# secretos) durante la creación. Los logos/estáticos los sirve el mismo backend.
+services:
+  - type: web
+    name: erp-backend
+    runtime: python
+    plan: free
+    # Elige la región más cercana a tu base de datos de Supabase para baja latencia.
+    # Opciones: oregon | ohio | virginia | frankfurt | singapore.
+    region: virginia
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      # --- No secretos (ya con valor) ---
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "480"
+      # --- Secretos: Render los pedirá al crear el Blueprint ---
+      - key: SECRET_KEY              # Usa el valor fuerte generado (NO el de dev)
+        sync: false
+      - key: DATABASE_URL           # Cadena del Connection Pooler de Supabase
+        sync: false
+      - key: MASTER_DATABASE_URL    # Igual que DATABASE_URL por ahora
+        sync: false
+      - key: SUPERADMIN_USERNAME
+        sync: false
+      - key: SUPERADMIN_PASSWORD_HASH
+        sync: false
+      - key: CORS_ORIGINS           # URL del frontend en Vercel (se llena en el Paso 3)
+        sync: false
