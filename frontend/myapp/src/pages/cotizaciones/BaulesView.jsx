@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { apiFetch } from "../../services/api";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 
 const TIPOS       = ["MATERIAL", "MANO_OBRA", "EQUIPO"];
 const TIPO_LABELS = { MATERIAL: "Material", MANO_OBRA: "Mano de Obra", EQUIPO: "Equipo" };

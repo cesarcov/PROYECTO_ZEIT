@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { apiFetch, BASE_URL as API } from "../../services/api";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 const TOKEN   = () => localStorage.getItem("access_token");
 
 // Helpers dinámicos — usan las categorías cargadas del backend
@@ -751,12 +751,12 @@ export default function PresupuestoView() {
                 if (p.es_capitulo) {
                   return (
                     <div key={p.id}>
-                      <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 60px 80px 90px 90px 80px", padding: "10px 14px", background: "#1a4a52", alignItems: "center" }}>
-                        <div style={{ color: "#B8E3E9", fontWeight: 700, fontSize: 12 }}>{p.codigo}</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 60px 80px 90px 90px 80px", padding: "10px 14px", background: "var(--primary)", alignItems: "center" }}>
+                        <div style={{ color: "#C7D2E5", fontWeight: 700, fontSize: 12 }}>{p.codigo}</div>
                         <div style={{ color: "white", fontWeight: 700, fontSize: 13 }}>{p.descripcion.toUpperCase()}</div>
                         <div /><div /><div /><div />
                         <div style={{ display: "flex", gap: 6 }}>
-                          <ActionBtn onClick={() => openEditPartida(p)} label="✏" color="#B8E3E9" />
+                          <ActionBtn onClick={() => openEditPartida(p)} label="✏" color="#C7D2E5" />
                           <ActionBtn onClick={() => deletePartida(p.id)} label="✕" color="#F87171" />
                         </div>
                       </div>
@@ -849,7 +849,7 @@ export default function PresupuestoView() {
           <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden", position: "sticky", top: 80 }}>
             <div style={{ background: PRIMARY, padding: "14px 16px" }}>
               <div style={{ color: "white", fontWeight: 800, fontSize: 14 }}>Resumen Económico</div>
-              <div style={{ color: "#B8E3E9", fontSize: 11, marginTop: 2 }}>{monedaSym} — {config?.moneda ?? "PEN"}</div>
+              <div style={{ color: "#C7D2E5", fontSize: 11, marginTop: 2 }}>{monedaSym} — {config?.moneda ?? "PEN"}</div>
             </div>
             <div style={{ padding: 16 }}>
               {resumen && (
@@ -861,7 +861,7 @@ export default function PresupuestoView() {
                   <ResumenRow label="Valor Venta" value={resumen.valor_venta} sym={monedaSym} bold />
                   <ResumenRow label={`IGV (${resumen.igv_pct}%)`} value={resumen.igv} sym={monedaSym} muted />
                   <div style={{ background: PRIMARY, borderRadius: 10, padding: "12px 14px", marginTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#B8E3E9", fontWeight: 700, fontSize: 13 }}>PRECIO TOTAL</span>
+                    <span style={{ color: "#C7D2E5", fontWeight: 700, fontSize: 13 }}>PRECIO TOTAL</span>
                     <span style={{ color: "white", fontWeight: 900, fontSize: 16 }}>{monedaSym} {resumen.precio_total.toLocaleString("es-PE", { minimumFractionDigits: 2 })}</span>
                   </div>
                 </>
@@ -998,7 +998,7 @@ export default function PresupuestoView() {
             {/* Header */}
             <div style={{ background: PRIMARY, borderRadius: "16px 16px 0 0", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Editor APU</div>
+                <div style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Editor APU</div>
                 <div style={{ color: "white", fontWeight: 800, fontSize: 16, marginTop: 2 }}>
                   {editorPartida.codigo} — {editorPartida.descripcion}
                 </div>
@@ -1110,7 +1110,7 @@ export default function PresupuestoView() {
                 <div style={{ border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                     <thead>
-                      <tr style={{ background: "#EEF7F8" }}>
+                      <tr style={{ background: "var(--primary-soft)" }}>
                         <th style={{ padding: "8px 10px", textAlign: "left", color: "#374151", fontWeight: 600, width: 100 }}>Tipo</th>
                         <th style={{ padding: "8px 10px", textAlign: "left", color: "#374151", fontWeight: 600 }}>Recurso / Descripción</th>
                         <th style={{ padding: "8px 10px", textAlign: "left", color: "#374151", fontWeight: 600, width: 70 }}>Und</th>
@@ -1419,7 +1419,7 @@ function Modal({ title, onClose, children, wide = false }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
       <div style={{ background: "white", borderRadius: 16, padding: 28, width: "100%", maxWidth: wide ? 600 : 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0B2E33", margin: 0 }}>{title}</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 800, color: "var(--primary)", margin: 0 }}>{title}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#9CA3AF" }}>✕</button>
         </div>
         {children}
@@ -1432,7 +1432,7 @@ function ModalFooter({ onCancel, onSave, saving, saveLabel = "Guardar" }) {
   return (
     <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
       <button onClick={onCancel} style={{ background: "#F3F4F6", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 600, fontSize: 13, cursor: "pointer", color: "#374151" }}>Cancelar</button>
-      <button onClick={onSave} disabled={saving} style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
+      <button onClick={onSave} disabled={saving} style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer", opacity: saving ? 0.7 : 1 }}>
         {saving ? "Guardando..." : saveLabel}
       </button>
     </div>
@@ -1462,7 +1462,7 @@ function ResumenRow({ label, value, sym, muted = false, bold = false }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #F3F4F6" }}>
       <span style={{ fontSize: 12, color: muted ? "#9CA3AF" : "#374151", fontWeight: bold ? 700 : 400 }}>{label}</span>
-      <span style={{ fontSize: 12, fontWeight: bold ? 800 : 600, color: bold ? "#0B2E33" : (muted ? "#9CA3AF" : "#1F2937") }}>
+      <span style={{ fontSize: 12, fontWeight: bold ? 800 : 600, color: bold ? "var(--primary)" : (muted ? "#9CA3AF" : "#1F2937") }}>
         {sym} {parseFloat(value || 0).toLocaleString("es-PE", { minimumFractionDigits: 2 })}
       </span>
     </div>
