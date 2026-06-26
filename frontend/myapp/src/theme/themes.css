@@ -23,6 +23,11 @@
   --warning: #CA8A04;
   --danger: #DC2626;
   --info: #00D4D8;
+
+  /* Derivados de --primary: siguen automáticamente al color que defina el admin.
+     --primary-soft = tinte claro (fondos de badge); --primary-dark = sombra/degradado. */
+  --primary-soft: color-mix(in srgb, var(--primary) 12%, transparent);
+  --primary-dark: color-mix(in srgb, var(--primary) 60%, #000);
 }
 
 [data-theme="zeit-oscuro"] {
