@@ -103,7 +103,7 @@ function ResetModal({ onClose, onDone }) {
             </div>
             <button
               onClick={() => { onDone(); window.location.reload(); }}
-              style={{ width: "100%", padding: "10px 0", borderRadius: 8, border: "none", background: "#4F7C82", color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+              style={{ width: "100%", padding: "10px 0", borderRadius: 8, border: "none", background: "var(--primary)", color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
               Aceptar y recargar
             </button>
           </>
@@ -117,7 +117,7 @@ import {
   PieChart, Pie, Cell,
 } from "recharts";
 
-const PIE_COLORS = ["#eab308", "#22c55e", "#ef4444", "#4F7C82", "#93B1B5"];
+const PIE_COLORS = ["#eab308", "#22c55e", "#ef4444", "#003A8C", "#00D4D8"];
 
 const TABS = [
   { key: "overview", label: "Resumen general" },
@@ -130,11 +130,11 @@ function KpiBanner({ items, loading }) {
   return (
     <div
       className="grid grid-cols-2 lg:grid-cols-4 gap-4"
-      style={{ background: "#0B2E33", borderRadius: 14, padding: "16px 24px" }}
+      style={{ background: "var(--primary)", borderRadius: 14, padding: "16px 24px" }}
     >
       {items.map((kpi) => (
         <div key={kpi.label}>
-          <p style={{ color: "#93B1B5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+          <p style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
             {kpi.label}
           </p>
           {loading ? (
@@ -151,7 +151,7 @@ function KpiBanner({ items, loading }) {
             </span>
           )}
           {kpi.sub && !loading && (
-            <p style={{ color: "#93B1B5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
+            <p style={{ color: "#C7D2E5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
           )}
         </div>
       ))}
@@ -178,13 +178,13 @@ function TabNav({ tabs, active, onChange }) {
               borderRadius: 7,
               fontSize: 13,
               fontWeight: isActive ? 700 : 500,
-              background: isActive ? "#0B2E33" : isHovered ? "#E5E7EB" : "transparent",
+              background: isActive ? "var(--primary)" : isHovered ? "#E5E7EB" : "transparent",
               color: isActive ? "white" : isHovered ? "#374151" : "#6B7280",
               border: "none",
               cursor: "pointer",
               whiteSpace: "nowrap",
               transition: "all 0.15s ease",
-              boxShadow: isActive ? "0 2px 6px rgba(11,46,51,0.35)" : "none",
+              boxShadow: isActive ? "0 2px 6px rgba(0,31,84,0.35)" : "none",
               letterSpacing: isActive ? "0.01em" : "normal",
             }}
           >
@@ -221,17 +221,17 @@ function AdminQuickLink({ to, icon, label }) {
       to={to}
       style={{
         display: "block", textDecoration: "none",
-        background: hov ? "#EEF6F7" : "#F9FAFB",
-        border: `1px solid ${hov ? "#93B1B5" : "#E5E7EB"}`,
+        background: hov ? "var(--primary-soft)" : "#F9FAFB",
+        border: `1px solid ${hov ? "#C7D2E5" : "#E5E7EB"}`,
         borderRadius: 14, padding: 16,
-        boxShadow: hov ? "0 4px 12px rgba(79,124,130,0.12)" : "none",
+        boxShadow: hov ? "0 4px 12px rgba(0,58,140,0.12)" : "none",
         transition: "all 0.15s ease",
       }}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
       <span style={{ fontSize: 22, display: "block", marginBottom: 8 }}>{icon}</span>
-      <p style={{ fontSize: 12, fontWeight: 700, color: hov ? "#0B2E33" : "#374151" }}>{label}</p>
+      <p style={{ fontSize: 12, fontWeight: 700, color: hov ? "var(--primary)" : "#374151" }}>{label}</p>
     </Link>
   );
 }
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
             {canManage && (
               <Link
                 to="/admin/users"
-                style={{ padding: "6px 14px", fontSize: 13, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                style={{ padding: "6px 14px", fontSize: 13, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
               >
                 + Nuevo usuario
               </Link>
@@ -401,8 +401,8 @@ export default function AdminDashboard() {
                         iconSize={8}
                         wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
                       />
-                      <Bar dataKey="Solicitudes" fill="#4F7C82" radius={[4, 4, 0, 0]} maxBarSize={30} />
-                      <Bar dataKey="Aprobadas"   fill="#B8E3E9" radius={[4, 4, 0, 0]} maxBarSize={30} />
+                      <Bar dataKey="Solicitudes" fill="#003A8C" radius={[4, 4, 0, 0]} maxBarSize={30} />
+                      <Bar dataKey="Aprobadas"   fill="#00D4D8" radius={[4, 4, 0, 0]} maxBarSize={30} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -517,7 +517,7 @@ export default function AdminDashboard() {
                 Usuarios registrados
                 <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 400, marginLeft: 8 }}>({users.length} total)</span>
               </p>
-              <Link to="/admin/users" style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600 }}>
+              <Link to="/admin/users" style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>
                 Administrar →
               </Link>
             </div>
@@ -538,7 +538,7 @@ export default function AdminDashboard() {
                     <tr key={u.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#4F7C82" }}>
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "var(--primary)" }}>
                             <span className="text-white text-xs font-bold uppercase">
                               {u.username.charAt(0)}
                             </span>
@@ -550,7 +550,7 @@ export default function AdminDashboard() {
                       <td className="px-5 py-3.5">
                         <div className="flex gap-1 flex-wrap">
                           {(u.roles || []).filter(Boolean).map((r) => (
-                            <span key={r} className="bg-teal-100 text-teal-700 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+                            <span key={r} className="bg-blue-100 text-blue-700 text-xs px-2.5 py-0.5 rounded-full font-semibold">
                               {r}
                             </span>
                           ))}
@@ -581,7 +581,7 @@ export default function AdminDashboard() {
                 Todas las solicitudes
                 <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 400, marginLeft: 8 }}>({allRequests.length} total)</span>
               </p>
-              <Link to="/logistics/requests" style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600 }}>
+              <Link to="/logistics/requests" style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>
                 Panel de gestión →
               </Link>
             </div>
@@ -606,7 +606,7 @@ export default function AdminDashboard() {
                       PENDING:  { label: "Pendiente",  cls: "bg-yellow-100 text-yellow-700" },
                       APPROVED: { label: "Aprobado",   cls: "bg-green-100  text-green-700"  },
                       REJECTED: { label: "Rechazado",  cls: "bg-red-100    text-red-700"    },
-                      ORDERED:  { label: "Ordenado",   cls: "bg-teal-100   text-teal-700"   },
+                      ORDERED:  { label: "Ordenado",   cls: "bg-blue-100   text-blue-700"   },
                     };
                     const s = STATUS_MAP[r.status] || { label: r.status, cls: "bg-gray-100 text-gray-600" };
                     return (

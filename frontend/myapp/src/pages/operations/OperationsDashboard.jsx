@@ -7,13 +7,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 
-const PIE_COLORS = ["#EAB308", "#22C55E", "#EF4444", "#4F7C82"];
+const PIE_COLORS = ["#EAB308", "#22C55E", "#EF4444", "#003A8C"];
 
 const STATUS_CFG = {
   PENDING:  { label: "Pendiente",  bg: "#FEF9C3", color: "#854D0E", dot: "#EAB308" },
   APPROVED: { label: "Aprobado",   bg: "#DCFCE7", color: "#166534", dot: "#22C55E" },
   REJECTED: { label: "Rechazado",  bg: "#FEE2E2", color: "#991B1B", dot: "#EF4444" },
-  ORDERED:  { label: "Ordenado",   bg: "#CCFBF1", color: "#0F766E", dot: "#14B8A6" },
+  ORDERED:  { label: "Ordenado",   bg: "#DBEAFE", color: "#003A8C", dot: "#2563EB" },
 };
 
 const RESERVE_CFG = {
@@ -49,7 +49,7 @@ function TabNav({ tabs, active, onChange }) {
         return (
           <button key={t.key} onClick={() => onChange(t.key)}
             onMouseEnter={() => setHovered(t.key)} onMouseLeave={() => setHovered(null)}
-            style={{ padding: "7px 18px", borderRadius: 7, fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s", background: isActive ? "#0B2E33" : isHov ? "#E5E7EB" : "transparent", color: isActive ? "white" : isHov ? "#374151" : "#6B7280", boxShadow: isActive ? "0 2px 6px rgba(11,46,51,0.35)" : "none" }}>
+            style={{ padding: "7px 18px", borderRadius: 7, fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s", background: isActive ? "var(--primary)" : isHov ? "#E5E7EB" : "transparent", color: isActive ? "white" : isHov ? "#374151" : "#6B7280", boxShadow: isActive ? "0 2px 6px rgba(0,31,84,0.35)" : "none" }}>
             {t.label}
           </button>
         );
@@ -76,10 +76,10 @@ function ChartTooltip({ active, payload, label }) {
 
 function KpiBanner({ items, loading }) {
   return (
-    <div style={{ background: "#0B2E33", borderRadius: 14, padding: "16px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+    <div style={{ background: "var(--primary)", borderRadius: 14, padding: "16px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
       {items.map((kpi) => (
         <div key={kpi.label}>
-          <p style={{ color: "#93B1B5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+          <p style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
             {kpi.label}
           </p>
           {loading ? (
@@ -90,7 +90,7 @@ function KpiBanner({ items, loading }) {
             </span>
           )}
           {kpi.sub && !loading && (
-            <p style={{ color: "#93B1B5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
+            <p style={{ color: "#C7D2E5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
           )}
         </div>
       ))}
@@ -100,9 +100,9 @@ function KpiBanner({ items, loading }) {
 
 // ── Quick access cards ────────────────────────────────────────────────────────
 const QUICK_LINKS = [
-  { to: "/operations/requisition", icon: "🛒", label: "Nueva Requisición", desc: "Pide materiales por proyecto o servicio", accent: "#4F7C82" },
-  { to: "/requests/my",            icon: "📋", label: "Mis Solicitudes",   desc: "Ver y crear solicitudes de material",    accent: "#4F7C82" },
-  { to: "/reservations/my",        icon: "🔒", label: "Mis Reservas",      desc: "Ver el stock reservado para ti",         accent: "#4F7C82" },
+  { to: "/operations/requisition", icon: "🛒", label: "Nueva Requisición", desc: "Pide materiales por proyecto o servicio", accent: "var(--primary)" },
+  { to: "/requests/my",            icon: "📋", label: "Mis Solicitudes",   desc: "Ver y crear solicitudes de material",    accent: "var(--primary)" },
+  { to: "/reservations/my",        icon: "🔒", label: "Mis Reservas",      desc: "Ver el stock reservado para ti",         accent: "var(--primary)" },
 ];
 
 function QuickCard({ to, icon, label, desc, accent }) {
@@ -110,12 +110,12 @@ function QuickCard({ to, icon, label, desc, accent }) {
   return (
     <Link to={to} style={{ display: "block", textDecoration: "none" }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-      <div style={{ background: hov ? "#EEF6F7" : "#F9FAFB", border: `1.5px solid ${hov ? "#93B1B5" : "#E5E7EB"}`, borderRadius: 14, padding: "16px 18px", boxShadow: hov ? "0 4px 14px rgba(79,124,130,0.14)" : "none", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 14 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: hov ? "#0B2E33" : "#EEF6F7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, transition: "background 0.15s" }}>
+      <div style={{ background: hov ? "var(--primary-soft)" : "#F9FAFB", border: `1.5px solid ${hov ? "#C7D2E5" : "#E5E7EB"}`, borderRadius: 14, padding: "16px 18px", boxShadow: hov ? "0 4px 14px rgba(0,58,140,0.14)" : "none", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 12, background: hov ? "var(--primary)" : "var(--primary-soft)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0, transition: "background 0.15s" }}>
           {icon}
         </div>
         <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: hov ? "#0B2E33" : "#374151", margin: 0 }}>{label}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: hov ? "var(--primary)" : "#374151", margin: 0 }}>{label}</p>
           <p style={{ fontSize: 11, color: "#9CA3AF", margin: "3px 0 0" }}>{desc}</p>
         </div>
       </div>
@@ -171,7 +171,7 @@ export default function OperationsDashboard() {
     { label: "Reservas activas",   value: activeReserves.length, sub: "stock reservado" },
   ];
 
-  const tblHeader = { fontSize: 10, fontWeight: 700, color: "rgba(184,227,233,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "11px 14px" };
+  const tblHeader = { fontSize: 10, fontWeight: 700, color: "rgba(199,210,229,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "11px 14px" };
   const tblCell   = { padding: "11px 14px", fontSize: 13 };
 
   return (
@@ -189,7 +189,7 @@ export default function OperationsDashboard() {
             </p>
           </div>
           <Link to="/operations/requisition"
-            style={{ padding: "8px 18px", background: "#0B2E33", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 700, textDecoration: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 7 }}>
+            style={{ padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 700, textDecoration: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 7 }}>
             🛒 Nueva Requisición
           </Link>
         </div>
@@ -220,7 +220,7 @@ export default function OperationsDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 176, color: "#D1D5DB" }}>
                     <span style={{ fontSize: 40, marginBottom: 8 }}>📊</span>
                     <p style={{ fontSize: 13 }}>Aún no hay solicitudes</p>
-                    <Link to="/operations/requisition" style={{ fontSize: 11, marginTop: 8, color: "#4F7C82", textDecoration: "none" }}>
+                    <Link to="/operations/requisition" style={{ fontSize: 11, marginTop: 8, color: "var(--primary)", textDecoration: "none" }}>
                       Nueva requisición →
                     </Link>
                   </div>
@@ -231,7 +231,7 @@ export default function OperationsDashboard() {
                       <XAxis type="number" tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                       <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} width={90} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="Solicitudes" fill="#4F7C82" radius={[0, 4, 4, 0]} maxBarSize={24} />
+                      <Bar dataKey="Solicitudes" fill="#003A8C" radius={[0, 4, 4, 0]} maxBarSize={24} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -244,7 +244,7 @@ export default function OperationsDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 192, color: "#D1D5DB" }}>
                     <span style={{ fontSize: 40, marginBottom: 8 }}>🍩</span>
                     <p style={{ fontSize: 13 }}>Sin solicitudes</p>
-                    <Link to="/operations/requisition" style={{ fontSize: 11, marginTop: 8, color: "#4F7C82", textDecoration: "none" }}>
+                    <Link to="/operations/requisition" style={{ fontSize: 11, marginTop: 8, color: "var(--primary)", textDecoration: "none" }}>
                       Crear requisición →
                     </Link>
                   </div>
@@ -278,7 +278,7 @@ export default function OperationsDashboard() {
             <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
               <div style={{ padding: "12px 20px", borderBottom: "1px solid #E5E7EB", background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <p style={{ fontSize: 13, fontWeight: 700, color: "#374151", margin: 0 }}>Solicitudes recientes</p>
-                <Link to="/requests/my" style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600 }}>Ver todas →</Link>
+                <Link to="/requests/my" style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>Ver todas →</Link>
               </div>
               {loading ? (
                 <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Cargando...</div>
@@ -286,20 +286,20 @@ export default function OperationsDashboard() {
                 <div style={{ padding: 40, textAlign: "center" }}>
                   <span style={{ fontSize: 36, display: "block", marginBottom: 10 }}>📋</span>
                   <p style={{ color: "#6B7280", fontWeight: 600, margin: 0 }}>No tienes solicitudes aún.</p>
-                  <Link to="/operations/requisition" style={{ display: "inline-block", marginTop: 10, fontSize: 12, color: "#4F7C82", textDecoration: "none" }}>
+                  <Link to="/operations/requisition" style={{ display: "inline-block", marginTop: 10, fontSize: 12, color: "var(--primary)", textDecoration: "none" }}>
                     Crear primera requisición →
                   </Link>
                 </div>
               ) : (
                 <>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 80px 120px 100px", background: "#0B2E33" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 80px 120px 100px", background: "var(--primary)" }}>
                     {["Material", "Cantidad", "Estado", "Fecha"].map((h) => (
                       <div key={h} style={tblHeader}>{h}</div>
                     ))}
                   </div>
                   {requests.slice(0, 8).map((r, i) => (
                     <div key={r.id} style={{ display: "grid", gridTemplateColumns: "1fr 80px 120px 100px", background: i % 2 === 0 ? "white" : "#FAFAFA", borderBottom: "1px solid #F3F4F6" }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                       onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}>
                       <div style={{ ...tblCell, fontWeight: 600, color: "#111827" }}>{r.material_name || "—"}</div>
                       <div style={{ ...tblCell, fontFamily: "monospace", color: "#374151" }}>{r.quantity}</div>
@@ -323,7 +323,7 @@ export default function OperationsDashboard() {
                 Mis solicitudes
                 <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 400, marginLeft: 8 }}>({requests.length} total)</span>
               </p>
-              <Link to="/operations/requisition" style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600 }}>
+              <Link to="/operations/requisition" style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>
                 Nueva requisición →
               </Link>
             </div>
@@ -333,14 +333,14 @@ export default function OperationsDashboard() {
               <div style={{ padding: 48, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Sin solicitudes.</div>
             ) : (
               <>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 70px 110px 1fr 100px", background: "#0B2E33" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 70px 110px 1fr 100px", background: "var(--primary)" }}>
                   {["Material", "Cant.", "Estado", "Motivo", "Fecha"].map((h) => (
                     <div key={h} style={tblHeader}>{h}</div>
                   ))}
                 </div>
                 {requests.map((r, i) => (
                   <div key={r.id} style={{ display: "grid", gridTemplateColumns: "1fr 70px 110px 1fr 100px", background: i % 2 === 0 ? "white" : "#FAFAFA", borderBottom: "1px solid #F3F4F6" }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}>
                     <div style={{ ...tblCell, fontWeight: 600, color: "#111827" }}>{r.material_name || "—"}</div>
                     <div style={{ ...tblCell, fontFamily: "monospace", color: "#374151" }}>{r.quantity}</div>
@@ -370,7 +370,7 @@ export default function OperationsDashboard() {
                 <p style={{ color: "#9CA3AF", fontSize: 12, marginTop: 6 }}>
                   Las reservas aparecen cuando logística aprueba y bloquea stock
                 </p>
-                <Link to="/reservations/my" style={{ display: "inline-block", marginTop: 12, fontSize: 11, color: "#4F7C82", textDecoration: "none" }}>
+                <Link to="/reservations/my" style={{ display: "inline-block", marginTop: 12, fontSize: 11, color: "var(--primary)", textDecoration: "none" }}>
                   Ver historial de reservas →
                 </Link>
               </div>
@@ -381,16 +381,16 @@ export default function OperationsDashboard() {
                     Mis reservas
                     <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 400, marginLeft: 8 }}>({reserves.length} total)</span>
                   </p>
-                  <Link to="/reservations/my" style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600 }}>Ver todas →</Link>
+                  <Link to="/reservations/my" style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>Ver todas →</Link>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px 120px", background: "#0B2E33" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px 120px", background: "var(--primary)" }}>
                   {["Material", "Almacén", "Cantidad", "Estado"].map((h) => (
                     <div key={h} style={tblHeader}>{h}</div>
                   ))}
                 </div>
                 {reserves.map((r, i) => (
                   <div key={r.id} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px 120px", background: i % 2 === 0 ? "white" : "#FAFAFA", borderBottom: "1px solid #F3F4F6" }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}>
                     <div style={{ ...tblCell, fontWeight: 600, color: "#111827" }}>{r.material_name || "—"}</div>
                     <div style={{ ...tblCell, color: "#6B7280" }}>{r.warehouse_name || "—"}</div>

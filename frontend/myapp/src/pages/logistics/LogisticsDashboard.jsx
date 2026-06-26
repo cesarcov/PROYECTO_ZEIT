@@ -7,7 +7,7 @@ import {
   PieChart, Pie, Cell,
 } from "recharts";
 
-const PIE_COLORS = ["#EAB308", "#22C55E", "#EF4444", "#4F7C82"];
+const PIE_COLORS = ["#EAB308", "#22C55E", "#EF4444", "#003A8C"];
 
 const TABS = [
   { key: "control",     label: "Centro de Control 360°" },
@@ -17,10 +17,10 @@ const TABS = [
 // ── KPI Banner ────────────────────────────────────────────────────────────────
 function KpiBanner({ items, loading }) {
   return (
-    <div style={{ background: "#0B2E33", borderRadius: 14, padding: "16px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+    <div style={{ background: "var(--primary)", borderRadius: 14, padding: "16px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
       {items.map((kpi) => (
         <div key={kpi.label}>
-          <p style={{ color: "#93B1B5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+          <p style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
             {kpi.label}
           </p>
           {loading ? (
@@ -31,7 +31,7 @@ function KpiBanner({ items, loading }) {
             </span>
           )}
           {kpi.sub && !loading && (
-            <p style={{ color: "#93B1B5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
+            <p style={{ color: "#C7D2E5", fontSize: 11, marginTop: 3, opacity: 0.7 }}>{kpi.sub}</p>
           )}
         </div>
       ))}
@@ -50,7 +50,7 @@ function TabNav({ tabs, active, onChange }) {
         return (
           <button key={t.key} onClick={() => onChange(t.key)}
             onMouseEnter={() => setHovered(t.key)} onMouseLeave={() => setHovered(null)}
-            style={{ padding: "7px 20px", borderRadius: 7, fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s", background: isActive ? "#0B2E33" : isHov ? "#E5E7EB" : "transparent", color: isActive ? "white" : isHov ? "#374151" : "#6B7280", boxShadow: isActive ? "0 2px 6px rgba(11,46,51,0.35)" : "none" }}>
+            style={{ padding: "7px 20px", borderRadius: 7, fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s", background: isActive ? "var(--primary)" : isHov ? "#E5E7EB" : "transparent", color: isActive ? "white" : isHov ? "#374151" : "#6B7280", boxShadow: isActive ? "0 2px 6px rgba(0,31,84,0.35)" : "none" }}>
             {t.label}
           </button>
         );
@@ -131,7 +131,7 @@ function ToolReturnModal({ tool, onClose, onSuccess }) {
             Cancelar
           </button>
           <button onClick={submit} disabled={loading}
-            style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: loading ? "#93B1B5" : "#4F7C82", color: "white", fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontSize: 13 }}>
+            style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: loading ? "#94A3B8" : "var(--primary)", color: "white", fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontSize: 13 }}>
             {loading ? "Procesando..." : "Confirmar devolución"}
           </button>
         </div>
@@ -260,7 +260,7 @@ export default function LogisticsDashboard() {
     }
   };
 
-  const tblH = { fontSize: 10, fontWeight: 700, color: "rgba(184,227,233,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 14px" };
+  const tblH = { fontSize: 10, fontWeight: 700, color: "rgba(199,210,229,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 14px" };
   const tblC = { padding: "10px 14px", fontSize: 13 };
   const empty = (icon, msg) => (
     <div style={{ padding: "36px 20px", textAlign: "center" }}>
@@ -289,7 +289,7 @@ export default function LogisticsDashboard() {
               Ver solicitudes
             </Link>
             <Link to="/logistics/movements"
-              style={{ padding: "7px 14px", background: "#4F7C82", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+              style={{ padding: "7px 14px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
               + Movimiento
             </Link>
           </div>
@@ -327,10 +327,10 @@ export default function LogisticsDashboard() {
                         <div key={m.id}
                           onMouseDown={() => { setMatSearch(`${m.code} — ${m.name}`); setMatSearchId(m.id); setMatDropdown(false); }}
                           style={{ padding: "9px 14px", cursor: "pointer", fontSize: 13, borderBottom: "1px solid #F3F4F6" }}
-                          onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                          onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                           onMouseLeave={e => e.currentTarget.style.background = "white"}>
                           <span style={{ fontWeight: 600, color: "#111827" }}>{m.name}</span>
-                          <span style={{ marginLeft: 8, fontSize: 11, color: "#4F7C82", fontFamily: "monospace" }}>{m.code}</span>
+                          <span style={{ marginLeft: 8, fontSize: 11, color: "var(--primary)", fontFamily: "monospace" }}>{m.code}</span>
                         </div>
                       ))}
                     </div>
@@ -339,7 +339,7 @@ export default function LogisticsDashboard() {
 
                 {/* Results table */}
                 <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", flex: 1, minHeight: 190, maxHeight: 260, overflowY: "auto" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1.8fr 0.8fr", background: "#0B2E33", position: "sticky", top: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1.8fr 0.8fr", background: "var(--primary)", position: "sticky", top: 0 }}>
                     {["Almacén / Sede", "Rack · Nivel · Bin", "Cant."].map(h => <div key={h} style={tblH}>{h}</div>)}
                   </div>
                   {!matSearchId
@@ -359,7 +359,7 @@ export default function LogisticsDashboard() {
                             <div style={{ ...tblC, fontFamily: "monospace", fontSize: 12, color: "#374151" }}>
                               {loc.rack || "—"} · {loc.level || "—"} · {loc.box || "—"}
                             </div>
-                            <div style={{ ...tblC, fontWeight: 800, color: "#0B2E33" }}>{loc.quantity}</div>
+                            <div style={{ ...tblC, fontWeight: 800, color: "var(--primary)" }}>{loc.quantity}</div>
                           </div>
                         );
                       })
@@ -382,7 +382,7 @@ export default function LogisticsDashboard() {
                 />
 
                 <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", flex: 1, minHeight: 190, maxHeight: 260, overflowY: "auto" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1.1fr 1fr 88px", background: "#0B2E33", position: "sticky", top: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1.1fr 1fr 88px", background: "var(--primary)", position: "sticky", top: 0 }}>
                     {["Equipo / Código", "Responsable", "Retorno", ""].map((h, i) => <div key={i} style={tblH}>{h}</div>)}
                   </div>
                   {filteredTools.length === 0
@@ -432,12 +432,12 @@ export default function LogisticsDashboard() {
                   </p>
                 </div>
                 <Link to="/logistics/requests"
-                  style={{ fontSize: 11, color: "#4F7C82", textDecoration: "none", fontWeight: 600, flexShrink: 0 }}>
+                  style={{ fontSize: 11, color: "var(--primary)", textDecoration: "none", fontWeight: 600, flexShrink: 0 }}>
                   Panel completo →
                 </Link>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1.8fr 1fr 0.6fr 0.6fr 0.6fr 1.1fr", background: "#0B2E33" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.8fr 1fr 0.6fr 0.6fr 0.6fr 1.1fr", background: "var(--primary)" }}>
                 {["Material", "Solicitante", "Pedido", "En stock", "Déficit", "Acción"].map(h =>
                   <div key={h} style={tblH}>{h}</div>
                 )}
@@ -458,7 +458,7 @@ export default function LogisticsDashboard() {
                     return (
                       <div key={r.id}
                         style={{ display: "grid", gridTemplateColumns: "1.8fr 1fr 0.6fr 0.6fr 0.6fr 1.1fr", background: i % 2 === 0 ? "white" : "#FAFAFA", borderBottom: "1px solid #F3F4F6", alignItems: "center" }}
-                        onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                        onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                         onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}>
 
                         <div style={{ ...tblC, fontWeight: 600, color: "#111827" }}>
@@ -517,8 +517,8 @@ export default function LogisticsDashboard() {
                         <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={28} />
                         <Tooltip content={<ChartTooltip />} />
                         <Legend iconType="square" iconSize={8} wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
-                        <Bar dataKey="Solicitudes" fill="#4F7C82" radius={[4, 4, 0, 0]} maxBarSize={28} />
-                        <Bar dataKey="Aprobadas"   fill="#B8E3E9" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                        <Bar dataKey="Solicitudes" fill="#003A8C" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                        <Bar dataKey="Aprobadas"   fill="#00D4D8" radius={[4, 4, 0, 0]} maxBarSize={28} />
                       </BarChart>
                     </ResponsiveContainer>
                   )
@@ -575,7 +575,7 @@ export default function LogisticsDashboard() {
 
               {alerts.length > 0 && (
                 <>
-                  <div style={{ display: "grid", gridTemplateColumns: "1.8fr 100px 80px 110px 130px", background: "#0B2E33" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.8fr 100px 80px 110px 130px", background: "var(--primary)" }}>
                     {["Material", "Stock actual", "Mínimo", "Nivel", "Acción"].map(h => <div key={h} style={tblH}>{h}</div>)}
                   </div>
                   {alerts.map((item, i) => {
@@ -621,7 +621,7 @@ export default function LogisticsDashboard() {
                 return (
                   <Link key={a.label} to={a.to}
                     style={{ textDecoration: "none", background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, padding: 14, display: "flex", alignItems: "center", gap: 10, transition: "all 0.15s" }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "#EEF6F7"; e.currentTarget.style.borderColor = "#93B1B5"; }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "#C7D2E5"; }}
                     onMouseLeave={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
                     <span style={{ fontSize: 20 }}>{a.icon}</span>
                     <p style={{ fontSize: 12, fontWeight: 700, color: "#374151", margin: 0 }}>{a.label}</p>
