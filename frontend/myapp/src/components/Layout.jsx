@@ -365,7 +365,7 @@ export default function Layout({ children }) {
         {show && (
           <span style={{
             position: "absolute", left: "calc(100% + 10px)", top: "50%", transform: "translateY(-50%)",
-            background: "#0B2E33", color: "white", fontSize: 11, fontWeight: 600,
+            background: "var(--primary)", color: "white", fontSize: 11, fontWeight: 600,
             padding: "4px 10px", borderRadius: 6, whiteSpace: "nowrap", pointerEvents: "none",
             zIndex: 99, boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
           }}>
@@ -389,7 +389,7 @@ export default function Layout({ children }) {
         overflow: "hidden",
       }}>
         {/* Franja superior */}
-        <div style={{ height: 3, flexShrink: 0, background: "linear-gradient(90deg, #4F7C82, #B8E3E9, #4F7C82)" }} />
+        <div style={{ height: 3, flexShrink: 0, background: "linear-gradient(90deg, var(--primary), var(--accent), var(--primary))" }} />
 
         {/* Logo */}
         <div
@@ -411,7 +411,7 @@ export default function Layout({ children }) {
         {visibleModules.length > 1 && (
           <div style={{ padding: collapsed ? "0 8px 10px" : "0 10px 10px", flexShrink: 0 }}>
             {!collapsed && (
-              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(147,177,181,0.6)", padding: "0 8px", marginBottom: 5 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(199,210,229,0.6)", padding: "0 8px", marginBottom: 5 }}>
                 Módulos
               </div>
             )}
@@ -428,7 +428,7 @@ export default function Layout({ children }) {
                     fontSize: 13, fontWeight: 600, textDecoration: "none",
                     transition: "background 0.15s",
                     background: isMod ? "rgba(255,255,255,0.13)" : "transparent",
-                    color: isMod ? "white" : "rgba(184,227,233,0.6)",
+                    color: isMod ? "white" : "rgba(199,210,229,0.6)",
                     border: isMod ? "1px solid rgba(255,255,255,0.1)" : "1px solid transparent",
                     position: "relative",
                   }}
@@ -438,10 +438,10 @@ export default function Layout({ children }) {
                     <Icon name={mod.icon} size={16} />
                     {!collapsed && <span style={{ whiteSpace: "nowrap" }}>{mod.label}</span>}
                     {!collapsed && isMod && (
-                      <span style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "#B8E3E9", flexShrink: 0 }} />
+                      <span style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", flexShrink: 0 }} />
                     )}
                     {collapsed && isMod && (
-                      <span style={{ position: "absolute", left: 2, top: "50%", transform: "translateY(-50%)", width: 3, height: 20, borderRadius: 99, background: "#B8E3E9" }} />
+                      <span style={{ position: "absolute", left: 2, top: "50%", transform: "translateY(-50%)", width: 3, height: 20, borderRadius: 99, background: "var(--accent)" }} />
                     )}
                   </Link>
                 </TIP>
@@ -461,7 +461,7 @@ export default function Layout({ children }) {
               borderRadius: 9, textDecoration: "none", fontSize: 13, fontWeight: 600,
               transition: "all 0.15s",
               background: location.pathname === "/inicio" ? "white" : "rgba(255,255,255,0.08)",
-              color: location.pathname === "/inicio" ? "#0B2E33" : "#B8E3E9",
+              color: location.pathname === "/inicio" ? "var(--primary)" : "var(--sidebar-text)",
               boxShadow: location.pathname === "/inicio" ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
               border: location.pathname === "/inicio" ? "none" : "1px solid rgba(255,255,255,0.1)",
             }}
@@ -482,7 +482,7 @@ export default function Layout({ children }) {
           {activeModule.groups.map((group, gi) => (
             <div key={group.title} style={{ marginBottom: gi < activeModule.groups.length - 1 ? 18 : 10 }}>
               {!collapsed && (
-                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(147,177,181,0.55)", padding: "0 8px", marginBottom: 3 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(199,210,229,0.55)", padding: "0 8px", marginBottom: 3 }}>
                   {group.title}
                 </div>
               )}
@@ -499,7 +499,7 @@ export default function Layout({ children }) {
                       fontSize: 13, textDecoration: "none",
                       transition: "all 0.15s",
                       background: active ? "white" : "transparent",
-                      color: active ? "#0B2E33" : "rgba(184,227,233,0.75)",
+                      color: active ? "var(--primary)" : "rgba(199,210,229,0.75)",
                       boxShadow: active ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
                       fontWeight: active ? 600 : 500,
                     }}
@@ -527,7 +527,7 @@ export default function Layout({ children }) {
             <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 8px", marginBottom: 4 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                background: "linear-gradient(135deg, #4F7C82, #2a5a62)",
+                background: "linear-gradient(135deg, var(--primary), var(--sidebar-bg))",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 <span style={{ color: "white", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>
@@ -538,7 +538,7 @@ export default function Layout({ children }) {
                 <div style={{ color: "white", fontSize: 12, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {ROLE_LABELS[auth.role] || auth.role}
                 </div>
-                <div style={{ color: "rgba(147,177,181,0.6)", fontSize: 10 }}>Sesión activa</div>
+                <div style={{ color: "rgba(199,210,229,0.6)", fontSize: 10 }}>Sesión activa</div>
               </div>
             </div>
           )}
@@ -550,10 +550,10 @@ export default function Layout({ children }) {
               padding: collapsed ? "9px 0" : "7px 10px",
               borderRadius: 9, border: "none", cursor: "pointer",
               fontSize: 12, fontWeight: 500, background: "transparent",
-              color: "rgba(184,227,233,0.55)", transition: "all 0.15s",
+              color: "rgba(199,210,229,0.55)", transition: "all 0.15s",
             }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.12)"; e.currentTarget.style.color = "#fca5a5"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(184,227,233,0.55)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(199,210,229,0.55)"; }}
             >
               <Icon name="power" size={15} />
               {!collapsed && <span>Cerrar sesión</span>}
@@ -610,7 +610,7 @@ export default function Layout({ children }) {
             >
               <div style={{
                 width: 26, height: 26, borderRadius: "50%",
-                background: "linear-gradient(135deg, #4F7C82, #0B2E33)",
+                background: "linear-gradient(135deg, var(--primary), var(--sidebar-bg))",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <span style={{ color: "white", fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>
@@ -636,16 +636,16 @@ export default function Layout({ children }) {
                 zIndex: 50, overflow: "hidden",
               }}>
                 {/* Header usuario */}
-                <div style={{ padding: "14px 16px", background: "linear-gradient(135deg, #0B2E33, #1a4a52)" }}>
+                <div style={{ padding: "14px 16px", background: "linear-gradient(135deg, var(--sidebar-bg), var(--primary))" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                     <ZeitLogo width={110} onDark showText />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{
                       width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
-                      background: "linear-gradient(135deg, #4F7C82, #2a5a62)",
+                      background: "linear-gradient(135deg, var(--primary), var(--sidebar-bg))",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      border: "2px solid rgba(184,227,233,0.3)",
+                      border: "2px solid rgba(199,210,229,0.3)",
                     }}>
                       <span style={{ color: "white", fontSize: 14, fontWeight: 800, textTransform: "uppercase" }}>
                         {auth.username?.charAt(0) || auth.role?.charAt(0)}
@@ -655,7 +655,7 @@ export default function Layout({ children }) {
                       <p style={{ color: "white", fontWeight: 700, fontSize: 13, margin: 0 }}>
                         {formatUsername(auth.username)}
                       </p>
-                      <p style={{ color: "rgba(184,227,233,0.55)", fontSize: 11, margin: "2px 0 0" }}>
+                      <p style={{ color: "rgba(199,210,229,0.55)", fontSize: 11, margin: "2px 0 0" }}>
                         {ROLE_LABELS[auth.role] || auth.role}
                       </p>
                     </div>
@@ -696,7 +696,7 @@ export default function Layout({ children }) {
                       <div style={{
                         width: 30, height: 30, borderRadius: 8, flexShrink: 0,
                         background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center",
-                        color: "#4F7C82",
+                        color: "var(--primary)",
                       }}>
                         <Icon name={item.icon} size={14} />
                       </div>

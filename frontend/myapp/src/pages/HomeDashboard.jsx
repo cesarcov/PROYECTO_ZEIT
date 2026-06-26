@@ -4,7 +4,7 @@ import { useAuth, formatUsername } from "../hooks/useAuth";
 import { apiFetch } from "../services/api";
 
 const PRIORIDAD_COLOR = { Alta: "#EF4444", Media: "#EAB308", Baja: "#22C55E" };
-const ESTADO_COLOR    = { "Completado": "#22C55E", "Retraso": "#EF4444", "En espera": "#EAB308", "En Progreso": "#4F7C82" };
+const ESTADO_COLOR    = { "Completado": "#22C55E", "Retraso": "#EF4444", "En espera": "#EAB308", "En Progreso": "#003A8C" };
 
 const CANAL_MODULE_LABELS = {
   operations:     "Operaciones",
@@ -16,19 +16,19 @@ const CANAL_MODULE_LABELS = {
 const CANAL_PRIORITY_CFG = {
   URGENTE: { bg: "#FEE2E2", color: "#DC2626", label: "Urgente" },
   ALTA:    { bg: "#FEF3C7", color: "#D97706", label: "Alta" },
-  NORMAL:  { bg: "#DBEAFE", color: "#2563EB", label: "Normal" },
+  NORMAL:  { bg: "#DBEAFE", color: "#003A8C", label: "Normal" },
   BAJA:    { bg: "#F1F5F9", color: "#64748B", label: "Baja" },
 };
 
 const CANAL_STATUS_CFG = {
   PENDIENTE:   { bg: "#FEF3C7", color: "#D97706", label: "Pendiente" },
-  EN_REVISION: { bg: "#DBEAFE", color: "#2563EB", label: "En revisión" },
+  EN_REVISION: { bg: "#DBEAFE", color: "#003A8C", label: "En revisión" },
   RESUELTO:    { bg: "#DCFCE7", color: "#16A34A", label: "Resuelto" },
   RECHAZADO:   { bg: "#FEE2E2", color: "#DC2626", label: "Rechazado" },
   CANCELADO:   { bg: "#F1F5F9", color: "#64748B", label: "Cancelado" },
 };
 
-function ProgressBar({ pct, color = "#4F7C82", height = 6 }) {
+function ProgressBar({ pct, color = "#003A8C", height = 6 }) {
   return (
     <div style={{ width: "100%", background: "#E5E7EB", borderRadius: 99, height, overflow: "hidden" }}>
       <div style={{
@@ -80,7 +80,7 @@ function NuevaSolicitudModal({ onClose, onCreated, myModule }) {
     }
   };
 
-  const btnStyle = (bg = "#4F7C82", color = "#fff") => ({
+  const btnStyle = (bg = "#003A8C", color = "#fff") => ({
     padding: "7px 16px", borderRadius: 8, border: "none",
     background: bg, color, cursor: "pointer", fontWeight: 600,
     fontSize: 13,
@@ -96,12 +96,12 @@ function NuevaSolicitudModal({ onClose, onCreated, myModule }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 16, width: 560, boxShadow: "0 20px 60px rgba(0,0,0,0.25)", overflow: "hidden" }}>
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg, #0B2E33, #1a4a52)", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ background: "linear-gradient(135deg, #003A8C, #001F54)", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>CANAL INTER-MÓDULO</div>
+            <div style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>CANAL INTER-MÓDULO</div>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 17, marginTop: 2 }}>Nueva solicitud</div>
           </div>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#B8E3E9", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
+          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#C7D2E5", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
         </div>
 
         {/* Body */}
@@ -151,7 +151,7 @@ function NuevaSolicitudModal({ onClose, onCreated, myModule }) {
 
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <button onClick={onClose} style={btnStyle("#F1F5F9", "#374151")}>Cancelar</button>
-            <button onClick={submit} disabled={loading} style={btnStyle("#0B2E33")}>
+            <button onClick={submit} disabled={loading} style={btnStyle("#003A8C")}>
               {loading ? "Enviando..." : "Enviar solicitud"}
             </button>
           </div>
@@ -257,7 +257,7 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
   const sc  = CANAL_STATUS_CFG[sol.status]   ?? CANAL_STATUS_CFG.PENDIENTE;
   const pc  = CANAL_PRIORITY_CFG[sol.priority] ?? CANAL_PRIORITY_CFG.NORMAL;
 
-  const btnStyle = (bg = "#4F7C82", color = "#fff") => ({
+  const btnStyle = (bg = "#003A8C", color = "#fff") => ({
 
     padding: "7px 16px", borderRadius: 8, border: "none",
     background: bg, color, cursor: "pointer", fontWeight: 600,
@@ -275,21 +275,21 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
       <div style={{ background: "#fff", borderRadius: 16, width: 680, maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 64px rgba(0,0,0,0.25)", overflow: "hidden" }}>
 
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg, #0B2E33, #1a4a52)", padding: "18px 24px", flexShrink: 0 }}>
+        <div style={{ background: "linear-gradient(135deg, #003A8C, #001F54)", padding: "18px 24px", flexShrink: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
-              <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>{sol.code}</div>
+              <div style={{ color: "#C7D2E5", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>{sol.code}</div>
               <div style={{ color: "#fff", fontWeight: 800, fontSize: 16, marginTop: 3, maxWidth: 500 }}>{sol.subject}</div>
             </div>
-            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#B8E3E9", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
+            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#C7D2E5", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
             <span style={{ background: sc.bg, color: sc.color, padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{sc.label}</span>
             <span style={{ background: pc.bg, color: pc.color, padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{pc.label}</span>
-            <span style={{ color: "#93B1B5", fontSize: 12 }}>
+            <span style={{ color: "#A7B6D0", fontSize: 12 }}>
               {CANAL_MODULE_LABELS[sol.from_module] || sol.from_module} → {CANAL_MODULE_LABELS[sol.to_module] || sol.to_module}
             </span>
-            <span style={{ color: "#93B1B5", fontSize: 11 }}>· {new Date(sol.created_at).toLocaleString("es-PE")}</span>
+            <span style={{ color: "#A7B6D0", fontSize: 11 }}>· {new Date(sol.created_at).toLocaleString("es-PE")}</span>
           </div>
         </div>
 
@@ -297,16 +297,16 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
         <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
 
           {/* Asignación */}
-          <div style={{ padding: "12px 24px", background: "#EEF7F8", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ padding: "12px 24px", background: "#EEF2F8", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2E33" }}>Responsable del Caso:</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#003A8C" }}>Responsable del Caso:</span>
               {isBoss ? (
                 <select
                   value={sol.assigned_to || ""}
                   onChange={(e) => assignRequest(e.target.value || null)}
                   style={{
-                    border: "1px solid #B8E3E9", borderRadius: 8, padding: "3px 8px",
-                    fontSize: 12, background: "white", outline: "none", color: "#0B2E33",
+                    border: "1px solid #C7D2E5", borderRadius: 8, padding: "3px 8px",
+                    fontSize: 12, background: "white", outline: "none", color: "#003A8C",
                     fontWeight: 600
                   }}
                 >
@@ -344,7 +344,7 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
             <div style={{ padding: "12px 24px", background: "#FAFBFC", borderBottom: "1px solid #F1F5F9", display: "flex", gap: 8, flexWrap: "wrap" }}>
               <span style={{ fontSize: 12, color: "#94A3B8", alignSelf: "center", marginRight: 4 }}>Cambiar estado:</span>
               {canAct && sol.status !== "EN_REVISION" && (
-                <button onClick={() => changeStatus("EN_REVISION")} style={{ ...btnStyle("#DBEAFE", "#1E40AF"), fontSize: 12 }}>En revisión</button>
+                <button onClick={() => changeStatus("EN_REVISION")} style={{ ...btnStyle("#DBEAFE", "#003A8C"), fontSize: 12 }}>En revisión</button>
               )}
               {canAct && (
                 <button onClick={() => changeStatus("RESUELTO")} style={{ ...btnStyle("#DCFCE7", "#15803D"), fontSize: 12 }}>Marcar resuelto</button>
@@ -373,9 +373,9 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {(sol.mensajes ?? []).map(m => (
-                  <div key={m.id} style={{ background: "#F8FAFC", borderRadius: 10, padding: "10px 14px", borderLeft: "3px solid #4F7C82" }}>
+                  <div key={m.id} style={{ background: "#F8FAFC", borderRadius: 10, padding: "10px 14px", borderLeft: "3px solid #003A8C" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2E33" }}>{formatUsername(m.username) || "Usuario"}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#003A8C" }}>{formatUsername(m.username) || "Usuario"}</span>
                       <span style={{ fontSize: 11, color: "#94A3B8" }}>{new Date(m.created_at).toLocaleString("es-PE")}</span>
                     </div>
                     <p style={{ margin: 0, fontSize: 13, color: "#374151", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{m.mensaje}</p>
@@ -397,7 +397,7 @@ function SolicitudDetailModal({ solicitud: init, myModule, username, onClose, on
                 onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) sendMensaje(); }}
               />
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button onClick={sendMensaje} disabled={sending || !mensaje.trim()} style={{ ...btnStyle("#4F7C82"), opacity: mensaje.trim() ? 1 : 0.5 }}>
+                <button onClick={sendMensaje} disabled={sending || !mensaje.trim()} style={{ ...btnStyle("#003A8C"), opacity: mensaje.trim() ? 1 : 0.5 }}>
                   {sending ? "Enviando..." : "Responder"}
                 </button>
               </div>
@@ -533,20 +533,20 @@ export default function HomeDashboard() {
 
         {/* ── Cabecera ── */}
         <div style={{
-          background: "linear-gradient(135deg, #0B2E33 0%, #1a4a52 100%)",
+          background: "linear-gradient(135deg, #003A8C 0%, #001F54 100%)",
           borderRadius: 16, padding: "24px 32px", marginBottom: 24,
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          boxShadow: "0 4px 20px rgba(11,46,51,0.25)",
+          boxShadow: "0 4px 20px rgba(0,31,84,0.25)",
         }}>
           <div>
-            <div style={{ color: "#B8E3E9", fontSize: 13, marginBottom: 4 }}>{today}</div>
+            <div style={{ color: "#C7D2E5", fontSize: 13, marginBottom: 4 }}>{today}</div>
             <h1 style={{ color: "white", fontSize: 24, fontWeight: 800, margin: 0, lineHeight: 1.1 }}>
-              {greet}, <span style={{ color: "#B8E3E9" }}>{userInfo.name}</span>
+              {greet}, <span style={{ color: "#C7D2E5" }}>{userInfo.name}</span>
             </h1>
-            <div style={{ color: "rgba(184,227,233,0.75)", fontSize: 11, fontWeight: 700, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <div style={{ color: "rgba(199,210,229,0.75)", fontSize: 11, fontWeight: 700, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
               💼 {userInfo.roles.join(" / ")}
             </div>
-            <p style={{ color: "rgba(184,227,233,0.6)", margin: "6px 0 0", fontSize: 13 }}>
+            <p style={{ color: "rgba(199,210,229,0.6)", margin: "6px 0 0", fontSize: 13 }}>
               Aquí tienes tu resumen del día
             </p>
           </div>
@@ -556,7 +556,7 @@ export default function HomeDashboard() {
 
           {/* ── Panel de Planificación ── */}
           <div>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0B2E33", margin: "0 0 14px" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#003A8C", margin: "0 0 14px" }}>
               Mi Planificación Semanal
             </h2>
 
@@ -580,11 +580,11 @@ export default function HomeDashboard() {
                           {act.prioridad}
                         </span>
                       )}
-                      <span style={{ background: (ESTADO_COLOR[act.estado] || "#4F7C82") + "18", color: ESTADO_COLOR[act.estado] || "#4F7C82", padding: "2px 8px", borderRadius: 99, fontSize: 11, fontWeight: 600 }}>
+                      <span style={{ background: (ESTADO_COLOR[act.estado] || "#003A8C") + "18", color: ESTADO_COLOR[act.estado] || "#003A8C", padding: "2px 8px", borderRadius: 99, fontSize: 11, fontWeight: 600 }}>
                         {act.estado}
                       </span>
                       {act.etapa && (
-                        <span style={{ background: "#EEF7F8", color: "#0B2E33", padding: "2px 8px", borderRadius: 99, fontSize: 11 }}>
+                        <span style={{ background: "#EEF2F8", color: "#003A8C", padding: "2px 8px", borderRadius: 99, fontSize: 11 }}>
                           {act.etapa}
                         </span>
                       )}
@@ -608,7 +608,7 @@ export default function HomeDashboard() {
                     <span style={{ fontSize: 11, color: "#9CA3AF" }}>Progreso</span>
                     <span style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>{act.progreso_pct}%</span>
                   </div>
-                  <ProgressBar pct={act.progreso_pct} color={act.progreso_pct >= 100 ? "#22C55E" : "#4F7C82"} height={7} />
+                  <ProgressBar pct={act.progreso_pct} color={act.progreso_pct >= 100 ? "#22C55E" : "#003A8C"} height={7} />
                 </div>
 
                 {/* Subtareas */}
@@ -621,7 +621,7 @@ export default function HomeDashboard() {
                       }}>
                         <input type="checkbox" checked={sub.culminado} onChange={() => toggleSubtarea(act.id, sub.id)}
                           disabled={!canToggleSub(act, sub)}
-                          style={{ accentColor: "#4F7C82", width: 15, height: 15, cursor: canToggleSub(act, sub) ? "pointer" : "not-allowed" }}
+                          style={{ accentColor: "#003A8C", width: 15, height: 15, cursor: canToggleSub(act, sub) ? "pointer" : "not-allowed" }}
                           title={!canToggleSub(act, sub) ? "Solo el responsable de la subtarea o el encargado de la actividad puede marcarla" : ""}
                         />
                         <span style={{ fontSize: 13, color: sub.culminado ? "#9CA3AF" : "#374151", textDecoration: sub.culminado ? "line-through" : "none", flex: 1 }}>
@@ -646,7 +646,7 @@ export default function HomeDashboard() {
                           </select>
                         ) : (
                           <span style={{
-                            background: "#EEF7F8", color: "#0B2E33",
+                            background: "#EEF2F8", color: "#003A8C",
                             padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600,
                             whiteSpace: "nowrap"
                           }}>
@@ -672,7 +672,7 @@ export default function HomeDashboard() {
                     }}
                   />
                   <button onClick={() => addSubtarea(act.id)} style={{
-                    background: "#0B2E33", color: "white", border: "none", borderRadius: 8,
+                    background: "#003A8C", color: "white", border: "none", borderRadius: 8,
                     padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
                   }}>+</button>
                 </div>
@@ -683,9 +683,9 @@ export default function HomeDashboard() {
           {/* ── Panel de Seguimiento ── */}
           {actSeguimiento.length > 0 && (
             <div style={{ marginTop: 8 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0B2E33", margin: "0 0 10px", display: "flex", alignItems: "center", gap: 8 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#003A8C", margin: "0 0 10px", display: "flex", alignItems: "center", gap: 8 }}>
                 Tareas en Seguimiento
-                <span style={{ background: "#EEF7F8", color: "#4F7C82", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 20 }}>
+                <span style={{ background: "#EEF2F8", color: "#003A8C", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 20 }}>
                   {actSeguimiento.length}
                 </span>
               </h2>
@@ -703,7 +703,7 @@ export default function HomeDashboard() {
                             {act.prioridad}
                           </span>
                         )}
-                        <span style={{ background: (ESTADO_COLOR[act.estado] || "#4F7C82") + "18", color: ESTADO_COLOR[act.estado] || "#4F7C82", padding: "1px 7px", borderRadius: 99, fontSize: 10, fontWeight: 600 }}>
+                        <span style={{ background: (ESTADO_COLOR[act.estado] || "#003A8C") + "18", color: ESTADO_COLOR[act.estado] || "#003A8C", padding: "1px 7px", borderRadius: 99, fontSize: 10, fontWeight: 600 }}>
                           {act.estado}
                         </span>
                       </div>
@@ -736,13 +736,13 @@ export default function HomeDashboard() {
           {/* ── Panel de Canal Inter-Módulo ── */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0B2E33", margin: 0 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#003A8C", margin: 0 }}>
                 Canal Inter-Módulo
               </h2>
               <button
                 onClick={() => setShowNewSolicitud(true)}
                 style={{
-                  background: "#0B2E33", color: "white", border: "none", borderRadius: 8,
+                  background: "#003A8C", color: "white", border: "none", borderRadius: 8,
                   padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
                 }}
               >
@@ -763,7 +763,7 @@ export default function HomeDashboard() {
                     flex: 1, padding: "5px 10px", borderRadius: 6, border: "none", cursor: "pointer",
                     fontSize: 12, fontWeight: 600,
                     background: canalTab === t.key ? "#fff" : "transparent",
-                    color: canalTab === t.key ? "#0B2E33" : "#64748B",
+                    color: canalTab === t.key ? "#003A8C" : "#64748B",
                     boxShadow: canalTab === t.key ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
                   }}
@@ -810,18 +810,18 @@ export default function HomeDashboard() {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", gap: 5, marginBottom: 3, flexWrap: "wrap", alignItems: "center" }}>
                             <span style={{ fontSize: 10, fontWeight: 700, color: "#94A3B8" }}>{sol.code}</span>
-                            <span style={{ fontSize: 9, background: isIncoming ? "#EFF6FF" : "#F0FDF4", color: isIncoming ? "#3B82F6" : "#16A34A", padding: "1px 5px", borderRadius: 20, fontWeight: 700 }}>
+                            <span style={{ fontSize: 9, background: isIncoming ? "#EFF6FF" : "#F0FDF4", color: isIncoming ? "#003A8C" : "#16A34A", padding: "1px 5px", borderRadius: 20, fontWeight: 700 }}>
                               {isIncoming ? `De: ${CANAL_MODULE_LABELS[sol.from_module] || sol.from_module}` : `Para: ${CANAL_MODULE_LABELS[sol.to_module] || sol.to_module}`}
                             </span>
                           </div>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: "#0B2E33", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: "#003A8C", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {sol.subject}
                           </div>
                           <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 2 }}>
                             {new Date(sol.updated_at).toLocaleDateString("es-PE", { day: "2-digit", month: "short" })}
                             {sol.message_count > 0 && <span style={{ marginLeft: 6 }}>💬 {sol.message_count}</span>}
                             {sol.assigned_to_username && (
-                              <span style={{ marginLeft: 6, background: "#EEF7F8", color: "#0B2E33", padding: "1px 5px", borderRadius: 20, fontWeight: 600 }}>
+                              <span style={{ marginLeft: 6, background: "#EEF2F8", color: "#003A8C", padding: "1px 5px", borderRadius: 20, fontWeight: 600 }}>
                                 👤 {formatUsername(sol.assigned_to_username)}
                               </span>
                             )}
