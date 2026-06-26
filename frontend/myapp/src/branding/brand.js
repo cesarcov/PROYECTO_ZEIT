@@ -36,14 +36,15 @@ const abs = (u) => (u && u.startsWith("/branding-assets")) ? (API_BASE + u) : u;
 function mapServer(s) {
   const logos = s.logos || {};
   const hasLogo = !!(logos.claro || logos.oscuro);
-  const isDefault = !s.appName && !hasLogo; // nada configurado → ZEIT puro
+  // Si el servidor no trae logos personalizados, usamos siempre los PNG por
+  // defecto de ZEIT (claro/oscuro). Solo un logo subido por el admin los sustituye.
   return {
     appName: s.appName || DEFAULT_BRAND.appName,
     tagline: s.tagline || DEFAULT_BRAND.tagline,
     logoIncluyeNombre: s.logoIncluyeNombre !== false,
-    logoSrc:     hasLogo ? abs(logos.claro || logos.oscuro) : (isDefault ? DEFAULT_BRAND.logoSrc : null),
-    logoSrcDark: hasLogo ? abs(logos.oscuro || logos.claro) : (isDefault ? DEFAULT_BRAND.logoSrcDark : null),
-    logoIconSrc: abs(logos.icono) || (isDefault ? DEFAULT_BRAND.logoIconSrc : null),
+    logoSrc:     hasLogo ? abs(logos.claro || logos.oscuro) : DEFAULT_BRAND.logoSrc,
+    logoSrcDark: hasLogo ? abs(logos.oscuro || logos.claro) : DEFAULT_BRAND.logoSrcDark,
+    logoIconSrc: abs(logos.icono) || DEFAULT_BRAND.logoIconSrc,
     colors: s.colors || {},
     poweredBy: s.poweredBy || DEFAULT_BRAND.poweredBy,
     favicon: abs(logos.favicon),
