@@ -70,10 +70,10 @@ export default function LotsView() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Trazabilidad por Lote</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Trazabilidad por Lote</h2>
           <p style={{ fontSize: 13, color: "#6B7280", margin: "4px 0 0" }}>Gestión y seguimiento de lotes de stock</p>
         </div>
-        <button onClick={() => setShowForm(true)} style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+        <button onClick={() => setShowForm(true)} style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
           + Nuevo Lote
         </button>
       </div>
@@ -91,7 +91,7 @@ export default function LotsView() {
       {/* Tabs */}
       <div style={{ display: "flex", gap: 4, marginBottom: 16, borderBottom: "2px solid #F3F4F6" }}>
         {[["lots", "Todos los lotes"], ["expiring", `Por vencer (${expiring.length})`]].map(([key, label]) => (
-          <button key={key} onClick={() => setTab(key)} style={{ background: "none", border: "none", padding: "8px 16px", fontWeight: tab === key ? 700 : 500, color: tab === key ? "#0B2E33" : "#6B7280", borderBottom: tab === key ? "2px solid #0B2E33" : "2px solid transparent", cursor: "pointer", fontSize: 13, marginBottom: -2 }}>
+          <button key={key} onClick={() => setTab(key)} style={{ background: "none", border: "none", padding: "8px 16px", fontWeight: tab === key ? 700 : 500, color: tab === key ? "var(--primary)" : "#6B7280", borderBottom: tab === key ? "2px solid var(--primary)" : "2px solid transparent", cursor: "pointer", fontSize: 13, marginBottom: -2 }}>
             {label}
           </button>
         ))}
@@ -124,7 +124,7 @@ export default function LotsView() {
           <tbody>
             {(tab === "expiring" ? expiring : lots).map(lot => (
               <tr key={lot.id} style={{ transition: "background 0.1s" }} onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"} onMouseLeave={e => e.currentTarget.style.background = "white"}>
-                <td style={td}><span style={{ fontFamily: "monospace", fontWeight: 700, color: "#0B2E33" }}>{lot.lot_number}</span></td>
+                <td style={td}><span style={{ fontFamily: "monospace", fontWeight: 700, color: "var(--primary)" }}>{lot.lot_number}</span></td>
                 <td style={td}>{lot.material_name}<br/><span style={{ fontSize: 11, color: "#9CA3AF" }}>{lot.material_code ?? lot.code}</span></td>
                 <td style={td}>{lot.warehouse_name ?? "—"}</td>
                 {tab === "expiring" ? (
@@ -161,7 +161,7 @@ export default function LotsView() {
       {showForm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "white", borderRadius: 16, padding: 28, width: "100%", maxWidth: 480, boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
-            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "#0B2E33" }}>Crear nuevo lote</h3>
+            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "var(--primary)" }}>Crear nuevo lote</h3>
             <form onSubmit={handleCreate}>
               {[
                 { label: "Material *", key: "material_id", type: "select" },
@@ -192,7 +192,7 @@ export default function LotsView() {
               ))}
               <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                 <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "10px 0", border: "1.5px solid #E5E7EB", borderRadius: 9, background: "white", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Cancelar</button>
-                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>{loading ? "Guardando..." : "Crear Lote"}</button>
+                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>{loading ? "Guardando..." : "Crear Lote"}</button>
               </div>
             </form>
           </div>

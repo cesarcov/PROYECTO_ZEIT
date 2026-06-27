@@ -114,7 +114,7 @@ export default function ReservationsView() {
                 onClick={() => setFilter(f)}
                 style={{
                   padding: "6px 14px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer",
-                  background: active ? (s ? s.bg : "#0B2E33") : "#F3F4F6",
+                  background: active ? (s ? s.bg : "var(--primary)") : "#F3F4F6",
                   color: active ? (s ? s.color : "white") : "#6B7280",
                   boxShadow: active ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
                 }}
@@ -141,7 +141,7 @@ export default function ReservationsView() {
         {/* Tabla */}
         <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
           {/* Header */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 120px 80px 100px 120px 120px 80px 120px", gap: 8, padding: "12px 20px", background: "#0B2E33" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 120px 80px 100px 120px 120px 80px 120px", gap: 8, padding: "12px 20px", background: "var(--primary)" }}>
             {["Material", "Almacén", "Cant.", "Estado", "Reservado por", "Creado", "Vence en", "Acciones"].map((h) => (
               <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{h}</div>
             ))}
@@ -164,7 +164,7 @@ export default function ReservationsView() {
                     borderBottom: idx < filtered.length - 1 ? "1px solid #F3F4F6" : "none",
                     background: idx % 2 === 0 ? "white" : "#FAFAFA",
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? "white" : "#FAFAFA"}
                 >
                   <div style={{ fontWeight: 600, color: "#111827", fontSize: 13 }}>{r.material_name}</div>

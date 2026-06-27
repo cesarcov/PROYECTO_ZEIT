@@ -104,10 +104,10 @@ export default function PhysicalInventoryView() {
     <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Inventario Físico</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Inventario Físico</h2>
           <p style={{ fontSize: 13, color: "#6B7280", margin: "4px 0 0" }}>Toma de inventario formal con ajuste de stock</p>
         </div>
-        <button onClick={() => setShowForm(true)} style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+        <button onClick={() => setShowForm(true)} style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
           + Abrir Inventario
         </button>
       </div>
@@ -123,7 +123,7 @@ export default function PhysicalInventoryView() {
               <div key={inv.id} onClick={() => handleOpen(inv)} style={{ padding: "12px 16px", borderBottom: "1px solid #F3F4F6", cursor: "pointer", background: selected === inv.id ? "#F0F9FF" : "white" }} onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"} onMouseLeave={e => e.currentTarget.style.background = selected === inv.id ? "#F0F9FF" : "white"}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 13, color: "#0B2E33" }}>{inv.inv_number}</div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "var(--primary)" }}>{inv.inv_number}</div>
                     <div style={{ fontSize: 12, color: "#6B7280" }}>{inv.warehouse_name} · {inv.item_count} ítems</div>
                     <div style={{ fontSize: 11, color: "#9CA3AF" }}>{new Date(inv.started_at).toLocaleDateString("es-PE")}</div>
                   </div>
@@ -139,7 +139,7 @@ export default function PhysicalInventoryView() {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
               <div>
-                <span style={{ fontWeight: 800, color: "#0B2E33", fontSize: 16 }}>{detail.inv_number}</span>
+                <span style={{ fontWeight: 800, color: "var(--primary)", fontSize: 16 }}>{detail.inv_number}</span>
                 <span style={{ marginLeft: 10, background: (STATUS_COLORS[detail.status] ?? "#9CA3AF") + "22", color: STATUS_COLORS[detail.status] ?? "#9CA3AF", borderRadius: 99, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>{STATUS_LABELS[detail.status]}</span>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
@@ -185,7 +185,7 @@ export default function PhysicalInventoryView() {
                           {canEdit ? (
                             <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
                               <input type="number" step="any" min="0" value={countVal[item.id] ?? ""} onChange={e => setCountVal(p => ({ ...p, [item.id]: e.target.value }))} style={{ width: 70, padding: "4px 8px", border: "1.5px solid #E5E7EB", borderRadius: 6, fontSize: 12, textAlign: "center" }} />
-                              <button onClick={() => saveCount(item)} style={{ background: "#4F7C82", color: "white", border: "none", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }}>✓</button>
+                              <button onClick={() => saveCount(item)} style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }}>✓</button>
                             </div>
                           ) : (
                             parseFloat(item.counted_quantity ?? item.system_quantity).toFixed(2)
@@ -214,7 +214,7 @@ export default function PhysicalInventoryView() {
       {showForm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "white", borderRadius: 16, padding: 28, width: "100%", maxWidth: 440, boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
-            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "#0B2E33" }}>Abrir Inventario Físico</h3>
+            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "var(--primary)" }}>Abrir Inventario Físico</h3>
             <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 20 }}>Al abrir el inventario se captura el stock actual del almacén como referencia del sistema.</p>
             <form onSubmit={handleCreate}>
               {[["Almacén *", "warehouse_id", "select"], ["Título *", "title", "text"], ["Notas", "notes", "text"]].map(([label, key, type]) => (
@@ -232,7 +232,7 @@ export default function PhysicalInventoryView() {
               ))}
               <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                 <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "10px 0", border: "1.5px solid #E5E7EB", borderRadius: 9, background: "white", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Cancelar</button>
-                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontWeight: 700, fontSize: 13 }}>{loading ? "Abriendo..." : "Abrir Inventario"}</button>
+                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontWeight: 700, fontSize: 13 }}>{loading ? "Abriendo..." : "Abrir Inventario"}</button>
               </div>
             </form>
           </div>

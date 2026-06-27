@@ -87,7 +87,7 @@ function CreateDispatchModal({ token, onClose, onCreated }) {
         background: "#fff", borderRadius: 12, padding: 28, width: 460,
         boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
       }}>
-        <h3 style={{ margin: "0 0 18px", color: "#0B2E33", fontSize: 17 }}>Nuevo despacho</h3>
+        <h3 style={{ margin: "0 0 18px", color: "var(--primary)", fontSize: 17 }}>Nuevo despacho</h3>
 
         <label style={{ display: "block", marginBottom: 4, fontSize: 13, color: "#4B5563" }}>
           Reserva confirmada *
@@ -140,7 +140,7 @@ function CreateDispatchModal({ token, onClose, onCreated }) {
             disabled={loading}
             style={{
               padding: "8px 20px", borderRadius: 7, border: "none",
-              background: "#4F7C82", color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 600,
+              background: "var(--primary)", color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 600,
             }}
           >
             {loading ? "Creando..." : "Crear despacho"}
@@ -160,7 +160,7 @@ function ConfirmNotes({ onClose, onConfirm }) {
       display: "flex", alignItems: "center", justifyContent: "center",
     }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 24, width: 380, boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
-        <h3 style={{ margin: "0 0 14px", color: "#0B2E33", fontSize: 16 }}>Confirmar acción</h3>
+        <h3 style={{ margin: "0 0 14px", color: "var(--primary)", fontSize: 16 }}>Confirmar acción</h3>
         <textarea
           value={notes}
           onChange={e => setNotes(e.target.value)}
@@ -235,11 +235,11 @@ export default function DispatchView() {
     }
   };
 
-  const palette = { deep: "#0B2E33", dark: "#4F7C82", mid: "#93B1B5", light: "#B8E3E9" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)", mid: "#93B1B5", light: "rgba(199,210,229,0.85)" };
 
   return (
     <Layout>
-      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#F8FAFC" }}>
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
@@ -312,7 +312,7 @@ export default function DispatchView() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "1.8fr 1fr 0.8fr 1.2fr 1fr 1fr 120px",
-            background: palette.deep, color: "#B8E3E9",
+            background: palette.deep, color: "rgba(199,210,229,0.85)",
             padding: "11px 20px", fontSize: 12, fontWeight: 700, letterSpacing: "0.5px",
           }}>
             <span>MATERIAL</span>
@@ -349,7 +349,7 @@ export default function DispatchView() {
                   <div style={{ color: "#94A3B8", fontSize: 11 }}>{d.material_code ?? ""}</div>
                 </div>
                 <span style={{ color: "#475569" }}>{d.warehouse_name ?? "—"}</span>
-                <span style={{ fontWeight: 600, color: "#0B2E33" }}>{d.quantity ?? "—"}</span>
+                <span style={{ fontWeight: 600, color: "var(--primary)" }}>{d.quantity ?? "—"}</span>
                 <div>
                   <div style={{ color: "#1E293B" }}>{d.recipient_name ?? d.recipient_username ?? "—"}</div>
                 </div>

@@ -54,7 +54,7 @@ function ReturnModal({ assignment, onClose, onSuccess }) {
             value={form.condition_in}
             onChange={(e) => setForm((f) => ({ ...f, condition_in: e.target.value }))}
             style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "9px 12px", fontSize: 13, outline: "none", background: "#FAFAFA", boxSizing: "border-box" }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           >
             {CONDITION_OPTS.map((c) => <option key={c}>{c}</option>)}
@@ -68,7 +68,7 @@ function ReturnModal({ assignment, onClose, onSuccess }) {
             value={form.return_notes}
             onChange={(e) => setForm((f) => ({ ...f, return_notes: e.target.value }))}
             style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "9px 12px", fontSize: 13, outline: "none", background: "#FAFAFA", boxSizing: "border-box", resize: "none" }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -84,7 +84,7 @@ function ReturnModal({ assignment, onClose, onSuccess }) {
           </button>
           <button
             onClick={submit} disabled={loading}
-            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Guardando..." : "Registrar devolución"}
           </button>
@@ -143,7 +143,7 @@ function MaterialSearchSelect({ materials, value, onChange, placeholder }) {
           value={open ? query : displayText}
           placeholder={placeholder || "Buscar por nombre, código, marca..."}
           onChange={e => { setQuery(e.target.value); setOpen(true); if (!e.target.value) onChange(""); }}
-          onFocus={e => { setOpen(true); setQuery(""); e.target.style.borderColor = "#4F7C82"; }}
+          onFocus={e => { setOpen(true); setQuery(""); e.target.style.borderColor = "var(--primary)"; }}
           onBlur={e => { if (!open) e.target.style.borderColor = "#E5E7EB"; }}
           style={{ ...fieldStyle, paddingRight: value ? 30 : 12 }}
         />
@@ -156,7 +156,7 @@ function MaterialSearchSelect({ materials, value, onChange, placeholder }) {
         )}
       </div>
       {open && (
-        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "white", border: "1.5px solid #4F7C82", borderRadius: 10, maxHeight: 240, overflowY: "auto", zIndex: 200, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}>
+        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "white", border: "1.5px solid var(--primary)", borderRadius: 10, maxHeight: 240, overflowY: "auto", zIndex: 200, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}>
           {filtered.length === 0 ? (
             <div style={{ padding: "14px 16px", color: "#9CA3AF", fontSize: 13 }}>
               Sin resultados para "{query}"
@@ -166,10 +166,10 @@ function MaterialSearchSelect({ materials, value, onChange, placeholder }) {
               <div key={m.id}
                 onMouseDown={e => { e.preventDefault(); onChange(m.id); setOpen(false); setQuery(""); }}
                 style={{ padding: "10px 14px", cursor: "pointer", borderBottom: "1px solid #F3F4F6", display: "flex", alignItems: "center", gap: 10 }}
-                onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                 onMouseLeave={e => e.currentTarget.style.background = "white"}
               >
-                <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 700, color: "#4F7C82", background: "#EEF7F8", padding: "2px 7px", borderRadius: 5, flexShrink: 0 }}>
+                <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 700, color: "var(--primary)", background: "var(--primary-soft)", padding: "2px 7px", borderRadius: 5, flexShrink: 0 }}>
                   {m.code}
                 </span>
                 <span style={{ fontSize: 13, color: "#111827", fontWeight: 500, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -246,14 +246,14 @@ function AssignTab({ materials, projects, onAssigned }) {
         <label style={labelStyle}>Asignado a (Responsable) *</label>
         <input type="text" placeholder="Nombre del responsable" value={form.assigned_to}
           onChange={set("assigned_to")} style={fieldStyle}
-          onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+          onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <div>
           <label style={labelStyle}>Proyecto (opcional)</label>
           <select value={form.project_id} onChange={set("project_id")} style={fieldStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
             <option value="">Sin proyecto</option>
             {projects.map((p) => <option key={p.id} value={p.id}>{p.code} — {p.name}</option>)}
           </select>
@@ -261,14 +261,14 @@ function AssignTab({ materials, projects, onAssigned }) {
         <div>
           <label style={labelStyle}>Fecha retorno esperada</label>
           <input type="date" value={form.expected_return} onChange={set("expected_return")} style={fieldStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
         </div>
       </div>
 
       <div>
         <label style={labelStyle}>Estado al salir</label>
         <select value={form.condition_out} onChange={set("condition_out")} style={fieldStyle}
-          onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+          onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
           {CONDITION_OPTS.map((c) => <option key={c}>{c}</option>)}
         </select>
       </div>
@@ -278,7 +278,7 @@ function AssignTab({ materials, projects, onAssigned }) {
 
       <div>
         <button onClick={submit} disabled={loading}
-          style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
+          style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
           {loading ? "Registrando..." : "Registrar asignación"}
         </button>
       </div>
@@ -375,19 +375,19 @@ function MaintenanceTab({ materials }) {
             <label style={labelStyle}>Tipo de mantenimiento *</label>
             <input type="text" placeholder="Ej: Calibración, Limpieza, Revisión general"
               value={form.maintenance_type} onChange={set("maintenance_type")} style={fieldStyle}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div>
               <label style={labelStyle}>Último mantenimiento *</label>
               <input type="date" value={form.last_maintenance} onChange={set("last_maintenance")} style={fieldStyle}
-                onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={labelStyle}>Próximo vencimiento *</label>
               <input type="date" value={form.next_due} onChange={set("next_due")} style={fieldStyle}
-                onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
             </div>
           </div>
 
@@ -396,7 +396,7 @@ function MaintenanceTab({ materials }) {
             <textarea rows={2} placeholder="Observaciones adicionales..."
               value={form.notes} onChange={set("notes")}
               style={{ ...fieldStyle, resize: "none" }}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
           </div>
 
           {error   && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", color: "#DC2626", fontSize: 13 }}>{error}</div>}
@@ -404,7 +404,7 @@ function MaintenanceTab({ materials }) {
 
           <div>
             <button onClick={submit} disabled={loading}
-              style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
+              style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
               {loading ? "Guardando..." : "Programar mantenimiento"}
             </button>
           </div>
@@ -607,7 +607,7 @@ function CalibrationTab({ allEquipment }) {
             </button>
           )}
           <button onClick={() => setShowForm(f => !f)}
-            style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: showForm ? "#F3F4F6" : "#4F7C82", color: showForm ? "#374151" : "white", border: "none", borderRadius: 9, cursor: "pointer" }}>
+            style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: showForm ? "#F3F4F6" : "var(--primary)", color: showForm ? "#374151" : "white", border: "none", borderRadius: 9, cursor: "pointer" }}>
             {showForm ? "× Cancelar" : "+ Registrar calibración"}
           </button>
         </div>
@@ -632,37 +632,37 @@ function CalibrationTab({ allEquipment }) {
             <div>
               <label style={labelStyle}>Fecha calibración *</label>
               <input type="date" value={form.calibrated_at} onChange={e => handleCalibratedAt(e.target.value)}
-                style={fieldStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={fieldStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={labelStyle}>Vence *</label>
               <input type="date" value={form.expires_at} onChange={e => setForm(f => ({ ...f, expires_at: e.target.value }))}
-                style={fieldStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={fieldStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={labelStyle}>Enlace certificado (URL)</label>
               <input type="url" placeholder="https://drive.google.com/..." value={form.certificate_url}
                 onChange={e => setForm(f => ({ ...f, certificate_url: e.target.value }))}
-                style={fieldStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={fieldStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={labelStyle}>Técnico calibrador</label>
               <input type="text" placeholder="Nombre del técnico" value={form.technician}
                 onChange={e => setForm(f => ({ ...f, technician: e.target.value }))}
-                style={fieldStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={fieldStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={labelStyle}>Notas</label>
               <input type="text" placeholder="Observaciones..." value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                style={fieldStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={fieldStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
           </div>
           {fError   && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", color: "#DC2626", fontSize: 13, marginTop: 12 }}>{fError}</div>}
           {fSuccess && <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: "10px 14px", color: "#166534", fontSize: 13, marginTop: 12 }}>Calibración registrada correctamente.</div>}
           <div style={{ marginTop: 16 }}>
             <button onClick={submitCalibration} disabled={fLoading}
-              style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: fLoading ? "not-allowed" : "pointer", opacity: fLoading ? 0.6 : 1 }}>
+              style={{ padding: "10px 24px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: fLoading ? "not-allowed" : "pointer", opacity: fLoading ? 0.6 : 1 }}>
               {fLoading ? "Guardando..." : "Registrar calibración"}
             </button>
           </div>
@@ -671,9 +671,9 @@ function CalibrationTab({ allEquipment }) {
 
       {/* History panel */}
       {histMat && (
-        <div style={{ background: "#F0F9FA", border: "1px solid #B8E3E9", borderRadius: 14, padding: 20 }}>
+        <div style={{ background: "var(--primary-soft)", border: "1px solid #D1D5DB", borderRadius: 14, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <p style={{ fontWeight: 700, color: "#0B2E33", fontSize: 14, margin: 0 }}>
+            <p style={{ fontWeight: 700, color: "var(--primary)", fontSize: 14, margin: 0 }}>
               Historial: {histMat.material_name}
             </p>
             <button onClick={() => setHistMat(null)}
@@ -707,7 +707,7 @@ function CalibrationTab({ allEquipment }) {
                   )}
                   {h.certificate_url && (
                     <a href={h.certificate_url} target="_blank" rel="noreferrer"
-                      style={{ fontSize: 12, fontWeight: 700, color: "#4F7C82", textDecoration: "none", padding: "6px 12px", background: "#F0F9FA", border: "1px solid #B8E3E9", borderRadius: 7, flexShrink: 0 }}>
+                      style={{ fontSize: 12, fontWeight: 700, color: "var(--primary)", textDecoration: "none", padding: "6px 12px", background: "var(--primary-soft)", border: "1px solid #D1D5DB", borderRadius: 7, flexShrink: 0 }}>
                       📄 Ver certificado
                     </a>
                   )}
@@ -720,7 +720,7 @@ function CalibrationTab({ allEquipment }) {
 
       {/* Main table */}
       <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 130px 130px 110px 110px", gap: 8, padding: "11px 16px", background: "#0B2E33" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 130px 130px 110px 110px", gap: 8, padding: "11px 16px", background: "var(--primary)" }}>
           {["#", "Equipo", "Intervalo", "Última calibración", "Vencimiento", "Estado", "Acción"].map(h => (
             <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.55)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{h}</div>
           ))}
@@ -737,11 +737,11 @@ function CalibrationTab({ allEquipment }) {
             const isSelected = histMat?.material_id === item.material_id;
             return (
               <div key={item.material_id}
-                style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 130px 130px 110px 110px", gap: 8, padding: "12px 16px", alignItems: "center", borderBottom: idx < list.length - 1 ? "1px solid #F3F4F6" : "none", background: isSelected ? "#F0F9FA" : idx % 2 === 0 ? "white" : "#FAFAFA" }}>
+                style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 130px 130px 110px 110px", gap: 8, padding: "12px 16px", alignItems: "center", borderBottom: idx < list.length - 1 ? "1px solid #F3F4F6" : "none", background: isSelected ? "var(--primary-soft)" : idx % 2 === 0 ? "white" : "#FAFAFA" }}>
                 <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "#9CA3AF" }}>{idx + 1}</div>
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", margin: 0 }}>{item.material_name}</p>
-                  <p style={{ fontSize: 11, fontFamily: "monospace", color: "#4F7C82", margin: "2px 0 0" }}>{item.material_code}</p>
+                  <p style={{ fontSize: 11, fontFamily: "monospace", color: "var(--primary)", margin: "2px 0 0" }}>{item.material_code}</p>
                 </div>
                 <div style={{ fontSize: 12, color: "#6B7280" }}>
                   {item.interval_days ? `${item.interval_days} días` : "—"}
@@ -759,12 +759,12 @@ function CalibrationTab({ allEquipment }) {
                 </div>
                 <div style={{ display: "flex", gap: 4 }}>
                   <button onClick={() => openHistory(item)}
-                    style={{ fontSize: 11, fontWeight: 600, padding: "5px 10px", background: isSelected ? "#B8E3E9" : "#F3F4F6", color: isSelected ? "#0B2E33" : "#374151", border: "none", borderRadius: 7, cursor: "pointer" }}>
+                    style={{ fontSize: 11, fontWeight: 600, padding: "5px 10px", background: isSelected ? "var(--primary-soft)" : "#F3F4F6", color: isSelected ? "var(--primary)" : "#374151", border: "none", borderRadius: 7, cursor: "pointer" }}>
                     {isSelected ? "▲ Hist." : "📋 Hist."}
                   </button>
                   {item.certificate_url && (
                     <a href={item.certificate_url} target="_blank" rel="noreferrer"
-                      style={{ fontSize: 11, fontWeight: 600, padding: "5px 8px", background: "#F0F9FA", color: "#4F7C82", border: "1px solid #B8E3E9", borderRadius: 7, textDecoration: "none" }}>
+                      style={{ fontSize: 11, fontWeight: 600, padding: "5px 8px", background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 7, textDecoration: "none" }}>
                       Cert.
                     </a>
                   )}
@@ -840,17 +840,17 @@ export default function ToolsView() {
               style={{
                 padding: "7px 18px", borderRadius: 7, fontSize: 13,
                 fontWeight: tab === i ? 700 : 500,
-                background: tab === i ? "#0B2E33" : "transparent",
+                background: tab === i ? "var(--primary)" : "transparent",
                 color: tab === i ? "white" : "#6B7280",
                 border: "none", cursor: "pointer",
-                boxShadow: tab === i ? "0 2px 6px rgba(11,46,51,0.35)" : "none",
+                boxShadow: tab === i ? "0 2px 6px rgba(0,31,84,0.35)" : "none",
               }}
             >
               {t}
               {i === 0 && assigned.length > 0 && (
                 <span
                   className="ml-1.5 text-xs rounded-full px-1.5 py-0.5"
-                  style={{ background: "#4F7C82", color: "white" }}
+                  style={{ background: "var(--primary)", color: "white" }}
                 >
                   {assigned.length}
                 </span>
@@ -874,7 +874,7 @@ export default function ToolsView() {
               </div>
               {projectFilter && (
                 <button onClick={() => navigate(`/logistics/projects/${projectFilter}`)}
-                  style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
+                  style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
                   Ver detalle 360° →
                 </button>
               )}
@@ -884,7 +884,7 @@ export default function ToolsView() {
             </div>
 
             <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 1fr 160px 100px 100px 80px", gap: 8, padding: "11px 16px", background: "#0B2E33" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 1fr 160px 100px 100px 80px", gap: 8, padding: "11px 16px", background: "var(--primary)" }}>
                 {["#","Equipo","Responsable","Proyecto","Condición","Retorno","Acción"].map(h => (
                   <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.55)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{h}</div>
                 ))}
@@ -901,12 +901,12 @@ export default function ToolsView() {
                   {filteredAssigned.map((a, idx) => (
                     <div key={a.id}
                       style={{ display: "grid", gridTemplateColumns: "36px 1fr 1fr 160px 100px 100px 80px", gap: 8, padding: "12px 16px", alignItems: "center", borderBottom: idx < filteredAssigned.length - 1 ? "1px solid #F3F4F6" : "none", background: idx % 2 === 0 ? "white" : "#FAFAFA" }}
-                      onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                      onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                       onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 0 ? "white" : "#FAFAFA"}>
                       <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "#9CA3AF" }}>{idx + 1}</div>
                       <div>
                         <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", margin: 0 }}>{a.material_name}</p>
-                        <p style={{ fontSize: 11, fontFamily: "monospace", color: "#4F7C82", margin: "2px 0 0" }}>{a.material_code}</p>
+                        <p style={{ fontSize: 11, fontFamily: "monospace", color: "var(--primary)", margin: "2px 0 0" }}>{a.material_code}</p>
                       </div>
                       <div style={{ fontSize: 13, color: "#374151" }}>{a.assigned_to}</div>
                       <div>
@@ -923,7 +923,7 @@ export default function ToolsView() {
                       </div>
                       <div>
                         <button onClick={() => setReturning(a)}
-                          style={{ fontSize: 12, fontWeight: 600, padding: "6px 12px", background: "#4F7C82", color: "white", border: "none", borderRadius: 7, cursor: "pointer" }}>
+                          style={{ fontSize: 12, fontWeight: 600, padding: "6px 12px", background: "var(--primary)", color: "white", border: "none", borderRadius: 7, cursor: "pointer" }}>
                           Devolver
                         </button>
                       </div>

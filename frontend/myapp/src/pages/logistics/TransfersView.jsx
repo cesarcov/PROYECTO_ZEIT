@@ -89,10 +89,10 @@ export default function TransfersView() {
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Transferencias entre Almacenes</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Transferencias entre Almacenes</h2>
             <p style={{ fontSize: 13, color: "#6B7280", margin: "4px 0 0" }}>Solicita y aprueba movimientos entre ubicaciones</p>
           </div>
-          <button onClick={() => setShowForm(true)} style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+          <button onClick={() => setShowForm(true)} style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 9, padding: "9px 18px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
             + Nueva Transferencia
           </button>
         </div>
@@ -116,7 +116,7 @@ export default function TransfersView() {
             <tbody>
               {transfers.map(t => (
                 <tr key={t.id} onClick={() => openDetail(t)} style={{ cursor: "pointer", background: selected === t.id ? "#F0F9FF" : "white" }} onMouseEnter={e => e.currentTarget.style.background = selected === t.id ? "#F0F9FF" : "#F9FAFB"} onMouseLeave={e => e.currentTarget.style.background = selected === t.id ? "#F0F9FF" : "white"}>
-                  <td style={td}><span style={{ fontFamily: "monospace", fontWeight: 700, color: "#0B2E33" }}>{t.transfer_number}</span></td>
+                  <td style={td}><span style={{ fontFamily: "monospace", fontWeight: 700, color: "var(--primary)" }}>{t.transfer_number}</span></td>
                   <td style={td}>{t.from_warehouse}</td>
                   <td style={td}>→ {t.to_warehouse}</td>
                   <td style={{ ...td, textAlign: "center" }}>{t.item_count}</td>
@@ -134,7 +134,7 @@ export default function TransfersView() {
       {selected && detail && (
         <div style={{ background: "#F9FAFB", borderRadius: 12, border: "1px solid #E5E7EB", padding: 20, alignSelf: "start" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <span style={{ fontWeight: 800, color: "#0B2E33", fontSize: 15 }}>{detail.transfer_number}</span>
+            <span style={{ fontWeight: 800, color: "var(--primary)", fontSize: 15 }}>{detail.transfer_number}</span>
             <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#9CA3AF" }}>✕</button>
           </div>
           <div style={{ fontSize: 13, color: "#374151", marginBottom: 12 }}>
@@ -153,7 +153,7 @@ export default function TransfersView() {
             ))}
           </div>
           {NEXT_STATUS[detail.status] && (
-            <button disabled={loading} onClick={() => handleStatus(detail.id, NEXT_STATUS[detail.status])} style={{ width: "100%", background: "#0B2E33", color: "white", border: "none", borderRadius: 9, padding: "10px 0", fontWeight: 700, fontSize: 13, cursor: "pointer", marginTop: 8 }}>
+            <button disabled={loading} onClick={() => handleStatus(detail.id, NEXT_STATUS[detail.status])} style={{ width: "100%", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, padding: "10px 0", fontWeight: 700, fontSize: 13, cursor: "pointer", marginTop: 8 }}>
               {loading ? "..." : `Marcar como ${STATUS_LABELS[NEXT_STATUS[detail.status]]}`}
             </button>
           )}
@@ -169,7 +169,7 @@ export default function TransfersView() {
       {showForm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "white", borderRadius: 16, padding: 28, width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
-            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "#0B2E33" }}>Nueva Transferencia</h3>
+            <h3 style={{ margin: "0 0 20px", fontSize: 17, fontWeight: 800, color: "var(--primary)" }}>Nueva Transferencia</h3>
             <form onSubmit={handleCreate}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 {[["Almacén Origen *", "from_warehouse_id"], ["Almacén Destino *", "to_warehouse_id"]].map(([label, key]) => (
@@ -187,7 +187,7 @@ export default function TransfersView() {
                 <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} style={{ width: "100%", padding: "8px 12px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 13, boxSizing: "border-box" }} placeholder="Motivo de la transferencia..." />
               </div>
 
-              <div style={{ marginBottom: 8, fontWeight: 700, color: "#0B2E33", fontSize: 13 }}>Materiales a transferir</div>
+              <div style={{ marginBottom: 8, fontWeight: 700, color: "var(--primary)", fontSize: 13 }}>Materiales a transferir</div>
               {form.items.map((item, i) => (
                 <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 80px auto", gap: 8, marginBottom: 8, alignItems: "end" }}>
                   <select required value={item.material_id} onChange={e => updateItem(i, "material_id", e.target.value)} style={{ padding: "8px 10px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 12 }}>
@@ -198,11 +198,11 @@ export default function TransfersView() {
                   <button type="button" onClick={() => removeItem(i)} style={{ background: "#FEF2F2", color: "#DC2626", border: "none", borderRadius: 8, padding: "8px 12px", cursor: "pointer", fontWeight: 700 }}>✕</button>
                 </div>
               ))}
-              <button type="button" onClick={addItem} style={{ background: "none", border: "1.5px dashed #D1D5DB", borderRadius: 8, padding: "6px 14px", color: "#4F7C82", fontSize: 12, cursor: "pointer", marginBottom: 16 }}>+ Agregar material</button>
+              <button type="button" onClick={addItem} style={{ background: "none", border: "1.5px dashed #D1D5DB", borderRadius: 8, padding: "6px 14px", color: "var(--primary)", fontSize: 12, cursor: "pointer", marginBottom: 16 }}>+ Agregar material</button>
 
               <div style={{ display: "flex", gap: 10 }}>
                 <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "10px 0", border: "1.5px solid #E5E7EB", borderRadius: 9, background: "white", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Cancelar</button>
-                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>{loading ? "Creando..." : "Crear Transferencia"}</button>
+                <button type="submit" disabled={loading} style={{ flex: 2, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>{loading ? "Creando..." : "Crear Transferencia"}</button>
               </div>
             </form>
           </div>

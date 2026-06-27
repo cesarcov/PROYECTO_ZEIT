@@ -54,7 +54,7 @@ function ProjectFormModal({ title, subtitle, initial, onClose, onSuccess }) {
             value={form.code}
             onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
             style={{ ...inputStyle, fontFamily: "monospace" }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -67,7 +67,7 @@ function ProjectFormModal({ title, subtitle, initial, onClose, onSuccess }) {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -87,7 +87,7 @@ function ProjectFormModal({ title, subtitle, initial, onClose, onSuccess }) {
           </button>
           <button
             onClick={submit} disabled={loading}
-            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Guardando..." : initial?.id ? "Guardar cambios" : "Crear proyecto"}
           </button>
@@ -176,7 +176,7 @@ export default function ProjectsView() {
 
   // Color determinista por letra de código
   const projectColor = (code) => {
-    const palette = ["#4F7C82","#0369A1","#059669","#D97706","#7C3AED","#DB2777","#DC2626","#0B2E33"];
+    const palette = ["var(--primary)","#0369A1","#059669","#D97706","#7C3AED","#DB2777","#DC2626","var(--primary)"];
     return palette[(code?.charCodeAt(0) || 0) % palette.length];
   };
 
@@ -205,7 +205,7 @@ export default function ProjectsView() {
             </p>
           </div>
           <button onClick={() => setModal("new")}
-            style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: "#4F7C82", color: "white", border: "none", borderRadius: 10, cursor: "pointer", boxShadow: "0 2px 8px rgba(79,124,130,0.3)" }}>
+            style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 10, cursor: "pointer", boxShadow: "0 2px 8px rgba(0,58,140,0.3)" }}>
             + Nuevo proyecto
           </button>
         </div>
@@ -218,7 +218,7 @@ export default function ProjectsView() {
           <input type="text" placeholder="Buscar por nombre o código..." value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 10, paddingLeft: 38, paddingRight: 12, paddingTop: 9, paddingBottom: 9, fontSize: 13, outline: "none", boxSizing: "border-box", background: "white" }}
-            onFocus={(e) => { e.target.style.borderColor = "#4F7C82"; e.target.style.boxShadow = "0 0 0 3px rgba(79,124,130,0.1)"; }}
+            onFocus={(e) => { e.target.style.borderColor = "var(--primary)"; e.target.style.boxShadow = "0 0 0 3px rgba(0,58,140,0.1)"; }}
             onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; e.target.style.boxShadow = "none"; }} />
         </div>
 

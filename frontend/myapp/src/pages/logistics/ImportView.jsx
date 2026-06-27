@@ -261,11 +261,11 @@ function ImportCard({ type }) {
   return (
     <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "#0B2E33", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: 12 }}>
+      <div style={{ background: "var(--primary)", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: 12 }}>
         <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{type.icon}</span>
         <div>
           <h3 style={{ color: "white", fontWeight: 700, fontSize: 15, margin: 0 }}>{type.label}</h3>
-          <p style={{ color: "rgba(184,227,233,0.7)", fontSize: 12, marginTop: 3 }}>{type.desc}</p>
+          <p style={{ color: "rgba(199,210,229,0.7)", fontSize: 12, marginTop: 3 }}>{type.desc}</p>
         </div>
       </div>
 
@@ -277,7 +277,7 @@ function ImportCard({ type }) {
             <p style={{ fontSize: 10, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Columnas obligatorias</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
               {type.required.map((f, i) => (
-                <span key={i} style={{ fontSize: 11, fontWeight: 600, background: "#EEF6F7", color: "#0B2E33", border: "1px solid #B8E3E9", padding: "3px 10px", borderRadius: 99 }}>{f}</span>
+                <span key={i} style={{ fontSize: 11, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", padding: "3px 10px", borderRadius: 99 }}>{f}</span>
               ))}
             </div>
           </div>
@@ -295,9 +295,9 @@ function ImportCard({ type }) {
 
         {/* Descargar plantilla */}
         <button onClick={downloadTemplate}
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 0", width: "100%", fontSize: 13, fontWeight: 600, background: "#EEF6F7", color: "#0B2E33", border: "1.5px dashed #93B1B5", borderRadius: 10, cursor: "pointer", transition: "all 0.15s" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#D4EEF1"; e.currentTarget.style.borderColor = "#4F7C82"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "#EEF6F7"; e.currentTarget.style.borderColor = "#93B1B5"; }}>
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 0", width: "100%", fontSize: 13, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", border: "1.5px dashed #93B1B5", borderRadius: 10, cursor: "pointer", transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "var(--primary)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "#93B1B5"; }}>
           <span style={{ fontSize: 16 }}>↓</span>
           Descargar plantilla Excel (con ejemplos e instrucciones)
         </button>
@@ -308,10 +308,10 @@ function ImportCard({ type }) {
             onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
             onClick={() => inputRef.current?.click()}
             style={{
-              border: `2px dashed ${dragging ? "#4F7C82" : "#D1D5DB"}`,
+              border: `2px dashed ${dragging ? "var(--primary)" : "#D1D5DB"}`,
               borderRadius: 12, padding: "24px 16px", textAlign: "center",
               cursor: "pointer",
-              background: dragging ? "rgba(79,124,130,0.06)" : "#FAFAFA",
+              background: dragging ? "rgba(0,58,140,0.06)" : "#FAFAFA",
               transition: "all 0.2s",
             }}
           >
@@ -337,12 +337,12 @@ function ImportCard({ type }) {
 
         {/* PREVIEW DE DATOS */}
         {preview && !previewErr && (
-          <div style={{ border: "1.5px solid #B8E3E9", borderRadius: 10, overflow: "hidden" }}>
+          <div style={{ border: "1.5px solid #D1D5DB", borderRadius: 10, overflow: "hidden" }}>
             {/* Cabecera del preview */}
-            <div style={{ background: "#EEF7F8", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ background: "var(--primary-soft)", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2E33" }}>Vista previa del archivo</span>
-                <span style={{ fontSize: 11, color: "#4F7C82", marginLeft: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "var(--primary)" }}>Vista previa del archivo</span>
+                <span style={{ fontSize: 11, color: "var(--primary)", marginLeft: 8 }}>
                   {file.name} · {preview.total} fila{preview.total !== 1 ? "s" : ""} de datos
                   {hasMoreCols ? ` · mostrando ${previewCols.length} de ${preview.headers.length} columnas` : ""}
                 </span>
@@ -356,11 +356,11 @@ function ImportCard({ type }) {
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
                 <thead>
-                  <tr style={{ background: "#0B2E33" }}>
+                  <tr style={{ background: "var(--primary)" }}>
                     {previewCols.map((h, i) => (
                       <th key={i} style={{ padding: "6px 10px", color: "white", fontWeight: 700, textAlign: "left", whiteSpace: "nowrap", borderRight: "1px solid rgba(255,255,255,0.1)" }}>
                         {type.required.includes(h)
-                          ? <span title="Columna obligatoria">{h} <span style={{ color: "#B8E3E9" }}>*</span></span>
+                          ? <span title="Columna obligatoria">{h} <span style={{ color: "rgba(199,210,229,0.85)" }}>*</span></span>
                           : h}
                       </th>
                     ))}
@@ -369,7 +369,7 @@ function ImportCard({ type }) {
                 </thead>
                 <tbody>
                   {previewRows.map((row, ri) => (
-                    <tr key={ri} style={{ background: ri % 2 === 0 ? "white" : "#F0F9FA" }}>
+                    <tr key={ri} style={{ background: ri % 2 === 0 ? "white" : "var(--primary-soft)" }}>
                       {previewCols.map((_, ci) => (
                         <td key={ci} style={{ padding: "5px 10px", color: "#374151", borderRight: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {String(row[ci] ?? "")}
@@ -420,7 +420,7 @@ function ImportCard({ type }) {
                 </span>
               )}
               {result.total_items > 0 && (
-                <span style={{ fontSize: 12, color: "#4F7C82", fontWeight: 600 }}>
+                <span style={{ fontSize: 12, color: "var(--primary)", fontWeight: 600 }}>
                   📋 {result.total_items} ítems importados
                 </span>
               )}
@@ -456,8 +456,8 @@ function ImportCard({ type }) {
           disabled={loading || (file && previewErr)}
           style={{
             width: "100%", padding: "11px 0", fontSize: 13, fontWeight: 700,
-            background: loading ? "#9CA3AF" : (!file ? "#EEF7F8" : (previewErr ? "#F3F4F6" : "#0B2E33")),
-            color: loading ? "white" : (!file ? "#4F7C82" : (previewErr ? "#9CA3AF" : "white")),
+            background: loading ? "#9CA3AF" : (!file ? "var(--primary-soft)" : (previewErr ? "#F3F4F6" : "var(--primary)")),
+            color: loading ? "white" : (!file ? "var(--primary)" : (previewErr ? "#9CA3AF" : "white")),
             border: !file ? "1.5px dashed #93B1B5" : "none",
             borderRadius: 10,
             cursor: loading || (file && previewErr) ? "not-allowed" : "pointer",

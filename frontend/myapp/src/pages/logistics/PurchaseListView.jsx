@@ -81,7 +81,7 @@ function NewItemModal({ projects, materials, onClose, onCreated }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 14, padding: 28, width: 520, boxShadow: "0 24px 64px rgba(0,0,0,0.25)", maxHeight: "90vh", overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#0B2E33" }}>Agregar a lista de compras</h3>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "var(--primary)" }}>Agregar a lista de compras</h3>
           <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 18, color: "#9CA3AF", cursor: "pointer" }}>✕</button>
         </div>
 
@@ -89,7 +89,7 @@ function NewItemModal({ projects, materials, onClose, onCreated }) {
           <div>
             <label style={lbl}>Material del catálogo</label>
             <select value={form.material_id} onChange={set("material_id")} style={inp}
-              onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
+              onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
               <option value="">— Seleccionar del catálogo —</option>
               {materials.map(m => <option key={m.id} value={m.id}>{m.code} — {m.name}</option>)}
             </select>
@@ -98,27 +98,27 @@ function NewItemModal({ projects, materials, onClose, onCreated }) {
             <label style={lbl}>O nombre libre (si no está en catálogo)</label>
             <input type="text" placeholder="Ej: Cable submarino 1/0 AWG..." value={form.material_name_free}
               onChange={set("material_name_free")} style={inp}
-              onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 12 }}>
             <div>
               <label style={lbl}>Cantidad *</label>
               <input type="number" min="0.01" step="0.01" placeholder="Ej: 50" value={form.qty_needed}
                 onChange={set("qty_needed")} style={inp}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={lbl}>Unidad</label>
               <input type="text" placeholder="und / m / kg" value={form.unit}
                 onChange={set("unit")} style={inp}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
               <label style={lbl}>Proyecto (opcional)</label>
               <select value={form.project_id} onChange={set("project_id")} style={inp}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
                 <option value="">Sin proyecto</option>
                 {projects.map(p => <option key={p.id} value={p.id}>{p.code} — {p.name}</option>)}
               </select>
@@ -126,7 +126,7 @@ function NewItemModal({ projects, materials, onClose, onCreated }) {
             <div>
               <label style={lbl}>Prioridad</label>
               <select value={form.priority} onChange={set("priority")} style={inp}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
                 {Object.entries(PRIORITY_CFG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
             </div>
@@ -135,12 +135,12 @@ function NewItemModal({ projects, materials, onClose, onCreated }) {
             <label style={lbl}>Motivo / Justificación</label>
             <textarea rows={2} placeholder="¿Por qué se necesita comprar este ítem?" value={form.reason}
               onChange={set("reason")} style={{ ...inp, resize: "none", fontFamily: "inherit" }}
-              onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
           </div>
           {err && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", color: "#DC2626", fontSize: 12 }}>{err}</div>}
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", paddingTop: 4 }}>
             <button onClick={onClose} style={{ padding: "9px 20px", fontSize: 13, color: "#6B7280", background: "transparent", border: "1px solid #E5E7EB", borderRadius: 8, cursor: "pointer" }}>Cancelar</button>
-            <button onClick={save} disabled={saving} style={{ padding: "9px 24px", fontSize: 13, fontWeight: 700, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1 }}>
+            <button onClick={save} disabled={saving} style={{ padding: "9px 24px", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1 }}>
               {saving ? "Guardando..." : "Agregar a lista"}
             </button>
           </div>
@@ -292,7 +292,7 @@ export default function PurchaseListView() {
         {/* Header */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Lista de Compras</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Lista de Compras</h1>
             <p style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4 }}>
               Materiales y equipos pendientes de adquirir — general y por proyecto
             </p>
@@ -313,7 +313,7 @@ export default function PurchaseListView() {
               </button>
             )}
             <button onClick={() => setShowNew(true)}
-              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}>
+              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}>
               + Agregar ítem
             </button>
           </div>
@@ -322,7 +322,7 @@ export default function PurchaseListView() {
         {/* KPIs */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
           {[
-            { label: "Total en lista",   value: counts.ALL,      accent: "#4F7C82", bg: "#F0F9FA",  valColor: "#0B2E33" },
+            { label: "Total en lista",   value: counts.ALL,      accent: "var(--primary)", bg: "var(--primary-soft)",  valColor: "var(--primary)" },
             { label: "Pendientes",       value: pendingValue,    accent: "#D97706", bg: "#FFFBEB",  valColor: "#B45309" },
             { label: "Urgentes",         value: urgentCount,     accent: "#DC2626", bg: "#FEF2F2",  valColor: "#DC2626" },
             { label: "Ordenados",        value: counts.ORDERED,  accent: "#1D4ED8", bg: "#EFF6FF",  valColor: "#1D4ED8" },
@@ -344,14 +344,14 @@ export default function PurchaseListView() {
           </select>
           {projectFilter && projectFilter !== "__none__" && (
             <button onClick={() => navigate(`/logistics/projects/${projectFilter}`)}
-              style={{ fontSize: 12, fontWeight: 700, padding: "8px 14px", background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
+              style={{ fontSize: 12, fontWeight: 700, padding: "8px 14px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
               Ver proyecto 360° →
             </button>
           )}
           <input type="text" placeholder="Buscar material, proyecto, motivo..." value={search}
             onChange={e => setSearch(e.target.value)}
             style={{ flex: 1, minWidth: 200, border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "8px 12px", fontSize: 13, outline: "none" }}
-            onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+            onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
         </div>
 
         {/* Status tabs */}
@@ -359,7 +359,7 @@ export default function PurchaseListView() {
           {STATUS_TABS.map(s => {
             const active = tab === s;
             const cfg = s === "ALL"
-              ? { label: "Todos", bg: "#0B2E33" }
+              ? { label: "Todos", bg: "var(--primary)" }
               : { ...STATUS_CFG[s], bg: STATUS_CFG[s]?.color };
             return (
               <button key={s} onClick={() => setTab(s)}
@@ -367,7 +367,7 @@ export default function PurchaseListView() {
                   display: "flex", alignItems: "center", gap: 6,
                   padding: "7px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
                   border: active ? "none" : "1px solid #E5E7EB",
-                  background: active ? (s === "ALL" ? "#0B2E33" : STATUS_CFG[s]?.color ?? "#0B2E33") : "white",
+                  background: active ? (s === "ALL" ? "var(--primary)" : STATUS_CFG[s]?.color ?? "var(--primary)") : "white",
                   color: active ? "white" : "#6B7280",
                   boxShadow: active ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
                 }}>
@@ -401,9 +401,9 @@ export default function PurchaseListView() {
         ) : (
           <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
             {/* Header row */}
-            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "#0B2E33", padding: "0 4px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "var(--primary)", padding: "0 4px" }}>
               {["#", "Material", "Cantidad", "Unidad", "Prioridad", "Origen", "Estado", "Proyecto / Acciones"].map((h, i) => (
-                <div key={h} style={{ padding: "11px 10px", fontSize: 10, fontWeight: 700, color: "rgba(184,227,233,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", textAlign: i === 0 ? "center" : "left" }}>
+                <div key={h} style={{ padding: "11px 10px", fontSize: 10, fontWeight: 700, color: "rgba(199,210,229,0.7)", textTransform: "uppercase", letterSpacing: "0.08em", textAlign: i === 0 ? "center" : "left" }}>
                   {h}
                 </div>
               ))}
@@ -419,14 +419,14 @@ export default function PurchaseListView() {
                     borderBottom: "1px solid #F3F4F6", alignItems: "center",
                     borderLeft: isUrgent ? "3px solid #EF4444" : "3px solid transparent",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                  onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                   onMouseLeave={e => e.currentTarget.style.background = isUrgent ? "#FFF7F7" : i % 2 === 0 ? "white" : "#FAFAFA"}
                 >
                   <div style={{ padding: "12px 0", textAlign: "center", fontSize: 11, color: "#D1D5DB", fontWeight: 600 }}>{i + 1}</div>
 
                   {/* Material */}
                   <div style={{ padding: "10px 10px" }}>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: "#0B2E33", margin: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: "var(--primary)", margin: 0 }}>
                       {item.material_name || item.material_name_free || "—"}
                     </p>
                     <div style={{ display: "flex", gap: 6, marginTop: 3, alignItems: "center" }}>
@@ -437,7 +437,7 @@ export default function PurchaseListView() {
                   </div>
 
                   {/* Qty */}
-                  <div style={{ padding: "10px 10px", fontFamily: "monospace", fontSize: 15, fontWeight: 800, color: "#0B2E33" }}>
+                  <div style={{ padding: "10px 10px", fontFamily: "monospace", fontSize: 15, fontWeight: 800, color: "var(--primary)" }}>
                     {item.qty_needed.toLocaleString()}
                   </div>
 

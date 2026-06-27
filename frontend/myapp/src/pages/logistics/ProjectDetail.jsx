@@ -15,7 +15,7 @@ function fmtDate(d) {
 }
 
 // ── KPI card ──────────────────────────────────────────────────────────────────
-function KpiCard({ label, value, sub, color = "#4F7C82", icon }) {
+function KpiCard({ label, value, sub, color = "var(--primary)", icon }) {
   return (
     <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, padding: "18px 22px", display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 140 }}>
       <div style={{ width: 44, height: 44, borderRadius: 12, background: color + "18", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -103,7 +103,7 @@ function ToolsTab({ tools }) {
               {inField.map((t, i) => (
                 <tr key={t.id} style={{ borderBottom: "1px solid #F3F4F6", background: i % 2 === 0 ? "white" : "#FAFAFA" }}>
                   <td style={{ padding: "12px 14px", fontSize: 13, fontWeight: 700, color: "#111827" }}>{t.tool_name}</td>
-                  <td style={{ padding: "12px 14px", fontSize: 12, fontFamily: "monospace", color: "#4F7C82" }}>{t.tool_code || "—"}</td>
+                  <td style={{ padding: "12px 14px", fontSize: 12, fontFamily: "monospace", color: "var(--primary)" }}>{t.tool_code || "—"}</td>
                   <td style={{ padding: "12px 14px", fontSize: 13, color: "#374151" }}>{t.assigned_to || "—"}</td>
                   <td style={{ padding: "12px 14px", fontSize: 12, color: "#6B7280" }}>{fmt(t.assigned_at)}</td>
                   <td style={{ padding: "12px 14px", fontSize: 12, color: t.expected_return && new Date(t.expected_return) < new Date() ? "#DC2626" : "#6B7280", fontWeight: t.expected_return && new Date(t.expected_return) < new Date() ? 700 : 400 }}>
@@ -165,7 +165,7 @@ function RequestsTab({ requests }) {
           <tr key={r.id} style={{ borderBottom: "1px solid #F3F4F6", background: i % 2 === 0 ? "white" : "#FAFAFA" }}>
             <td style={{ padding: "12px 14px" }}>
               <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", margin: 0 }}>{r.material_name || "—"}</p>
-              {r.material_code && <p style={{ fontSize: 11, fontFamily: "monospace", color: "#4F7C82", margin: "2px 0 0" }}>{r.material_code}</p>}
+              {r.material_code && <p style={{ fontSize: 11, fontFamily: "monospace", color: "var(--primary)", margin: "2px 0 0" }}>{r.material_code}</p>}
             </td>
             <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 700, color: "#374151" }}>{r.quantity ?? "—"}</td>
             <td style={{ padding: "12px 14px", fontSize: 13, color: "#374151" }}>{r.requested_by}</td>
@@ -196,7 +196,7 @@ function DispatchesTab({ dispatches }) {
           <tr key={d.id} style={{ borderBottom: "1px solid #F3F4F6", background: i % 2 === 0 ? "white" : "#FAFAFA" }}>
             <td style={{ padding: "12px 14px", fontSize: 13, fontWeight: 700, color: "#111827" }}>{d.recipient_name || "—"}</td>
             <td style={{ padding: "12px 14px", fontSize: 13, color: "#374151" }}>{d.dispatched_by || "—"}</td>
-            <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 700, color: "#4F7C82", textAlign: "center" }}>{d.items_count}</td>
+            <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 700, color: "var(--primary)", textAlign: "center" }}>{d.items_count}</td>
             <td style={{ padding: "12px 14px", fontSize: 12, color: "#6B7280" }}>{fmt(d.created_at)}</td>
             <td style={{ padding: "12px 14px", fontSize: 12, color: "#6B7280" }}>{d.dispatched_at ? fmt(d.dispatched_at) : <span style={{ color: "#D1D5DB" }}>—</span>}</td>
             <td style={{ padding: "12px 14px" }}><Badge map={DISP_STATUS} value={d.status} /></td>
@@ -225,13 +225,13 @@ function PlansTab({ plans }) {
             <td style={{ padding: "12px 14px", fontSize: 13, fontWeight: 700, color: "#111827" }}>{p.title || "Sin título"}</td>
             <td style={{ padding: "12px 14px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#4F7C82", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span style={{ color: "white", fontSize: 11, fontWeight: 700 }}>{p.engineer_name?.charAt(0).toUpperCase()}</span>
                 </div>
                 <span style={{ fontSize: 13, color: "#374151" }}>{p.engineer_name}</span>
               </div>
             </td>
-            <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 700, color: "#4F7C82", textAlign: "center" }}>{p.items_count}</td>
+            <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 700, color: "var(--primary)", textAlign: "center" }}>{p.items_count}</td>
             <td style={{ padding: "12px 14px", fontSize: 12, color: "#6B7280" }}>{fmt(p.created_at)}</td>
             <td style={{ padding: "12px 14px" }}><Badge map={PLAN_STATUS} value={p.status} /></td>
           </tr>
@@ -423,7 +423,7 @@ function RequirementsGapTab({ projectId }) {
 
       {/* Gap table */}
       <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 90px 90px 90px 90px 90px 80px", gap: 8, padding: "11px 16px", background: "#0B2E33" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 90px 90px 90px 90px 90px 80px", gap: 8, padding: "11px 16px", background: "var(--primary)" }}>
           {["#", "Material", "Solicitado", "Disponible", "Faltante", "Cobertura", "Estado", "En compras"].map(h => (
             <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.55)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{h}</div>
           ))}
@@ -441,7 +441,7 @@ function RequirementsGapTab({ projectId }) {
                 <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "#9CA3AF" }}>{idx + 1}</div>
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", margin: 0 }}>{item.material_name}</p>
-                  {item.material_code && <p style={{ fontSize: 11, fontFamily: "monospace", color: "#4F7C82", margin: "2px 0 0" }}>{item.material_code}</p>}
+                  {item.material_code && <p style={{ fontSize: 11, fontFamily: "monospace", color: "var(--primary)", margin: "2px 0 0" }}>{item.material_code}</p>}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>{item.total_requested} {item.unit || ""}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: item.stock_available >= item.total_requested ? "#166534" : "#374151" }}>
@@ -524,7 +524,7 @@ export default function ProjectDetail() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
           <p style={{ color: "#DC2626", fontWeight: 700 }}>{error}</p>
-          <button onClick={() => navigate("/logistics/projects")} style={{ marginTop: 14, padding: "8px 20px", background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+          <button onClick={() => navigate("/logistics/projects")} style={{ marginTop: 14, padding: "8px 20px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
             ← Volver a Proyectos
           </button>
         </div>
@@ -545,7 +545,7 @@ export default function ProjectDetail() {
               style={{ width: 36, height: 36, borderRadius: 10, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "#374151", flexShrink: 0 }}>
               ←
             </button>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg, #0B2E33, #4F7C82)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg, var(--primary-dark), var(--primary))", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <span style={{ color: "white", fontSize: 22, fontWeight: 900 }}>📁</span>
             </div>
             <div>
@@ -585,7 +585,7 @@ export default function ProjectDetail() {
           <KpiCard icon="🔧" label="Herramientas en campo" value={kpis.tools_in_field} sub={`${kpis.tools_total} total`} color="#1E40AF" />
           <KpiCard icon="📋" label="Solicitudes pendientes" value={kpis.requests_pending} sub={`${kpis.requests_total} total`} color="#854D0E" />
           <KpiCard icon="🚚" label="Despachos entregados" value={kpis.dispatches_delivered} sub={`${kpis.dispatches_total} total`} color="#166534" />
-          <KpiCard icon="📐" label="Planes de operación" value={kpis.plans_total} sub="vinculados" color="#4F7C82" />
+          <KpiCard icon="📐" label="Planes de operación" value={kpis.plans_total} sub="vinculados" color="var(--primary)" />
         </div>
 
         {/* ── Tabs ── */}
@@ -597,10 +597,10 @@ export default function ProjectDetail() {
               const isActive = activeTab === t.key;
               return (
                 <button key={t.key} onClick={() => setActiveTab(t.key)}
-                  style={{ padding: "14px 22px", fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", background: "transparent", cursor: "pointer", whiteSpace: "nowrap", color: isActive ? "#0B2E33" : "#6B7280", borderBottom: isActive ? "2.5px solid #4F7C82" : "2.5px solid transparent", display: "flex", alignItems: "center", gap: 8, transition: "all 0.15s" }}>
+                  style={{ padding: "14px 22px", fontSize: 13, fontWeight: isActive ? 700 : 500, border: "none", background: "transparent", cursor: "pointer", whiteSpace: "nowrap", color: isActive ? "var(--primary)" : "#6B7280", borderBottom: isActive ? "2.5px solid var(--primary)" : "2.5px solid transparent", display: "flex", alignItems: "center", gap: 8, transition: "all 0.15s" }}>
                   {t.label}
                   {count !== null && (
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 99, background: isActive ? "#0B2E33" : "#E5E7EB", color: isActive ? "white" : "#6B7280" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 99, background: isActive ? "var(--primary)" : "#E5E7EB", color: isActive ? "white" : "#6B7280" }}>
                       {count}
                     </span>
                   )}
@@ -647,15 +647,15 @@ function buildPrintHTML(project) {
   <title>Proyecto ${project.code}</title>
   <style>
     body { font-family: Arial, sans-serif; font-size: 12px; color: #111; margin: 20px; }
-    h1 { font-size: 20px; color: #0B2E33; margin-bottom: 4px; }
+    h1 { font-size: 20px; color: #003A8C; margin-bottom: 4px; }
     .subtitle { color: #6B7280; margin-bottom: 16px; font-size: 11px; }
     .kpis { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
     .kpi { border: 1px solid #ddd; border-radius: 8px; padding: 10px 16px; min-width: 120px; }
-    .kpi-val { font-size: 22px; font-weight: bold; color: #0B2E33; }
+    .kpi-val { font-size: 22px; font-weight: bold; color: #003A8C; }
     .kpi-lbl { font-size: 11px; color: #666; }
-    h2 { font-size: 14px; color: #0B2E33; border-bottom: 2px solid #4F7C82; padding-bottom: 4px; margin: 20px 0 10px; }
+    h2 { font-size: 14px; color: #003A8C; border-bottom: 2px solid #003A8C; padding-bottom: 4px; margin: 20px 0 10px; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    th { background: #F0FDFA; text-align: left; padding: 8px; font-size: 11px; color: #374151; border-bottom: 2px solid #4F7C82; }
+    th { background: #F0FDFA; text-align: left; padding: 8px; font-size: 11px; color: #374151; border-bottom: 2px solid #003A8C; }
     td { padding: 7px 8px; border-bottom: 1px solid #eee; }
     tr:nth-child(even) td { background: #F9FAFB; }
     .footer { margin-top: 30px; font-size: 10px; color: #9CA3AF; border-top: 1px solid #eee; padding-top: 8px; }

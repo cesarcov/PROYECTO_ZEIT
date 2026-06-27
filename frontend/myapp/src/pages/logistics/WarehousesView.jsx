@@ -54,7 +54,7 @@ function WarehouseFormModal({ title, subtitle, initial, onClose, onSuccess }) {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -67,7 +67,7 @@ function WarehouseFormModal({ title, subtitle, initial, onClose, onSuccess }) {
             value={form.code}
             onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
             style={{ ...inputStyle, fontFamily: "monospace" }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -80,7 +80,7 @@ function WarehouseFormModal({ title, subtitle, initial, onClose, onSuccess }) {
             value={form.location}
             onChange={(e) => setForm({ ...form, location: e.target.value })}
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>
@@ -100,7 +100,7 @@ function WarehouseFormModal({ title, subtitle, initial, onClose, onSuccess }) {
           </button>
           <button
             onClick={submit} disabled={loading}
-            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Guardando..." : initial?.id ? "Guardar cambios" : "Crear almacén"}
           </button>
@@ -230,7 +230,7 @@ export default function WarehousesView() {
           </div>
           <button
             onClick={() => setModal("new")}
-            style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
+            style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
           >
             + Nuevo almacén
           </button>
@@ -258,17 +258,17 @@ export default function WarehousesView() {
                   {/* Card header — clicable para ver inventario */}
                   <div
                     onClick={() => navigate(`/logistics/warehouses/${wh.id}`)}
-                    style={{ background: "#0B2E33", padding: "16px 20px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", cursor: "pointer", transition: "background 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#0f3d44"}
-                    onMouseLeave={e => e.currentTarget.style.background = "#0B2E33"}
+                    style={{ background: "var(--primary)", padding: "16px 20px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", cursor: "pointer", transition: "background 0.15s" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--primary-dark)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "var(--primary)"}
                   >
                     <div>
                       <p style={{ color: "white", fontWeight: 700, fontSize: 15, margin: 0 }}>{wh.name}</p>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                        <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 600, background: "rgba(184,227,233,0.2)", color: "#B8E3E9", padding: "2px 8px", borderRadius: 99 }}>
+                        <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 600, background: "rgba(199,210,229,0.2)", color: "rgba(199,210,229,0.9)", padding: "2px 8px", borderRadius: 99 }}>
                           {wh.code}
                         </span>
-                        <span style={{ fontSize: 10, color: "rgba(184,227,233,0.6)", display: "flex", alignItems: "center", gap: 3 }}>
+                        <span style={{ fontSize: 10, color: "rgba(199,210,229,0.6)", display: "flex", alignItems: "center", gap: 3 }}>
                           Ver inventario →
                         </span>
                       </div>
@@ -289,7 +289,7 @@ export default function WarehousesView() {
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
                       {[
                         { label: "Materiales", value: stats.materials, color: "#374151" },
-                        { label: "Unidades", value: stats.total_units.toLocaleString(), color: "#4F7C82" },
+                        { label: "Unidades", value: stats.total_units.toLocaleString(), color: "var(--primary)" },
                         { label: "Stock bajo", value: stats.low_stock, color: stats.low_stock > 0 ? "#D97706" : "#16A34A" },
                       ].map((s) => (
                         <div key={s.label} style={{ background: "#F9FAFB", borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
@@ -304,9 +304,9 @@ export default function WarehousesView() {
                   <div style={{ borderTop: "1px solid #F3F4F6", padding: "10px 16px", display: "flex", gap: 6, alignItems: "center" }}>
                     <button
                       onClick={() => navigate(`/logistics/warehouses/${wh.id}`)}
-                      style={{ padding: "5px 14px", fontSize: 12, fontWeight: 700, background: "#0B2E33", color: "white", border: "none", borderRadius: 7, cursor: "pointer", flex: 1 }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#0f3d44"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "#0B2E33"}
+                      style={{ padding: "5px 14px", fontSize: 12, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 7, cursor: "pointer", flex: 1 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-dark)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "var(--primary)"}
                     >
                       📋 Ver inventario completo
                     </button>

@@ -88,7 +88,7 @@ function LocationModal({ row, onClose, onSaved }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18 }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "#0B2E33" }}>Codificación de ubicación</h3>
+            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: "var(--primary)" }}>Codificación de ubicación</h3>
             <p style={{ margin: "4px 0 0", fontSize: 12, color: "#64748B" }}>
               {row.material_name} · {row.warehouse_name}
             </p>
@@ -151,7 +151,7 @@ function LocationModal({ row, onClose, onSaved }) {
             Cancelar
           </button>
           <button onClick={save} disabled={saving}
-            style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "#0B2E33", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
+            style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
             {saving ? "Guardando..." : "Guardar ubicación"}
           </button>
         </div>
@@ -161,7 +161,7 @@ function LocationModal({ row, onClose, onSaved }) {
 }
 
 const TAB_COLORS = {
-  ALL:  { active: { bg: "#0B2E33", color: "white" },   badge: { bg: "rgba(255,255,255,0.2)", color: "white" } },
+  ALL:  { active: { bg: "var(--primary)", color: "white" },   badge: { bg: "rgba(255,255,255,0.2)", color: "white" } },
   ZERO: { active: { bg: "#DC2626", color: "white" },   badge: { bg: "rgba(255,255,255,0.25)", color: "white" } },
   LOW:  { active: { bg: "#D97706", color: "white" },   badge: { bg: "rgba(255,255,255,0.25)", color: "white" } },
   OK:   { active: { bg: "#15803D", color: "white" },   badge: { bg: "rgba(255,255,255,0.25)", color: "white" } },
@@ -243,7 +243,7 @@ export default function StockView() {
         {/* ── Encabezado ────────────────────────────────────────────────────── */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0, letterSpacing: "-0.02em" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0, letterSpacing: "-0.02em" }}>
               Stock disponible
             </h1>
             <p style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4 }}>
@@ -266,7 +266,7 @@ export default function StockView() {
         {/* ── KPIs ──────────────────────────────────────────────────────────── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
           {[
-            { label: "Total registros",  value: counts.ALL,  accent: "#4F7C82", bg: "#F0F9FA", valColor: "#0B2E33" },
+            { label: "Total registros",  value: counts.ALL,  accent: "var(--primary)", bg: "var(--primary-soft)", valColor: "var(--primary)" },
             { label: "Disponibles OK",   value: counts.OK,   accent: "#15803D", bg: "#F0FDF4", valColor: "#15803D" },
             { label: "Stock bajo",       value: counts.LOW,  accent: "#D97706", bg: "#FFFBEB", valColor: "#B45309" },
             { label: "Sin stock",        value: counts.ZERO, accent: "#EF4444", bg: "#FEF2F2", valColor: "#DC2626" },
@@ -305,7 +305,7 @@ export default function StockView() {
             </select>
             {projectFilter && (
               <button onClick={() => navigate(`/logistics/projects/${projectFilter}`)}
-                style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
+                style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
                 Ver proyecto 360° →
               </button>
             )}
@@ -316,12 +316,12 @@ export default function StockView() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <div style={{
             display: "flex", alignItems: "center", gap: 10,
-            background: "white", border: `2px solid ${focused ? "#4F7C82" : "#E5E7EB"}`,
+            background: "white", border: `2px solid ${focused ? "var(--primary)" : "#E5E7EB"}`,
             borderRadius: 12, padding: "0 14px",
-            boxShadow: focused ? "0 0 0 3px rgba(79,124,130,0.12)" : "0 1px 3px rgba(0,0,0,0.06)",
+            boxShadow: focused ? "0 0 0 3px rgba(0,58,140,0.12)" : "0 1px 3px rgba(0,0,0,0.06)",
             transition: "all 0.15s",
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={focused ? "#4F7C82" : "#9CA3AF"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={focused ? "var(--primary)" : "#9CA3AF"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <input
@@ -399,11 +399,11 @@ export default function StockView() {
           <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
 
             {/* Header */}
-            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "#0B2E33", padding: "0 4px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "var(--primary)", padding: "0 4px" }}>
               {["#", "Material", "Almacén", "Ubicación", "Mín.", "Nivel", "Disponible / Estado", ""].map((h, i) => (
                 <div key={i} style={{
                   padding: "11px 10px",
-                  fontSize: 10, fontWeight: 700, color: "rgba(184,227,233,0.7)",
+                  fontSize: 10, fontWeight: 700, color: "rgba(199,210,229,0.7)",
                   textTransform: "uppercase", letterSpacing: "0.08em",
                   textAlign: i === 0 || i === 7 ? "center" : i >= 4 ? "right" : "left",
                 }}>
@@ -428,7 +428,7 @@ export default function StockView() {
                       alignItems: "center",
                       transition: "background 0.12s",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}
                   >
                     {/* # */}
@@ -502,7 +502,7 @@ export default function StockView() {
                           alignItems: "center", justifyContent: "center",
                           transition: "all 0.15s",
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "#0B2E33"; e.currentTarget.style.color = "white"; e.currentTarget.style.borderColor = "#0B2E33"; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--primary)"; e.currentTarget.style.color = "white"; e.currentTarget.style.borderColor = "var(--primary)"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = hasLoc ? "#EFF6FF" : "#FFFBEB"; e.currentTarget.style.color = hasLoc ? "#1D4ED8" : "#D97706"; e.currentTarget.style.borderColor = "#E5E7EB"; }}
                       >
                         ✏

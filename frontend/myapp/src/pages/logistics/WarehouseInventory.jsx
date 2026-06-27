@@ -254,7 +254,7 @@ export default function WarehouseInventory() {
         <div>
           <button onClick={() => navigate(-1)}
             style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "#6B7280", background: "none", border: "none", cursor: "pointer", padding: "4px 0", marginBottom: 12 }}
-            onMouseEnter={e => e.currentTarget.style.color = "#0B2E33"}
+            onMouseEnter={e => e.currentTarget.style.color = "var(--primary)"}
             onMouseLeave={e => e.currentTarget.style.color = "#6B7280"}
           >
             ← Volver a Almacenes
@@ -263,12 +263,12 @@ export default function WarehouseInventory() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
               {/* Warehouse avatar */}
-              <div style={{ width: 52, height: 52, borderRadius: 14, background: "#0B2E33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>
+              <div style={{ width: 52, height: 52, borderRadius: 14, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>
                 🏭
               </div>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>{wh.name}</h1>
+                  <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>{wh.name}</h1>
                   <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 700, background: "#E0F2FE", color: "#0369A1", padding: "3px 8px", borderRadius: 6 }}>
                     {wh.code}
                   </span>
@@ -304,7 +304,7 @@ export default function WarehouseInventory() {
         {/* ── KPIs ──────────────────────────────────────────────────────────── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
           {[
-            { label: "Total SKUs",      value: summary.total_skus,   accent: "#4F7C82", bg: "#F0F9FA",  valColor: "#0B2E33" },
+            { label: "Total SKUs",      value: summary.total_skus,   accent: "var(--primary)", bg: "var(--primary-soft)",  valColor: "var(--primary)" },
             { label: "Unidades totales", value: (summary.total_units ?? 0).toLocaleString(), accent: "#0369A1", bg: "#F0F9FF", valColor: "#0369A1" },
             { label: "Disponibles OK",   value: (summary.total_skus ?? 0) - (summary.low_stock ?? 0) - (summary.zero_stock ?? 0), accent: "#15803D", bg: "#F0FDF4", valColor: "#15803D" },
             { label: "Stock bajo",       value: summary.low_stock,    accent: "#D97706", bg: "#FFFBEB",  valColor: "#B45309" },
@@ -331,10 +331,10 @@ export default function WarehouseInventory() {
           {/* Search */}
           <div style={{
             flex: 1, display: "flex", alignItems: "center", gap: 10,
-            background: "white", border: `2px solid ${focused ? "#4F7C82" : "#E5E7EB"}`,
+            background: "white", border: `2px solid ${focused ? "var(--primary)" : "#E5E7EB"}`,
             borderRadius: 10, padding: "0 12px", transition: "all 0.15s",
           }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={focused ? "#4F7C82" : "#9CA3AF"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={focused ? "var(--primary)" : "#9CA3AF"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <input
@@ -357,7 +357,7 @@ export default function WarehouseInventory() {
           {TABS.map(t => {
             const active = tab === t.key;
             const tabColors = {
-              ALL:      { bg: "#0B2E33", badge: "rgba(255,255,255,0.2)" },
+              ALL:      { bg: "var(--primary)", badge: "rgba(255,255,255,0.2)" },
               LOW:      { bg: "#D97706", badge: "rgba(255,255,255,0.25)" },
               ZERO:     { bg: "#DC2626", badge: "rgba(255,255,255,0.25)" },
               DAMAGE:   { bg: "#7C2D12", badge: "rgba(255,255,255,0.25)" },
@@ -397,11 +397,11 @@ export default function WarehouseInventory() {
           <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
 
             {/* Header */}
-            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "#0B2E33", padding: "0 4px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: COLS, background: "var(--primary)", padding: "0 4px" }}>
               {["#", "Material", "Categoría", "Cantidad", "Ubicación física", "Estado", "Condición", "Último mov."].map((h, i) => (
                 <div key={h} style={{
                   padding: "11px 10px", fontSize: 10, fontWeight: 700,
-                  color: "rgba(184,227,233,0.7)", textTransform: "uppercase", letterSpacing: "0.08em",
+                  color: "rgba(199,210,229,0.7)", textTransform: "uppercase", letterSpacing: "0.08em",
                   textAlign: i === 0 ? "center" : "left",
                 }}>
                   {h}
@@ -428,7 +428,7 @@ export default function WarehouseInventory() {
                       borderLeft: dmg ? "3px solid #EF4444" : "3px solid transparent",
                     }}
                     onClick={() => setExpanded(isExp ? null : item.material_id)}
-                    onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={e => e.currentTarget.style.background = dmg ? "#FFF7F7" : i % 2 === 0 ? "white" : "#FAFAFA"}
                   >
                     {/* # */}
@@ -436,7 +436,7 @@ export default function WarehouseInventory() {
 
                     {/* Material */}
                     <div style={{ padding: "10px 10px" }}>
-                      <p style={{ fontSize: 13, fontWeight: 700, color: "#0B2E33", margin: 0, lineHeight: 1.3 }}>{item.name}</p>
+                      <p style={{ fontSize: 13, fontWeight: 700, color: "var(--primary)", margin: 0, lineHeight: 1.3 }}>{item.name}</p>
                       <div style={{ display: "flex", gap: 6, marginTop: 3, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "monospace", fontSize: 10, color: "#9CA3AF", background: "#F3F4F6", padding: "1px 5px", borderRadius: 4 }}>{item.code}</span>
                         {item.brand && <span style={{ fontSize: 10, color: "#6B7280" }}>{item.brand}{item.model ? ` · ${item.model}` : ""}</span>}
@@ -450,7 +450,7 @@ export default function WarehouseInventory() {
 
                     {/* Cantidad */}
                     <div style={{ padding: "10px 10px" }}>
-                      <div style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 800, color: item.stock_available <= 0 ? "#DC2626" : "#0B2E33" }}>
+                      <div style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 800, color: item.stock_available <= 0 ? "#DC2626" : "var(--primary)" }}>
                         {item.stock_available.toLocaleString()}
                       </div>
                       <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 1 }}>{item.unit}{item.min_stock ? ` · mín: ${item.min_stock}` : ""}</div>
@@ -519,7 +519,7 @@ export default function WarehouseInventory() {
                       background: "#F8FAFC", borderBottom: "1px solid #E5E7EB",
                       padding: "16px 20px 16px 56px",
                       display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16,
-                      borderLeft: dmg ? "3px solid #EF4444" : "3px solid #4F7C82",
+                      borderLeft: dmg ? "3px solid #EF4444" : "3px solid var(--primary)",
                     }}>
                       {/* Descripción */}
                       <div>

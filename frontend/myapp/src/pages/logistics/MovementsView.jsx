@@ -60,10 +60,10 @@ function genCode(name, category, existing = []) {
 function SectionDivider({ label, accent }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: accent ? "#4F7C82" : "#9CA3AF", whiteSpace: "nowrap" }}>
+      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: accent ? "var(--primary)" : "#9CA3AF", whiteSpace: "nowrap" }}>
         {label}
       </span>
-      <div style={{ flex: 1, height: 1, background: accent ? "#B8E3E9" : "#E5E7EB" }} />
+      <div style={{ flex: 1, height: 1, background: accent ? "var(--primary-soft)" : "#E5E7EB" }} />
     </div>
   );
 }
@@ -163,11 +163,11 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
           </p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 22 }}>
             <button onClick={() => navigate("/materials")}
-              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 600, background: "#F0F9FA", color: "#0B2E33", border: "1px solid #B8E3E9", borderRadius: 8, cursor: "pointer" }}>
+              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}>
               Ver en Materiales →
             </button>
             <button onClick={onSuccess}
-              style={{ padding: "9px 24px", fontSize: 13, fontWeight: 700, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
+              style={{ padding: "9px 24px", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
               Listo
             </button>
           </div>
@@ -188,7 +188,7 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
               <label style={lbl}>Nombre *</label>
               <input autoFocus type="text" placeholder="Ej: Multímetro Digital Fluke 117"
                 value={mat.name} onChange={handleName} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={lbl}>
@@ -198,13 +198,13 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
               </label>
               <input type="text" value={mat.code} onChange={handleCode} placeholder="IM-MULT-01" maxLength={8}
                 style={{ ...inputStyle, fontFamily: "monospace" }}
-                onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Máx. 8 chars. Se genera del nombre y categoría.</p>
             </div>
             <div>
               <label style={lbl}>Stock mínimo</label>
               <input type="number" min="0" value={mat.min_stock} onChange={set("min_stock")} placeholder="0"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={lbl}>Categoría *</label>
@@ -212,7 +212,7 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
                 <div>
                   <input type="text" autoFocus value={mat.category} onChange={e => handleCat(e.target.value)}
                     placeholder="Nombre de nueva categoría..." style={inputStyle}
-                    onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                    onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
                   <button onClick={() => { setCustomCat(false); handleCat(""); }}
                     style={{ fontSize: 11, color: "#6B7280", background: "none", border: "none", cursor: "pointer", marginTop: 3 }}>
                     ← Ver categorías sugeridas
@@ -222,7 +222,7 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
                 <select value={mat.category}
                   onChange={e => { if (e.target.value === "__new__") setCustomCat(true); else handleCat(e.target.value); }}
                   style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
                   <option value="">Seleccionar categoría...</option>
                   {SUGGESTED_CATS.map(c => <option key={c} value={c}>{c}</option>)}
                   <option disabled>──────────────</option>
@@ -240,27 +240,27 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
             <div>
               <label style={lbl}>Marca</label>
               <input type="text" value={mat.brand} onChange={set("brand")} placeholder="Ej: Fluke, Bosch, 3M"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={lbl}>Modelo</label>
               <input type="text" value={mat.model} onChange={set("model")} placeholder="Ej: 117, Pro-2"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={lbl}>Proveedor</label>
               <input type="text" value={mat.supplier_name} onChange={set("supplier_name")} placeholder="Nombre de la empresa proveedora"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={lbl}>Contacto proveedor</label>
               <input type="text" value={mat.supplier_contact} onChange={set("supplier_contact")} placeholder="Teléf. / email"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
             <div>
               <label style={lbl}>Costo unitario (S/)</label>
               <input type="number" min="0" step="0.01" value={mat.unit_cost} onChange={set("unit_cost")} placeholder="0.00"
-                style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
             </div>
           </div>
         </div>
@@ -274,17 +274,17 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
                 <label style={lbl}>Número de serie</label>
                 <input type="text" value={mat.serial_number} onChange={set("serial_number")} placeholder="Ej: SN-2024-00123"
                   style={{ ...inputStyle, fontFamily: "monospace" }}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
               <div>
                 <label style={lbl}>Fecha de compra</label>
                 <input type="date" value={mat.purchase_date} onChange={set("purchase_date")} style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
               <div>
                 <label style={lbl}>Garantía hasta</label>
                 <input type="date" value={mat.warranty_expires} onChange={set("warranty_expires")} style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
             </div>
           </div>
@@ -293,32 +293,32 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
         {/* ── Ingreso al almacén ── */}
         <div>
           <SectionDivider label="Ingreso al Almacén" accent />
-          <div style={{ background: "#F0F9FA", border: "1px solid #B8E3E9", borderRadius: 12, padding: "16px 18px" }}>
+          <div style={{ background: "var(--primary-soft)", border: "1px solid #D1D5DB", borderRadius: 12, padding: "16px 18px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ ...lbl, color: "#4F7C82" }}>Almacén de destino *</label>
+                <label style={{ ...lbl, color: "var(--primary)" }}>Almacén de destino *</label>
                 <select value={warehouseId} onChange={e => setWarehouseId(e.target.value)} style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"}>
                   <option value="">Seleccionar almacén...</option>
                   {warehouses.map(w => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ ...lbl, color: "#4F7C82" }}>Cantidad inicial *</label>
+                <label style={{ ...lbl, color: "var(--primary)" }}>Cantidad inicial *</label>
                 <input type="number" min="0.01" step="0.01" value={qty}
                   onChange={e => setQty(e.target.value)} placeholder="0"
                   style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
               <div>
                 <label style={lbl}>Referencia (OC / Factura)</label>
                 <input type="text" value={reference} onChange={e => setReference(e.target.value)} placeholder="OC-2024-001"
-                  style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={lbl}>Observaciones</label>
                 <input type="text" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notas adicionales del ingreso..."
-                  style={inputStyle} onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+                  style={inputStyle} onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
               </div>
             </div>
           </div>
@@ -336,7 +336,7 @@ function NewMaterialWithStockModal({ warehouses, existingMaterials, onClose, onS
             Cancelar
           </button>
           <button onClick={submit} disabled={loading}
-            style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
+            style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
             {loading ? "Registrando..." : "✓ Crear material e ingresar stock"}
           </button>
         </div>
@@ -403,7 +403,7 @@ function NewMovementModal({ materials, warehouses, onClose, onSuccess }) {
         <div>
           <label style={labelStyle}>Material *</label>
           <select value={form.material_id} onChange={(e) => setForm({ ...form, material_id: e.target.value })} style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
             <option value="">Seleccionar material...</option>
             {materials.map((m) => <option key={m.id} value={m.id}>{m.code} — {m.name}</option>)}
           </select>
@@ -412,7 +412,7 @@ function NewMovementModal({ materials, warehouses, onClose, onSuccess }) {
         <div>
           <label style={labelStyle}>Almacén *</label>
           <select value={form.warehouse_id} onChange={(e) => setForm({ ...form, warehouse_id: e.target.value })} style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
             <option value="">Seleccionar almacén...</option>
             {warehouses.map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
           </select>
@@ -423,20 +423,20 @@ function NewMovementModal({ materials, warehouses, onClose, onSuccess }) {
             <label style={labelStyle}>Cantidad *</label>
             <input type="number" min="0.01" step="0.01" value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: e.target.value })} style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
           </div>
           <div>
             <label style={labelStyle}>Referencia</label>
             <input type="text" placeholder="OC-2024-001" value={form.reference}
               onChange={(e) => setForm({ ...form, reference: e.target.value })} style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
           </div>
         </div>
 
         <div>
           <label style={labelStyle}>Observaciones</label>
           <input type="text" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
         </div>
 
         {error && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", color: "#DC2626", fontSize: 13 }}>{error}</div>}
@@ -447,7 +447,7 @@ function NewMovementModal({ materials, warehouses, onClose, onSuccess }) {
             Cancelar
           </button>
           <button onClick={submit} disabled={loading}
-            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
+            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
             {loading ? "Registrando..." : "Registrar movimiento"}
           </button>
         </div>
@@ -529,14 +529,14 @@ export default function MovementsView() {
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={() => setShowNewMat(true)}
-              style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "#0B2E33", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
+              style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
               title="Registra el material en el catálogo e ingresa el stock inicial al almacén"
             >
               + Nuevo material
             </button>
             <button
               onClick={() => setShowNew(true)}
-              style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "#4F7C82", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
+              style={{ padding: "8px 18px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 9, cursor: "pointer" }}
             >
               + Registrar movimiento
             </button>
@@ -546,7 +546,7 @@ export default function MovementsView() {
         {/* KPIs */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {[
-            { label: "Movimientos", value: kpis.total, color: "#374151", bg: "#F9FAFB", border: "#4F7C82" },
+            { label: "Movimientos", value: kpis.total, color: "#374151", bg: "#F9FAFB", border: "var(--primary)" },
             { label: "Unidades ingresadas", value: kpis.inbound.toLocaleString(), color: "#166534", bg: "#F0FDF4", border: "#16A34A" },
             { label: "Unidades salidas", value: kpis.outbound.toLocaleString(), color: "#991B1B", bg: "#FEF2F2", border: "#DC2626" },
           ].map((k) => (
@@ -570,14 +570,14 @@ export default function MovementsView() {
                 <input type={type} value={filters[key]}
                   onChange={(e) => setFilters({ ...filters, [key]: e.target.value })}
                   style={{ ...inputStyle, fontSize: 12 }}
-                  onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
+                  onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"} />
               </div>
             ))}
             <div>
               <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#6B7280", marginBottom: 5 }}>Tipo</label>
               <select value={filters.movement_type} onChange={(e) => setFilters({ ...filters, movement_type: e.target.value })}
                 style={{ ...inputStyle, fontSize: 12 }}
-                onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+                onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
                 <option value="">Todos</option>
                 {Object.entries(TYPE_CFG).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
@@ -586,14 +586,14 @@ export default function MovementsView() {
               <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#6B7280", marginBottom: 5 }}>Almacén</label>
               <select value={filters.warehouse_id} onChange={(e) => setFilters({ ...filters, warehouse_id: e.target.value })}
                 style={{ ...inputStyle, fontSize: 12 }}
-                onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+                onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
                 <option value="">Todos</option>
                 {warehouses.map((w) => <option key={w.id} value={w.id}>{w.code}</option>)}
               </select>
             </div>
             <div>
               <button onClick={load} disabled={loading}
-                style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.5 : 1, whiteSpace: "nowrap" }}>
+                style={{ padding: "8px 20px", fontSize: 13, fontWeight: 600, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.5 : 1, whiteSpace: "nowrap" }}>
                 {loading ? "..." : "Aplicar"}
               </button>
             </div>
@@ -607,7 +607,7 @@ export default function MovementsView() {
         {/* Tabla */}
         <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
           {/* Header */}
-          <div style={{ display: "grid", gridTemplateColumns: "140px 110px 1fr 80px 100px 100px 110px 110px", gap: 8, padding: "12px 20px", background: "#0B2E33" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "140px 110px 1fr 80px 100px 100px 110px 110px", gap: 8, padding: "12px 20px", background: "var(--primary)" }}>
             {["Fecha", "Tipo", "Material", "Cant.", "Origen", "Destino", "Referencia", "Registrado por"].map((h) => (
               <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{h}</div>
             ))}
@@ -628,7 +628,7 @@ export default function MovementsView() {
                     borderBottom: idx < movements.length - 1 ? "1px solid #F3F4F6" : "none",
                     background: idx % 2 === 0 ? "white" : "#FAFAFA",
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? "white" : "#FAFAFA"}
                 >
                   <div style={{ fontSize: 11, color: "#6B7280", fontFamily: "monospace", whiteSpace: "nowrap" }}>{fmt(m.created_at)}</div>
