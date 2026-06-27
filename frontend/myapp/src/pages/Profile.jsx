@@ -37,6 +37,12 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
+  const getAvatarSrc = (url) => {
+    if (!url) return `${BASE_URL}/avatar-assets/default.png`;
+    if (url.startsWith("data:image/")) return url;
+    return `${BASE_URL}${url}`;
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     fetch(`${BASE_URL}/auth/me`, {
@@ -57,28 +63,33 @@ export default function Profile() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    setUploading(true);
-    const token = localStorage.getItem("access_token");
-    fetch(`${BASE_URL}/auth/me/avatar`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    })
-      .then((r) => {
-        if (!r.ok) throw new Error("Error al subir archivo");
-        return r.json();
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target.result;
+      setUploading(true);
+      const token = localStorage.getItem("access_token");
+      fetch(`${BASE_URL}/auth/me/avatar`, {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ avatar_url: base64 }),
       })
-      .then((data) => {
-        setProfile(prev => prev ? { ...prev, avatar_url: data.avatar_url } : { avatar_url: data.avatar_url });
-        window.location.reload();
-      })
-      .catch((err) => {
-        alert("Ocurrió un error al subir la foto: " + err.message);
-      })
-      .finally(() => setUploading(false));
+        .then((r) => {
+          if (!r.ok) throw new Error("Error al subir archivo");
+          return r.json();
+        })
+        .then((data) => {
+          setProfile(prev => prev ? { ...prev, avatar_url: data.avatar_url } : { avatar_url: data.avatar_url });
+          window.location.reload();
+        })
+        .catch((err) => {
+          alert("Ocurrió un error al subir la foto: " + err.message);
+        })
+        .finally(() => setUploading(false));
+    };
+    reader.readAsDataURL(file);
   };
 
   const roleColors = ROLE_COLORS[auth.role] || ROLE_COLORS.operations;
@@ -113,19 +124,11 @@ export default function Profile() {
               border: "3px solid rgba(184,227,233,0.3)",
               boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
             }}>
-              {profile?.avatar_url ? (
-                <img 
-                  src={`${BASE_URL}${profile.avatar_url}`} 
-                  alt="avatar grande" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-              ) : (
-                <img 
-                  src={`${BASE_URL}/avatar-assets/default.png`} 
-                  alt="avatar default grande" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-              )}
+              <img 
+                src={getAvatarSrc(profile?.avatar_url)} 
+                alt="avatar grande" 
+                style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+              />
             </div>
             {/* Input file invisible */}
             <label style={{

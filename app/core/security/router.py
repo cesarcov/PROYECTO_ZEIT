@@ -176,6 +176,27 @@ def upload_avatar(
     return {"status": "ok", "avatar_url": url}
 
 
+class AvatarUpdate(BaseModel):
+    avatar_url: str
+
+
+@router.put("/me/avatar")
+def update_avatar_url(
+    payload: AvatarUpdate,
+    current_user=Depends(get_current_user)
+):
+    user_id = str(current_user["id"])
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE users
+                SET avatar_url = %s
+                WHERE id = %s
+            """, (payload.avatar_url, user_id))
+        conn.commit()
+    return {"status": "ok", "avatar_url": payload.avatar_url}
+
+
 # ── Preferencias del usuario (incluye el tema de la interfaz) ──────────────────
 # Rutas literales /me/preferences: dato propio del usuario (solo-auth), mismo
 # patrón que los endpoints "/my"; no requiere require_permission.

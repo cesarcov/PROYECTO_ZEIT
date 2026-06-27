@@ -436,3 +436,11 @@ def test_planificacion_my_pending_count(client, auth):
     assert r.status_code == 200, r.text[:300]
     assert "count" in r.json()
     assert isinstance(r.json()["count"], int)
+
+
+def test_avatar_put_base64_success(client, auth):
+    payload = {"avatar_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="}
+    r = client.put("/auth/me/avatar", headers=auth, json=payload)
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["status"] == "ok"
+    assert r.json()["avatar_url"].startswith("data:image/")

@@ -295,10 +295,19 @@ export default function Layout({ children }) {
   const [userProfile, setUserProfile]       = useState(null);
   const [bellCount, setBellCount]           = useState(0);
   const [mailCount, setMailCount]           = useState(0);
-  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery]       = useState("");
   const [searchResults, setSearchResults]   = useState([]);
   const [searching, setSearching]           = useState(false);
+  
+  const searchContainerRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  const getAvatarSrc = (url) => {
+    if (!url) return `${BASE_URL}/avatar-assets/default.png`;
+    if (url.startsWith("data:image/")) return url;
+    return `${BASE_URL}${url}`;
+  };
 
   // Cargar perfil de usuario (avatar_url) y contadores dinámicos de notificaciones
   useEffect(() => {
@@ -333,10 +342,17 @@ export default function Layout({ children }) {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setShowSearchModal(true);
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+          searchInputRef.current.select();
+          setSearchDropdownOpen(true);
+        }
       }
       if (e.key === "Escape") {
-        setShowSearchModal(false);
+        if (searchInputRef.current) {
+          searchInputRef.current.blur();
+        }
+        setSearchDropdownOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -387,9 +403,12 @@ export default function Layout({ children }) {
     return () => window.removeEventListener("resize", handle);
   }, []);
 
-  // Cierra el menú de usuario al hacer clic fuera
+  // Cierra el menú de usuario y el buscador al hacer clic fuera
   useEffect(() => {
-    const handle = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); };
+    const handle = (e) => { 
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false); 
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) setSearchDropdownOpen(false);
+    };
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
@@ -677,22 +696,136 @@ export default function Layout({ children }) {
           {/* Lado derecho: Buscador + Notificaciones + Perfil */}
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             
-            {/* Buscador de cabecera */}
+            {/* Buscador de cabecera en línea */}
             <div 
-              onClick={() => setShowSearchModal(true)}
-              style={{
-                display: "flex", alignItems: "center", gap: 8,
-                background: "#F1F5F9", border: "1px solid #E2E8F0",
-                borderRadius: 10, padding: "6px 12px", width: 220,
-                cursor: "pointer", transition: "all 0.15s ease",
-                color: "#64748B"
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#E2E8F0"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#F1F5F9"; }}
+              ref={searchContainerRef}
+              style={{ position: "relative" }}
             >
-              <Icon name="search" size={14} />
-              <span style={{ fontSize: 13, flex: 1, textAlign: "left", userSelect: "none" }}>Buscar en el sistema...</span>
-              <span style={{ fontSize: 10, background: "white", border: "1px solid #CBD5E1", padding: "1px 5px", borderRadius: 4, fontWeight: 700, color: "#475569" }}>Ctrl+K</span>
+              <input 
+                ref={searchInputRef}
+                type="text"
+                placeholder="Buscar en el sistema..."
+                value={searchQuery}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  setSearchDropdownOpen(true);
+                }}
+                onFocus={() => setSearchDropdownOpen(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  background: "#F1F5F9",
+                  border: searchDropdownOpen ? "1.5px solid var(--primary)" : "1px solid #E2E8F0",
+                  borderRadius: 10,
+                  padding: "6px 12px 6px 34px",
+                  width: 380, // Aumentado a 380px como solicitado
+                  height: 34,
+                  fontSize: 13,
+                  color: "#1E293B",
+                  outline: "none",
+                  transition: "all 0.15s ease",
+                }}
+              />
+              <div style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748B", pointerEvents: "none", display: "flex", alignItems: "center" }}>
+                <Icon name="search" size={14} />
+              </div>
+              
+              {/* Atajo Ctrl+K más sutil */}
+              {!searchQuery && (
+                <div style={{
+                  position: "absolute",
+                  right: 10,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#94A3B8", // Más sutil
+                  opacity: 0.7,
+                  background: "transparent",
+                  userSelect: "none"
+                }}>
+                  Ctrl+K
+                </div>
+              )}
+
+              {/* Autocomplete Dropdown */}
+              {searchDropdownOpen && searchQuery.trim().length >= 2 && (
+                <div style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  left: 0,
+                  width: "100%",
+                  background: "white",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 10,
+                  boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)",
+                  zIndex: 999,
+                  maxHeight: 350,
+                  overflowY: "auto",
+                  padding: "8px 0"
+                }}>
+                  {searching ? (
+                    <div style={{ padding: "16px 20px", color: "#64748B", fontSize: 13, textAlign: "center" }}>
+                      Buscando...
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div style={{ padding: "16px 20px", color: "#64748B", fontSize: 13, textAlign: "center" }}>
+                      No se encontraron resultados para "{searchQuery}"
+                    </div>
+                  ) : (
+                    // Agrupar resultados por categoría
+                    Object.entries(
+                      searchResults.reduce((acc, curr) => {
+                        if (!acc[curr.category]) acc[curr.category] = [];
+                        acc[curr.category].push(curr);
+                        return acc;
+                      }, {})
+                    ).map(([category, items]) => (
+                      <div key={category} style={{ borderBottom: "1px solid #F1F5F9" }}>
+                        <div style={{
+                          padding: "6px 14px",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          color: "#94A3B8",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          background: "#F8FAFC"
+                        }}>
+                          {category}
+                        </div>
+                        <div style={{ padding: "4px 0" }}>
+                          {items.map((item, idx) => (
+                            <Link
+                              key={idx}
+                              to={item.link}
+                              onClick={() => {
+                                setSearchQuery("");
+                                setSearchDropdownOpen(false);
+                              }}
+                              style={{
+                                display: "block",
+                                padding: "8px 14px",
+                                textDecoration: "none",
+                                transition: "background 0.1s"
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = "#F1F5F9"}
+                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            >
+                              <div style={{ fontSize: 13, fontWeight: 600, color: "#1E293B" }}>
+                                {item.title}
+                              </div>
+                              <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
+                                {item.subtitle}
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Icono de Mensajes (Envelope) */}
@@ -749,19 +882,11 @@ export default function Layout({ children }) {
                 onMouseLeave={e => { if (!menuOpen) e.currentTarget.style.background = "transparent"; }}
               >
                 {/* Avatar circular */}
-                {userProfile?.avatar_url ? (
-                  <img 
-                    src={`${BASE_URL}${userProfile.avatar_url}`} 
-                    alt="avatar" 
-                    style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", border: "1px solid #CBD5E1" }} 
-                  />
-                ) : (
-                  <img 
-                    src={`${BASE_URL}/avatar-assets/default.png`} 
-                    alt="avatar default" 
-                    style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", border: "1px solid #CBD5E1" }} 
-                  />
-                )}
+                <img 
+                  src={getAvatarSrc(userProfile?.avatar_url)} 
+                  alt="avatar" 
+                  style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", border: "1px solid #CBD5E1" }} 
+                />
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "start", gap: 1 }}>
                   <span style={{ color: "#1E293B", fontSize: 12, fontWeight: 700 }}>
                     {formatUsername(auth.username)}
@@ -791,19 +916,11 @@ export default function Layout({ children }) {
                     <ZeitLogo width={110} onDark showText />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    {userProfile?.avatar_url ? (
-                      <img 
-                        src={`${BASE_URL}${userProfile.avatar_url}`} 
-                        alt="avatar dropdown" 
-                        style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} 
-                      />
-                    ) : (
-                      <img 
-                        src={`${BASE_URL}/avatar-assets/default.png`} 
-                        alt="avatar dropdown default" 
-                        style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} 
-                      />
-                    )}
+                    <img 
+                      src={getAvatarSrc(userProfile?.avatar_url)} 
+                      alt="avatar dropdown" 
+                      style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} 
+                    />
                     <div>
                       <p style={{ color: "white", fontWeight: 700, fontSize: 13, margin: 0 }}>
                         {formatUsername(auth.username)}
@@ -907,97 +1024,6 @@ export default function Layout({ children }) {
         </main>
       </div>
 
-      {/* Modal de Búsqueda Global */}
-      {showSearchModal && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-          background: "rgba(15, 23, 42, 0.45)", backdropFilter: "blur(4px)",
-          display: "flex", alignItems: "start", justifyContent: "center",
-          zIndex: 9999, paddingTop: "10vh"
-        }} onClick={() => setShowSearchModal(false)}>
-          <div style={{
-            background: "white", borderRadius: 16, width: "100%", maxWidth: 600,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-            border: "1px solid #E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column"
-          }} onClick={e => e.stopPropagation()}>
-            {/* Header del buscador */}
-            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #F1F5F9", gap: 12 }}>
-              <div style={{ color: "var(--primary)" }}><Icon name="search" size={20} /></div>
-              <input
-                type="text"
-                placeholder="Buscar en todo el sistema (materiales, planes, OTs, OCs...)"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                autoFocus
-                style={{
-                  flex: 1, border: "none", fontSize: 16, outline: "none",
-                  color: "#1E293B"
-                }}
-              />
-              <span style={{ fontSize: 11, background: "#F1F5F9", color: "#64748B", padding: "4px 8px", borderRadius: 6, fontWeight: 600 }}>ESC</span>
-            </div>
-
-            {/* Resultados */}
-            <div style={{ maxHeight: "60vh", overflowY: "auto", padding: "12px 0" }}>
-              {searching && (
-                <div style={{ padding: "20px", textAlign: "center", color: "#64748B", fontSize: 14 }}>
-                  Buscando en el sistema...
-                </div>
-              )}
-
-              {!searching && searchQuery.trim().length >= 2 && searchResults.length === 0 && (
-                <div style={{ padding: "20px", textAlign: "center", color: "#64748B", fontSize: 14 }}>
-                  No se encontraron resultados para "{searchQuery}"
-                </div>
-              )}
-
-              {!searching && searchQuery.trim().length < 2 && (
-                <div style={{ padding: "20px 24px", color: "#94A3B8", fontSize: 13, textAlign: "center" }}>
-                  Escribe al menos 2 caracteres para comenzar la búsqueda rápida.
-                </div>
-              )}
-
-              {!searching && searchResults.length > 0 && (
-                <div>
-                  {/* Agrupar por categoría */}
-                  {Object.entries(
-                    searchResults.reduce((groups, item) => {
-                      groups[item.category] = groups[item.category] || [];
-                      groups[item.category].push(item);
-                      return groups;
-                    }, {})
-                  ).map(([category, items]) => (
-                    <div key={category} style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", padding: "4px 24px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                        {category}
-                      </div>
-                      {items.map((item, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            setShowSearchModal(false);
-                            setSearchQuery("");
-                            navigate(item.link);
-                          }}
-                          style={{
-                            padding: "10px 24px", cursor: "pointer", transition: "background 0.1s ease",
-                            display: "flex", flexDirection: "column", gap: 2
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.background = "#F8FAFC"}
-                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                        >
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#1E293B" }}>{item.title}</div>
-                          <div style={{ fontSize: 12, color: "#64748B" }}>{item.subtitle}</div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
