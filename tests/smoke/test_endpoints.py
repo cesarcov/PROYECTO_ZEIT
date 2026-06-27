@@ -393,3 +393,46 @@ def test_tenant_deactivate_reactivate(client, superadmin_auth, test_tenant_data)
     # Request tras reactivar → acceso restaurado
     r4 = client.get("/health", headers={"X-Tenant-ID": slug})
     assert r4.status_code == 200, f"Después de reactivar se esperaba 200, devolvió {r4.status_code}"
+
+
+# ── Búsqueda Global, Avatar y Tareas Pendientes (Rediseño Topbar) ────────────────
+
+def test_global_search_requires_auth(client):
+    r = client.get("/search?q=abrazadera")
+    assert r.status_code == 401
+
+
+def test_global_search_results(client, auth):
+    r = client.get("/search?q=abrazadera", headers=auth)
+    assert r.status_code == 200, r.text[:300]
+    data = r.json()
+    assert "query" in data
+    assert "results" in data
+    assert isinstance(data["results"], list)
+
+
+def test_avatar_upload_fails_for_invalid_format(client, auth):
+    files = {"file": ("test.txt", b"dummy content", "text/plain")}
+    r = client.post("/auth/me/avatar", headers=auth, files=files)
+    assert r.status_code == 422
+
+
+def test_avatar_upload_success(client, auth):
+    # Crear un PNG mínimo de 1x1 píxel
+    png_data = (
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06"
+        b"\x00\x00\x00\x1f\x15c4\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01"
+        b"\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
+    )
+    files = {"file": ("test.png", png_data, "image/png")}
+    r = client.post("/auth/me/avatar", headers=auth, files=files)
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["status"] == "ok"
+    assert r.json()["avatar_url"].startswith("/avatar-assets/")
+
+
+def test_planificacion_my_pending_count(client, auth):
+    r = client.get("/planificacion/actividades/my-pending-count", headers=auth)
+    assert r.status_code == 200, r.text[:300]
+    assert "count" in r.json()
+    assert isinstance(r.json()["count"], int)

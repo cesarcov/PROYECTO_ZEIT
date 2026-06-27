@@ -73,7 +73,7 @@ ABASTECIMIENTO
 
 ## Pendiente inmediato / deuda técnica
 
-- [ ] Auth en endpoints `/reporting/*` (actualmente sin token)
+- [x] Auth en endpoints `/reporting/*` (implementado en router.py con `get_current_user`)
 - [ ] Paginación en endpoints con alto volumen (materiales, movimientos, OTs)
 - [ ] Tests unitarios e integración backend
-- [ ] `qrcode` module falta en dependencias (router_advanced.py)
+- [x] `qrcode` module falta en dependencias (ya agregado en requirements.txt e instalado)

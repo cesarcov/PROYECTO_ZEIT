@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Literal, List
 from uuid import UUID
 from datetime import datetime, date
@@ -52,8 +52,7 @@ class StockMovementResponse(BaseModel):
     created_by: Optional[str]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ============================================================
@@ -83,8 +82,7 @@ class StockLocationResponse(StockLocationCreate):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class StockMovementWithLocation(StockMovementCreate):
     rack: Optional[str] = None
@@ -177,8 +175,7 @@ class MaterialResponse(BaseModel):
     aliases: List[str]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 # ============================================================
 # 🏬 WAREHOUSES
 # ============================================================

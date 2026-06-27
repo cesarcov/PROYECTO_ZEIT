@@ -1447,7 +1447,8 @@ CREATE TABLE public.users (
     is_active boolean DEFAULT true,
     created_at timestamp without time zone DEFAULT now(),
     username text,
-    preferencias jsonb DEFAULT '{}'::jsonb NOT NULL
+    preferencias jsonb DEFAULT '{}'::jsonb NOT NULL,
+    avatar_url text
 );
 
 

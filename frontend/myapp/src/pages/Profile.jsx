@@ -35,6 +35,7 @@ export default function Profile() {
   const auth = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -47,12 +48,41 @@ export default function Profile() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("El archivo supera el límite de 2 MB.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setUploading(true);
+    const token = localStorage.getItem("access_token");
+    fetch(`${BASE_URL}/auth/me/avatar`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Error al subir archivo");
+        return r.json();
+      })
+      .then((data) => {
+        setProfile(prev => prev ? { ...prev, avatar_url: data.avatar_url } : { avatar_url: data.avatar_url });
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert("Ocurrió un error al subir la foto: " + err.message);
+      })
+      .finally(() => setUploading(false));
+  };
+
   const roleColors = ROLE_COLORS[auth.role] || ROLE_COLORS.operations;
   const roleLabel  = ROLE_LABELS[auth.role]  || auth.role;
-
-  const initials = auth.username
-    ? auth.username.substring(0, 2).toUpperCase()
-    : (auth.role?.charAt(0) || "U").toUpperCase();
 
   return (
     <Layout>
@@ -75,16 +105,53 @@ export default function Profile() {
           marginBottom: 16, display: "flex", alignItems: "center", gap: 20,
           boxShadow: "0 4px 20px rgba(0,31,84,0.2)",
         }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: 20, flexShrink: 0,
-            background: "linear-gradient(135deg, var(--primary), var(--primary-dark))",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            border: "3px solid rgba(184,227,233,0.3)",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
-          }}>
-            <span style={{ color: "white", fontSize: 26, fontWeight: 900, letterSpacing: "-1px" }}>
-              {initials}
-            </span>
+          <div style={{ position: "relative" }}>
+            <div style={{
+              width: 72, height: 72, borderRadius: 20, flexShrink: 0,
+              background: "white", overflow: "hidden",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              border: "3px solid rgba(184,227,233,0.3)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+            }}>
+              {profile?.avatar_url ? (
+                <img 
+                  src={`${BASE_URL}${profile.avatar_url}`} 
+                  alt="avatar grande" 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              ) : (
+                <img 
+                  src={`${BASE_URL}/avatar-assets/default.png`} 
+                  alt="avatar default grande" 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              )}
+            </div>
+            {/* Input file invisible */}
+            <label style={{
+              position: "absolute", bottom: -6, right: -6,
+              background: "var(--primary)", border: "2px solid white",
+              width: 26, height: 26, borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
+              color: "white"
+            }} title="Cambiar foto de perfil">
+              {uploading ? (
+                <span style={{ fontSize: 9, fontWeight: 700 }}>...</span>
+              ) : (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              )}
+              <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/jpg" 
+                onChange={handleAvatarUpload} 
+                style={{ display: "none" }} 
+                disabled={uploading}
+              />
+            </label>
           </div>
           <div>
             <h2 style={{ color: "white", fontSize: 20, fontWeight: 800, margin: 0, letterSpacing: "-0.02em" }}>

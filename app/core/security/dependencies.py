@@ -51,7 +51,7 @@ def get_current_user(
     with db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT id, username, email, is_active
+                SELECT id, username, email, is_active, avatar_url
                 FROM users
                 WHERE id = %s
             """, (user_id,))
@@ -66,6 +66,7 @@ def get_current_user(
         "email": row[2],
         "permissions": permissions,
         "primary_module": primary_module,
+        "avatar_url": row[4] if len(row) > 4 else None,
     }
 
     request.state.user = user

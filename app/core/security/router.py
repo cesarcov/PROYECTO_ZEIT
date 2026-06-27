@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
+import os
+from app.core.database import db_connection
 from app.core.rate_limit import limiter
 from app.core.security.auth import (
     authenticate_user,
@@ -118,7 +120,60 @@ def me(current_user=Depends(get_current_user)):
         "username": current_user["username"],
         "email": current_user["email"],
         "permissions": current_user["permissions"],
+        "avatar_url": current_user.get("avatar_url"),
     }
+
+
+_AVATARS_DIR = os.path.join("app", "storage", "avatars")
+
+
+@router.post("/me/avatar")
+def upload_avatar(
+    file: UploadFile = File(...),
+    current_user=Depends(get_current_user)
+):
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    if ext not in (".png", ".jpg", ".jpeg"):
+        raise HTTPException(status_code=422, detail="Formato no soportado (usar PNG o JPG)")
+    
+    # Validar tamaño (máximo 2 MB)
+    content = file.file.read()
+    if len(content) > 2 * 1024 * 1024:
+        raise HTTPException(status_code=422, detail="El archivo supera 2 MB")
+        
+    os.makedirs(_AVATARS_DIR, exist_ok=True)
+    
+    # Nombre de archivo basado en el user_id para que sea único y reemplace el anterior
+    user_id = str(current_user["id"])
+    filename = f"{user_id}{ext}"
+    dest = os.path.join(_AVATARS_DIR, filename)
+    
+    # Borrar cualquier extensión anterior para evitar basura
+    for e in (".png", ".jpg", ".jpeg"):
+        prev = os.path.join(_AVATARS_DIR, f"{user_id}{e}")
+        if prev != dest and os.path.exists(prev):
+            try:
+                os.remove(prev)
+            except OSError:
+                pass
+                
+    # Guardar
+    with open(dest, "wb") as f:
+        f.write(content)
+        
+    url = f"/avatar-assets/{filename}"
+    
+    # Guardar en base de datos
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE users
+                SET avatar_url = %s
+                WHERE id = %s
+            """, (url, user_id))
+        conn.commit()
+        
+    return {"status": "ok", "avatar_url": url}
 
 
 # ── Preferencias del usuario (incluye el tema de la interfaz) ──────────────────

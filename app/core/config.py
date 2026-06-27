@@ -1,3 +1,4 @@
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -16,8 +17,13 @@ class Settings(BaseSettings):
     SUPERADMIN_USERNAME: str = ""
     SUPERADMIN_PASSWORD_HASH: str = ""
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    # ⚡ Pool de conexiones de base de datos
+    DB_POOL_MIN: int = 1
+    DB_POOL_MAX: int = 5
+
+    model_config = ConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
 settings = Settings()

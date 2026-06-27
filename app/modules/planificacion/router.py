@@ -20,6 +20,11 @@ def get_kpis(_=Depends(get_current_user)):
     return service.get_kpis_productividad_service()
 
 
+@router.get("/actividades/my-pending-count")
+def count_my_pending_tasks(user=Depends(get_current_user)):
+    return service.count_my_pending_tasks_service(user)
+
+
 @router.post("/import-excel")
 def import_excel(
     file: UploadFile = File(...),

@@ -994,3 +994,16 @@ def list_active_users_service():
             cur.execute("SELECT id, username FROM users WHERE is_active = TRUE ORDER BY username ASC")
             return [{"id": str(r[0]), "username": r[1]} for r in cur.fetchall()]
 
+
+def count_my_pending_tasks_service(user: dict) -> dict:
+    user_id = str(user["id"])
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT COUNT(*) FROM planificacion_semanal
+                WHERE estado != 'Completado'
+                  AND (responsable_id = %s OR responsables_ids LIKE %s)
+            """, (user_id, f"%{user_id}%"))
+            count = cur.fetchone()[0]
+    return {"count": int(count)}
+

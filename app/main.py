@@ -33,18 +33,43 @@ from app.modules.gerencia.router import router as gerencia_router
 from app.modules.requerimientos.router import router as requerimientos_router
 from app.modules.branding.router import router as branding_router
 from app.modules.superadmin.router import router as superadmin_router
+from app.modules.search.router import router as search_router
 from app.core.database import db_connection
 
 logger = logging.getLogger(__name__)
 
+from contextlib import asynccontextmanager
+
 _dev = os.getenv("ENV", "development") != "production"
 _start_time = time.time()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+        print("[OK] Base de datos conectada correctamente.")
+    except Exception as e:
+        print(f"[ERROR] Conexion a la base de datos fallida: {e}")
+        print("  Verifica DATABASE_URL en tu archivo .env")
+        raise SystemExit(1)
+    start_scheduler()
+    
+    yield
+    
+    # Shutdown
+    stop_scheduler()
+
 
 app = FastAPI(
     title="ERP Modular",
     docs_url="/docs" if _dev else None,
     redoc_url="/redoc" if _dev else None,
     openapi_url="/openapi.json" if _dev else None,
+    lifespan=lifespan,
 )
 
 
@@ -56,24 +81,6 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
         content={"detail": "Error interno del servidor. Revisa los logs del API."},
     )
 
-
-@app.on_event("startup")
-def startup_check():
-    try:
-        with db_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT 1")
-        print("[OK] Base de datos conectada correctamente.")
-    except Exception as e:
-        print(f"[ERROR] Conexion a la base de datos fallida: {e}")
-        print("  Verifica DATABASE_URL en tu archivo .env")
-        raise SystemExit(1)
-    start_scheduler()
-
-
-@app.on_event("shutdown")
-def shutdown_event():
-    stop_scheduler()
 
 # ===============================
 # CORS (FRONTEND)
@@ -129,11 +136,17 @@ app.include_router(gerencia_router)
 app.include_router(requerimientos_router)
 app.include_router(branding_router)
 app.include_router(superadmin_router)
+app.include_router(search_router)
 
 # Estáticos de marca (logos subidos). El directorio es de runtime (gitignored).
 _BRANDING_DIR = os.path.join("app", "storage", "branding")
 os.makedirs(_BRANDING_DIR, exist_ok=True)
 app.mount("/branding-assets", StaticFiles(directory=_BRANDING_DIR), name="branding-assets")
+
+# Estáticos de avatares de usuario. El directorio es de runtime (gitignored).
+_AVATARS_DIR = os.path.join("app", "storage", "avatars")
+os.makedirs(_AVATARS_DIR, exist_ok=True)
+app.mount("/avatar-assets", StaticFiles(directory=_AVATARS_DIR), name="avatar-assets")
 
 
 @app.get("/")

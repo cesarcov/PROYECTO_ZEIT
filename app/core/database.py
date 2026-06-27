@@ -29,8 +29,10 @@ def get_connection_pool(db_config: dict) -> ThreadedConnectionPool:
     pool_key = (db_config.get("host"), db_config.get("port"), db_config.get("database"), db_config.get("user"))
     with _pools_lock:
         if pool_key not in _pools:
-            # Min 2, Max 15 conexiones por pool. Supabase Hobby tier soporta hasta 60 conexiones concurrentes.
-            _pools[pool_key] = ThreadedConnectionPool(2, 15, **db_config)
+            # Tamaño del pool configurable (por defecto Min=1, Max=5 para prevenir saturación en multi-tenant)
+            minconn = settings.DB_POOL_MIN
+            maxconn = settings.DB_POOL_MAX
+            _pools[pool_key] = ThreadedConnectionPool(minconn, maxconn, **db_config)
     return _pools[pool_key]
 
 @contextmanager

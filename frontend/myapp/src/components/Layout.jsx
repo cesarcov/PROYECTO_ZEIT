@@ -39,6 +39,9 @@ function Icon({ name, size = 16 }) {
     shoppingBag:<><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></>,
     fileText:   <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></>,
     calculator: <><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></>,
+    search:     <><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>,
+    bell:       <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>,
+    mail:       <><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></>,
   };
 
   return <svg style={s} {...props}>{icons[name] ?? icons.package}</svg>;
@@ -288,6 +291,80 @@ export default function Layout({ children }) {
   const [menuOpen,  setMenuOpen]            = useState(false);
   const [pendingMaterials, setPendingMaterials] = useState(0);
   const menuRef = useRef(null);
+
+  const [userProfile, setUserProfile]       = useState(null);
+  const [bellCount, setBellCount]           = useState(0);
+  const [mailCount, setMailCount]           = useState(0);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchQuery, setSearchQuery]       = useState("");
+  const [searchResults, setSearchResults]   = useState([]);
+  const [searching, setSearching]           = useState(false);
+
+  // Cargar perfil de usuario (avatar_url) y contadores dinámicos de notificaciones
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      const token = localStorage.getItem("access_token");
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      fetch(`${BASE_URL}/auth/me`, { headers })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data) setUserProfile(data); });
+        
+      const fetchCounts = () => {
+        fetch(`${BASE_URL}/planificacion/actividades/my-pending-count`, { headers })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => { if (data) setBellCount(data.count); })
+          .catch(() => {});
+          
+        fetch(`${BASE_URL}/canal/solicitudes/pending-count`, { headers })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => { if (data) setMailCount(data.count); })
+          .catch(() => {});
+      };
+      
+      fetchCounts();
+      const interval = setInterval(fetchCounts, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [auth.isAuthenticated]);
+
+  // Listener para Ctrl+K y Esc
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setShowSearchModal(true);
+      }
+      if (e.key === "Escape") {
+        setShowSearchModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Consultar buscador reactivo con debounce
+  useEffect(() => {
+    if (!searchQuery || searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    const token = localStorage.getItem("access_token");
+    const delayDebounceFn = setTimeout(() => {
+      fetch(`${BASE_URL}/search?q=${encodeURIComponent(searchQuery)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data) setSearchResults(data.results);
+        })
+        .catch(() => {})
+        .finally(() => setSearching(false));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
 
   // Cargar contador de materiales pendientes (solo para roles logística / admin)
   useEffect(() => {
@@ -579,6 +656,7 @@ export default function Layout({ children }) {
           display: "flex", alignItems: "center", justifyContent: "space-between",
           flexShrink: 0,
         }}>
+          {/* Lado izquierdo: Breadcrumbs */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
@@ -596,35 +674,107 @@ export default function Layout({ children }) {
             )}
           </div>
 
-          {/* Chip de usuario con dropdown */}
-          <div ref={menuRef} style={{ position: "relative" }}>
-            <button
-              onClick={() => setMenuOpen(o => !o)}
+          {/* Lado derecho: Buscador + Notificaciones + Perfil */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            
+            {/* Buscador de cabecera */}
+            <div 
+              onClick={() => setShowSearchModal(true)}
               style={{
-                display: "flex", alignItems: "center", gap: 9,
-                background: menuOpen ? "#F0F4F8" : "#F9FAFB",
-                border: `1px solid ${menuOpen ? "#C7D2DA" : "#E5E7EB"}`,
-                borderRadius: 999, padding: "5px 12px 5px 7px",
-                cursor: "pointer", transition: "all 0.15s",
+                display: "flex", alignItems: "center", gap: 8,
+                background: "#F1F5F9", border: "1px solid #E2E8F0",
+                borderRadius: 10, padding: "6px 12px", width: 220,
+                cursor: "pointer", transition: "all 0.15s ease",
+                color: "#64748B"
               }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#E2E8F0"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#F1F5F9"; }}
             >
-              <div style={{
-                width: 26, height: 26, borderRadius: "50%",
-                background: "linear-gradient(135deg, var(--primary), var(--sidebar-bg))",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <span style={{ color: "white", fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>
-                  {auth.username?.charAt(0) || auth.role?.charAt(0)}
+              <Icon name="search" size={14} />
+              <span style={{ fontSize: 13, flex: 1, textAlign: "left", userSelect: "none" }}>Buscar en el sistema...</span>
+              <span style={{ fontSize: 10, background: "white", border: "1px solid #CBD5E1", padding: "1px 5px", borderRadius: 4, fontWeight: 700, color: "#475569" }}>Ctrl+K</span>
+            </div>
+
+            {/* Icono de Mensajes (Envelope) */}
+            <Link to="/canal" style={{ position: "relative", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F1F5F9"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <Icon name="mail" size={18} />
+              {mailCount > 0 && (
+                <span style={{
+                  position: "absolute", top: -2, right: -2,
+                  background: "#EF4444", color: "white", fontSize: 10, fontWeight: 700,
+                  borderRadius: "50%", minWidth: 16, height: 16,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  padding: "0 4px", border: "2px solid white"
+                }}>
+                  {mailCount}
                 </span>
-              </div>
-              <span style={{ color: "#374151", fontSize: 12, fontWeight: 600 }}>
-                {ROLE_LABELS[auth.role] || formatUsername(auth.username)}
-              </span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ transform: menuOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </button>
+              )}
+            </Link>
+
+            {/* Icono de Notificaciones (Bell) */}
+            <Link to="/operaciones/ot" style={{ position: "relative", color: "#475569", display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F1F5F9"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <Icon name="bell" size={18} />
+              {bellCount > 0 && (
+                <span style={{
+                  position: "absolute", top: -2, right: -2,
+                  background: "#F59E0B", color: "white", fontSize: 10, fontWeight: 700,
+                  borderRadius: "50%", minWidth: 16, height: 16,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  padding: "0 4px", border: "2px solid white"
+                }}>
+                  {bellCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Separador vertical */}
+            <div style={{ width: 1, height: 20, background: "#E2E8F0" }}></div>
+
+            {/* Chip de usuario con dropdown */}
+            <div ref={menuRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setMenuOpen(o => !o)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 9,
+                  background: menuOpen ? "#F0F4F8" : "transparent",
+                  border: "none",
+                  borderRadius: 12, padding: "4px 8px 4px 4px",
+                  cursor: "pointer", transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { if (!menuOpen) e.currentTarget.style.background = "#F1F5F9"; }}
+                onMouseLeave={e => { if (!menuOpen) e.currentTarget.style.background = "transparent"; }}
+              >
+                {/* Avatar circular */}
+                {userProfile?.avatar_url ? (
+                  <img 
+                    src={`${BASE_URL}${userProfile.avatar_url}`} 
+                    alt="avatar" 
+                    style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", border: "1px solid #CBD5E1" }} 
+                  />
+                ) : (
+                  <img 
+                    src={`${BASE_URL}/avatar-assets/default.png`} 
+                    alt="avatar default" 
+                    style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", border: "1px solid #CBD5E1" }} 
+                  />
+                )}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "start", gap: 1 }}>
+                  <span style={{ color: "#1E293B", fontSize: 12, fontWeight: 700 }}>
+                    {formatUsername(auth.username)}
+                  </span>
+                  <span style={{ color: "#64748B", fontSize: 10, fontWeight: 500 }}>
+                    {ROLE_LABELS[auth.role] || auth.role}
+                  </span>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  style={{ transform: menuOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
 
             {/* Dropdown */}
             {menuOpen && (
@@ -641,16 +791,19 @@ export default function Layout({ children }) {
                     <ZeitLogo width={110} onDark showText />
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{
-                      width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
-                      background: "linear-gradient(135deg, var(--primary), var(--sidebar-bg))",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      border: "2px solid rgba(199,210,229,0.3)",
-                    }}>
-                      <span style={{ color: "white", fontSize: 14, fontWeight: 800, textTransform: "uppercase" }}>
-                        {auth.username?.charAt(0) || auth.role?.charAt(0)}
-                      </span>
-                    </div>
+                    {userProfile?.avatar_url ? (
+                      <img 
+                        src={`${BASE_URL}${userProfile.avatar_url}`} 
+                        alt="avatar dropdown" 
+                        style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} 
+                      />
+                    ) : (
+                      <img 
+                        src={`${BASE_URL}/avatar-assets/default.png`} 
+                        alt="avatar dropdown default" 
+                        style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} 
+                      />
+                    )}
                     <div>
                       <p style={{ color: "white", fontWeight: 700, fontSize: 13, margin: 0 }}>
                         {formatUsername(auth.username)}
@@ -737,7 +890,8 @@ export default function Layout({ children }) {
               </div>
             )}
           </div>
-        </header>
+        </div>
+      </header>
 
         {/* Contenido */}
         <main style={{ flex: 1, padding: 24 }}>
@@ -752,6 +906,98 @@ export default function Layout({ children }) {
           </div>
         </main>
       </div>
+
+      {/* Modal de Búsqueda Global */}
+      {showSearchModal && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          background: "rgba(15, 23, 42, 0.45)", backdropFilter: "blur(4px)",
+          display: "flex", alignItems: "start", justifyContent: "center",
+          zIndex: 9999, paddingTop: "10vh"
+        }} onClick={() => setShowSearchModal(false)}>
+          <div style={{
+            background: "white", borderRadius: 16, width: "100%", maxWidth: 600,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            border: "1px solid #E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column"
+          }} onClick={e => e.stopPropagation()}>
+            {/* Header del buscador */}
+            <div style={{ display: "flex", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #F1F5F9", gap: 12 }}>
+              <div style={{ color: "var(--primary)" }}><Icon name="search" size={20} /></div>
+              <input
+                type="text"
+                placeholder="Buscar en todo el sistema (materiales, planes, OTs, OCs...)"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                autoFocus
+                style={{
+                  flex: 1, border: "none", fontSize: 16, outline: "none",
+                  color: "#1E293B"
+                }}
+              />
+              <span style={{ fontSize: 11, background: "#F1F5F9", color: "#64748B", padding: "4px 8px", borderRadius: 6, fontWeight: 600 }}>ESC</span>
+            </div>
+
+            {/* Resultados */}
+            <div style={{ maxHeight: "60vh", overflowY: "auto", padding: "12px 0" }}>
+              {searching && (
+                <div style={{ padding: "20px", textAlign: "center", color: "#64748B", fontSize: 14 }}>
+                  Buscando en el sistema...
+                </div>
+              )}
+
+              {!searching && searchQuery.trim().length >= 2 && searchResults.length === 0 && (
+                <div style={{ padding: "20px", textAlign: "center", color: "#64748B", fontSize: 14 }}>
+                  No se encontraron resultados para "{searchQuery}"
+                </div>
+              )}
+
+              {!searching && searchQuery.trim().length < 2 && (
+                <div style={{ padding: "20px 24px", color: "#94A3B8", fontSize: 13, textAlign: "center" }}>
+                  Escribe al menos 2 caracteres para comenzar la búsqueda rápida.
+                </div>
+              )}
+
+              {!searching && searchResults.length > 0 && (
+                <div>
+                  {/* Agrupar por categoría */}
+                  {Object.entries(
+                    searchResults.reduce((groups, item) => {
+                      groups[item.category] = groups[item.category] || [];
+                      groups[item.category].push(item);
+                      return groups;
+                    }, {})
+                  ).map(([category, items]) => (
+                    <div key={category} style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--primary)", padding: "4px 24px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        {category}
+                      </div>
+                      {items.map((item, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setShowSearchModal(false);
+                            setSearchQuery("");
+                            navigate(item.link);
+                          }}
+                          style={{
+                            padding: "10px 24px", cursor: "pointer", transition: "background 0.1s ease",
+                            display: "flex", flexDirection: "column", gap: 2
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = "#F8FAFC"}
+                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                        >
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#1E293B" }}>{item.title}</div>
+                          <div style={{ fontSize: 12, color: "#64748B" }}>{item.subtitle}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
