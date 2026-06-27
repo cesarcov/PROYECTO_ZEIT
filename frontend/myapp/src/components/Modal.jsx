@@ -36,7 +36,7 @@ export default function Modal({ title, subtitle, onClose, children, maxWidth = 4
       }}>
         {/* Header */}
         <div style={{
-          background: "linear-gradient(135deg, #0B2E33, #1a4a52)",
+          background: "linear-gradient(135deg, var(--primary-dark), var(--primary))",
           padding: "18px 24px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>

@@ -336,7 +336,7 @@ export default function TarifasPersonalView() {
 
         {/* Tabla agrupada por rol */}
         {!loading && Object.keys(byRol).length > 0 && (
-          <div style={{ borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 8px rgba(11,46,51,0.10)" }}>
+          <div style={{ borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,31,84,0.10)" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", background: "white" }}>
               <thead>
                 <tr>

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { apiFetch } from "../../services/api";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 
 const TIPO_CONFIG = {
   VISITA_TECNICA: { label: "Visita Técnica", bg: "#EFF6FF", text: "#1E40AF", border: "#DBEAFE", icon: "🚗" },
@@ -298,7 +298,7 @@ export default function AprobacionesGerencia() {
                           fontSize: 12,
                           fontWeight: 700,
                           cursor: "pointer",
-                          boxShadow: "0 2px 8px rgba(11,46,51,0.2)",
+                          boxShadow: "0 2px 8px rgba(0,31,84,0.2)",
                           transition: "opacity 0.15s",
                         }}
                         onMouseEnter={e => { e.currentTarget.style.opacity = 0.9; }}
@@ -506,7 +506,7 @@ export default function AprobacionesGerencia() {
                       }}
                       style={{
                         marginLeft: "auto", background: PRIMARY, color: "white", border: "none", borderRadius: 8, padding: "8px 14px",
-                        fontSize: 12, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 6px rgba(11,46,51,0.2)"
+                        fontSize: 12, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 6px rgba(0,31,84,0.2)"
                       }}
                     >
                       Ver APUs Completo →
@@ -610,7 +610,7 @@ export default function AprobacionesGerencia() {
                     onClick={() => handleActionClick(detailItem, "APROBADO")}
                     style={{
                       background: PRIMARY, color: "white", border: "none", borderRadius: 8, padding: "10px 20px",
-                      fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 8px rgba(11,46,51,0.2)"
+                      fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 8px rgba(0,31,84,0.2)"
                     }}
                   >
                     ✓ Aprobar

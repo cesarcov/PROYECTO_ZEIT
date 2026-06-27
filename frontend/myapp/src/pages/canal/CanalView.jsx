@@ -58,7 +58,7 @@ function fmtDate(d) {
   });
 }
 
-function btn(bg = "#4F7C82", color = "#fff") {
+function btn(bg = "var(--primary)", color = "#fff") {
   return {
     padding: "7px 16px", borderRadius: 8, border: "none",
     background: bg, color, cursor: "pointer", fontWeight: 600,
@@ -105,12 +105,12 @@ function NuevaSolicitudModal({ token, myModule, onClose, onCreated }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 16, width: 560, boxShadow: "0 20px 60px rgba(0,0,0,0.25)", overflow: "hidden" }}>
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg, #0B2E33, #1a4a52)", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ background: "linear-gradient(135deg, var(--primary-dark), var(--primary))", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>CANAL INTER-MÓDULO</div>
+            <div style={{ color: "rgba(199,210,229,0.85)", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>CANAL INTER-MÓDULO</div>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 17, marginTop: 2 }}>Nueva solicitud</div>
           </div>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#B8E3E9", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
+          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "rgba(199,210,229,0.85)", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
         </div>
 
         {/* Body */}
@@ -160,7 +160,7 @@ function NuevaSolicitudModal({ token, myModule, onClose, onCreated }) {
 
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <button onClick={onClose} style={btn("#F1F5F9", "#374151")}>Cancelar</button>
-            <button onClick={submit} disabled={loading} style={btn("#0B2E33")}>
+            <button onClick={submit} disabled={loading} style={btn("var(--primary)")}>
               {loading ? "Enviando..." : "Enviar solicitud"}
             </button>
           </div>
@@ -274,21 +274,21 @@ function SolicitudDetail({ solicitud: init, token, myModule, username, onClose, 
       <div style={{ background: "#fff", borderRadius: 16, width: 680, maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 24px 64px rgba(0,0,0,0.25)", overflow: "hidden" }}>
 
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg, #0B2E33, #1a4a52)", padding: "18px 24px", flexShrink: 0 }}>
+        <div style={{ background: "linear-gradient(135deg, var(--primary-dark), var(--primary))", padding: "18px 24px", flexShrink: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
-              <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>{sol.code}</div>
+              <div style={{ color: "rgba(199,210,229,0.85)", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px" }}>{sol.code}</div>
               <div style={{ color: "#fff", fontWeight: 800, fontSize: 16, marginTop: 3, maxWidth: 500 }}>{sol.subject}</div>
             </div>
-            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#B8E3E9", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
+            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "rgba(199,210,229,0.85)", cursor: "pointer", padding: "5px 11px", fontSize: 18 }}>✕</button>
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
             <Badge cfg={sc} />
             <Badge cfg={pc} />
-            <span style={{ color: "#93B1B5", fontSize: 12 }}>
+            <span style={{ color: "rgba(199,210,229,0.7)", fontSize: 12 }}>
               {MODULE_LABELS[sol.from_module] || sol.from_module} → {MODULE_LABELS[sol.to_module] || sol.to_module}
             </span>
-            <span style={{ color: "#93B1B5", fontSize: 11 }}>· {fmtDate(sol.created_at)}</span>
+            <span style={{ color: "rgba(199,210,229,0.7)", fontSize: 11 }}>· {fmtDate(sol.created_at)}</span>
           </div>
         </div>
 
@@ -296,16 +296,16 @@ function SolicitudDetail({ solicitud: init, token, myModule, username, onClose, 
         <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
 
           {/* Asignación */}
-          <div style={{ padding: "12px 24px", background: "#EEF7F8", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ padding: "12px 24px", background: "var(--primary-soft)", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2E33" }}>Responsable del Caso:</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--primary)" }}>Responsable del Caso:</span>
               {isBoss ? (
                 <select
                   value={sol.assigned_to || ""}
                   onChange={(e) => assignRequest(e.target.value || null)}
                   style={{
-                    border: "1px solid #B8E3E9", borderRadius: 8, padding: "3px 8px",
-                    fontSize: 12, background: "white", outline: "none", color: "#0B2E33",
+                    border: "1px solid #D1D5DB", borderRadius: 8, padding: "3px 8px",
+                    fontSize: 12, background: "white", outline: "none", color: "var(--primary)",
                     fontWeight: 600
                   }}
                 >
@@ -372,9 +372,9 @@ function SolicitudDetail({ solicitud: init, token, myModule, username, onClose, 
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {(sol.mensajes ?? []).map(m => (
-                  <div key={m.id} style={{ background: "#F8FAFC", borderRadius: 10, padding: "10px 14px", borderLeft: "3px solid #4F7C82" }}>
+                  <div key={m.id} style={{ background: "#F8FAFC", borderRadius: 10, padding: "10px 14px", borderLeft: "3px solid var(--primary)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2E33" }}>{formatUsername(m.username) || "Usuario"}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "var(--primary)" }}>{formatUsername(m.username) || "Usuario"}</span>
                       <span style={{ fontSize: 11, color: "#94A3B8" }}>{fmtDate(m.created_at)}</span>
                     </div>
                     <p style={{ margin: 0, fontSize: 13, color: "#374151", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{m.mensaje}</p>
@@ -396,7 +396,7 @@ function SolicitudDetail({ solicitud: init, token, myModule, username, onClose, 
                 onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) sendMensaje(); }}
               />
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button onClick={sendMensaje} disabled={sending || !mensaje.trim()} style={{ ...btn("#4F7C82"), opacity: mensaje.trim() ? 1 : 0.5 }}>
+                <button onClick={sendMensaje} disabled={sending || !mensaje.trim()} style={{ ...btn("var(--primary)"), opacity: mensaje.trim() ? 1 : 0.5 }}>
                   {sending ? "Enviando..." : "Responder"}
                 </button>
               </div>
@@ -437,13 +437,13 @@ function SolicitudCard({ sol, myModule, onClick }) {
               {isIncoming ? `← De: ${MODULE_LABELS[sol.from_module] || sol.from_module}` : `→ Para: ${MODULE_LABELS[sol.to_module] || sol.to_module}`}
             </span>
           </div>
-          <div style={{ fontWeight: 700, fontSize: 14, color: "#0B2E33", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: "var(--primary)", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {sol.subject}
           </div>
           <div style={{ fontSize: 11, color: "#94A3B8" }}>
             Por: {formatUsername(sol.created_by_username) || "—"} · {fmtDate(sol.updated_at)}
-            {sol.message_count > 0 && <span style={{ marginLeft: 8, background: "#F0F9FA", color: "#4F7C82", padding: "1px 7px", borderRadius: 20, fontWeight: 600 }}>💬 {sol.message_count}</span>}
-            {sol.assigned_to_username && <span style={{ marginLeft: 8, background: "#EEF7F8", color: "#0B2E33", padding: "1px 7px", borderRadius: 20, fontWeight: 600 }}>👤 {formatUsername(sol.assigned_to_username)}</span>}
+            {sol.message_count > 0 && <span style={{ marginLeft: 8, background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 7px", borderRadius: 20, fontWeight: 600 }}>💬 {sol.message_count}</span>}
+            {sol.assigned_to_username && <span style={{ marginLeft: 8, background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 7px", borderRadius: 20, fontWeight: 600 }}>👤 {formatUsername(sol.assigned_to_username)}</span>}
           </div>
 
         </div>
@@ -504,14 +504,14 @@ export default function CanalView() {
           <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>
             {MODULE_LABELS[myModule] || myModule}
           </div>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: "#0B2E33" }}>Canal Inter-Módulo</h2>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: "var(--primary)" }}>Canal Inter-Módulo</h2>
           <p style={{ margin: "6px 0 0", fontSize: 13, color: "#64748B" }}>
             Solicitudes y comunicación entre Operaciones, Logística y Administración
           </p>
         </div>
         <button
           onClick={() => setShowNew(true)}
-          style={{ ...btn("#0B2E33"), display: "flex", alignItems: "center", gap: 6, paddingLeft: 14, paddingRight: 14 }}
+          style={{ ...btn("var(--primary)"), display: "flex", alignItems: "center", gap: 6, paddingLeft: 14, paddingRight: 14 }}
         >
           <span style={{ fontSize: 16 }}>+</span> Nueva solicitud
         </button>
@@ -522,7 +522,7 @@ export default function CanalView() {
         {[
           { label: "Total recibidas",  value: recibidas.length,  color: "#3B82F6" },
           { label: "Pendientes tuyas", value: pendRecibidas,      color: "#D97706" },
-          { label: "Enviadas",         value: enviadas.length,   color: "#4F7C82" },
+          { label: "Enviadas",         value: enviadas.length,   color: "var(--primary)" },
           { label: "Resueltas",        value: solicitudes.filter(s => s.status === "RESUELTO").length, color: "#16A34A" },
         ].map(k => (
           <div key={k.label} style={{ background: "#fff", borderRadius: 12, padding: "14px 18px", border: "1px solid #E5E7EB", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
@@ -545,7 +545,7 @@ export default function CanalView() {
               padding: "6px 18px", borderRadius: 8, border: "none", cursor: "pointer",
               fontSize: 13, fontWeight: 600,
               background: tab === t.key ? "#fff" : "transparent",
-              color: tab === t.key ? "#0B2E33" : "#64748B",
+              color: tab === t.key ? "var(--primary)" : "#64748B",
               boxShadow: tab === t.key ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
               display: "flex", alignItems: "center", gap: 6,
             }}

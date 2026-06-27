@@ -10,7 +10,7 @@ function fmtDate(dt) {
 }
 
 const ACCENT = {
-  teal:   { bar: "#4F7C82", text: "#0B2E33", bg: "#EEF6F7", border: "#B8E3E9" },
+  teal:   { bar: "var(--primary)", text: "var(--primary)", bg: "var(--primary-soft)", border: "#D1D5DB" },
   yellow: { bar: "#D97706", text: "#92400E", bg: "#FFFBEB", border: "#FDE68A" },
   green:  { bar: "#16A34A", text: "#166534", bg: "#F0FDF4", border: "#BBF7D0" },
   red:    { bar: "#DC2626", text: "#991B1B", bg: "#FEF2F2", border: "#FECACA" },
@@ -100,7 +100,7 @@ function MonthlyChart({ data }) {
             <div style={{ flex: 1, background: "#F3F4F6", borderRadius: 99, height: 22, overflow: "hidden" }}>
               <div
                 style={{
-                  height: "100%", background: "#4F7C82", borderRadius: 99,
+                  height: "100%", background: "var(--primary)", borderRadius: 99,
                   width: `${Math.max(pct, 2)}%`,
                   display: "flex", alignItems: "center", justifyContent: "flex-end",
                   paddingRight: 8, transition: "width 0.4s ease",
@@ -201,11 +201,11 @@ export default function ReportingKPIs() {
     return (
       <Layout>
         <div style={{ padding: 40, textAlign: "center" }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: "#0B2E33" }}>Reportes y KPIs</h1>
+          <h1 style={{ fontSize: 20, fontWeight: 800, color: "var(--primary)" }}>Reportes y KPIs</h1>
           <p style={{ color: "#DC2626", fontSize: 14, marginTop: 12 }}>
             No se pudieron cargar los indicadores en este momento.
           </p>
-          <button onClick={loadData} style={{ marginTop: 16, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+          <button onClick={loadData} style={{ marginTop: 16, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
             Reintentar
           </button>
         </div>
@@ -220,12 +220,12 @@ export default function ReportingKPIs() {
         {/* Title & Download */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0, letterSpacing: "-0.02em" }}>Reportes y KPIs de la Empresa</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0, letterSpacing: "-0.02em" }}>Reportes y KPIs de la Empresa</h1>
             <p style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>Control operativo consolidado de Logística, Operaciones y Finanzas de Juliet</p>
           </div>
           <button onClick={() => setShowDownloadModal(true)}
             style={{
-              background: "#0B2E33", color: "white", padding: "8px 16px",
+              background: "var(--primary)", color: "white", padding: "8px 16px",
               fontSize: 13, fontWeight: 700, border: "none", borderRadius: 8,
               cursor: "pointer", transition: "background 0.15s"
             }}>
@@ -243,7 +243,7 @@ export default function ReportingKPIs() {
             style={{ border: "1px solid #D1D5DB", borderRadius: 8, padding: "6px 10px", fontSize: 12 }} />
           {(desde || hasta) && (
             <button onClick={() => { setDesde(""); setHasta(""); }}
-              style={{ background: "none", border: "none", color: "#4F7C82", fontSize: 12, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
+              style={{ background: "none", border: "none", color: "var(--primary)", fontSize: 12, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
               Limpiar período
             </button>
           )}
@@ -262,10 +262,10 @@ export default function ReportingKPIs() {
         <div style={{ display: "flex", gap: 10, borderBottom: "1px solid #E5E7EB", paddingBottom: 1 }}>
           {[
             { id: "weakPoints", label: "⚠️ Diagnóstico de Puntos Débiles", color: "#DC2626" },
-            { id: "logistics", label: "📦 KPIs Logística", color: "#4F7C82" },
-            { id: "operations", label: "⚙️ KPIs Operaciones", color: "#4F7C82" },
-            { id: "compras", label: "🛒 KPIs Compras", color: "#4F7C82" },
-            { id: "admin", label: "💼 KPIs Administración", color: "#4F7C82" },
+            { id: "logistics", label: "📦 KPIs Logística", color: "var(--primary)" },
+            { id: "operations", label: "⚙️ KPIs Operaciones", color: "var(--primary)" },
+            { id: "compras", label: "🛒 KPIs Compras", color: "var(--primary)" },
+            { id: "admin", label: "💼 KPIs Administración", color: "var(--primary)" },
           ].map(t => {
             const active = activeTab === t.id;
             return (
@@ -369,7 +369,7 @@ export default function ReportingKPIs() {
                     {data.weak_points.delayed_ots.map(ot => (
                       <div key={ot.id} style={{ background: "white", padding: 12, borderRadius: 8, border: "1px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
-                          <strong style={{ fontSize: 12, color: "#0B2E33" }}>{ot.code}</strong>
+                          <strong style={{ fontSize: 12, color: "var(--primary)" }}>{ot.code}</strong>
                           <span style={{ fontSize: 12, color: "#374151", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: 220 }} title={ot.titulo}>
                             {ot.titulo}
                           </span>
@@ -405,7 +405,7 @@ export default function ReportingKPIs() {
                   <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                     <MetricRow label="Dentro de SLA" value={data.logistics.sla?.within_sla} color="#16A34A" big />
                     <MetricRow label="Fuera de SLA" value={data.logistics.sla?.overdue} color="#DC2626" />
-                    <MetricRow label="Tiempo Prom. Decisión" value={data.logistics.sla?.avg_decision_time_hours != null ? `${Number(data.logistics.sla.avg_decision_time_hours).toFixed(1)} h` : "—"} color="#4F7C82" />
+                    <MetricRow label="Tiempo Prom. Decisión" value={data.logistics.sla?.avg_decision_time_hours != null ? `${Number(data.logistics.sla.avg_decision_time_hours).toFixed(1)} h` : "—"} color="var(--primary)" />
                   </div>
                 </div>
 
@@ -417,7 +417,7 @@ export default function ReportingKPIs() {
                   ) : (
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                       {[
-                        { label: "Promedio", value: `${Number(data.logistics.lead_time.avg_lead_time_hours).toFixed(1)}h`, color: "#4F7C82" },
+                        { label: "Promedio", value: `${Number(data.logistics.lead_time.avg_lead_time_hours).toFixed(1)}h`, color: "var(--primary)" },
                         { label: "Percentil 95", value: `${Number(data.logistics.lead_time.p95_lead_time_hours).toFixed(1)}h`, color: "#D97706" },
                         { label: "Mínimo", value: `${Number(data.logistics.lead_time.min_lead_time_hours).toFixed(1)}h`, color: "#16A34A" },
                         { label: "Máximo", value: `${Number(data.logistics.lead_time.max_lead_time_hours).toFixed(1)}h`, color: "#DC2626" },
@@ -463,7 +463,7 @@ export default function ReportingKPIs() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div style={{ background: "#F9FAFB", borderRadius: 10, padding: 16, border: "1px solid #E5E7EB", textAlign: "center" }}>
                     <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 700 }}>TOTAL OTs</span>
-                    <p style={{ fontSize: 32, fontWeight: 800, color: "#0B2E33", margin: "4px 0 0 0" }}>{data.operations.total_ots || 0}</p>
+                    <p style={{ fontSize: 32, fontWeight: 800, color: "var(--primary)", margin: "4px 0 0 0" }}>{data.operations.total_ots || 0}</p>
                   </div>
                   <div style={{ background: "#FEF2F2", borderRadius: 10, padding: 16, border: "1px solid #FCA5A5", textAlign: "center" }}>
                     <span style={{ fontSize: 11, color: "#EF4444", fontWeight: 700 }}>RETRASADAS</span>
@@ -509,7 +509,7 @@ export default function ReportingKPIs() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div style={{ background: "#F9FAFB", borderRadius: 10, padding: 16, border: "1px solid #E5E7EB", textAlign: "center" }}>
                   <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 700 }}>TOTAL OCs</span>
-                  <p style={{ fontSize: 32, fontWeight: 800, color: "#0B2E33", margin: "4px 0 0 0" }}>{data.compras?.total_ocs || 0}</p>
+                  <p style={{ fontSize: 32, fontWeight: 800, color: "var(--primary)", margin: "4px 0 0 0" }}>{data.compras?.total_ocs || 0}</p>
                 </div>
                 <div style={{ background: "#F0FDF4", borderRadius: 10, padding: 16, border: "1px solid #86EFAC", textAlign: "center" }}>
                   <span style={{ fontSize: 11, color: "#16A34A", fontWeight: 700 }}>GASTO RECIBIDO</span>
@@ -545,7 +545,7 @@ export default function ReportingKPIs() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <div style={{ background: "#F9FAFB", borderRadius: 10, padding: 16, border: "1px solid #E5E7EB" }}>
                     <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 700 }}>SERVICIOS DE CLIENTE ACTIVOS</span>
-                    <p style={{ fontSize: 28, fontWeight: 800, color: "#0B2E33", margin: "4px 0 0 0" }}>{data.admin.active_requirements_count || 0}</p>
+                    <p style={{ fontSize: 28, fontWeight: 800, color: "var(--primary)", margin: "4px 0 0 0" }}>{data.admin.active_requirements_count || 0}</p>
                   </div>
                   <div style={{ background: "#F0FDF4", borderRadius: 10, padding: 16, border: "1px solid #86EFAC" }}>
                     <span style={{ fontSize: 11, color: "#16A34A", fontWeight: 700 }}>COSTO TOTAL COTIZADO</span>
@@ -582,7 +582,7 @@ export default function ReportingKPIs() {
                     {data.admin.productividad_por_persona.map(p => (
                       <div key={p.username} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, background: "white", padding: "8px 12px", borderRadius: 6, border: "1px solid #F3F4F6" }}>
                         <span style={{ fontWeight: 600, color: "#374151" }}>{formatUsername(p.username)}</span>
-                        <strong style={{ color: "#0B2E33" }}>{p.horas_totales} h · {p.registros} reg.</strong>
+                        <strong style={{ color: "var(--primary)" }}>{p.horas_totales} h · {p.registros} reg.</strong>
                       </div>
                     ))}
                   </div>
@@ -604,7 +604,7 @@ export default function ReportingKPIs() {
               background: "white", borderRadius: 16, padding: 24, width: "100%", maxWidth: 420,
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
             }}>
-              <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "#0B2E33" }}>
+              <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "var(--primary)" }}>
                 Descargar Reporte de KPIs
               </h3>
               <p style={{ margin: "0 0 20px 0", fontSize: 12, color: "#6B7280" }}>

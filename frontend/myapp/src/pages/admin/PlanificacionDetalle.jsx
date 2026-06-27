@@ -25,7 +25,7 @@ function ProgressBar({ pct }) {
   const p = Math.min(pct || 0, 100);
   return (
     <div style={{ background: "#E5E7EB", borderRadius: 99, height: 6 }}>
-      <div style={{ width: `${p}%`, height: "100%", borderRadius: 99, background: p >= 100 ? "#22C55E" : "#4F7C82", transition: "width 0.4s" }} />
+      <div style={{ width: `${p}%`, height: "100%", borderRadius: 99, background: p >= 100 ? "#22C55E" : "var(--primary)", transition: "width 0.4s" }} />
     </div>
   );
 }
@@ -209,7 +209,7 @@ export default function PlanificacionDetalle() {
     <Layout>
       <div style={{ padding: 48, textAlign: "center" }}>
         <p style={{ color: "#DC2626", fontWeight: 700 }}>No se encontró la actividad.</p>
-        <button onClick={() => navigate("/admin/planificacion")} style={{ marginTop: 12, background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>← Volver a Planificación</button>
+        <button onClick={() => navigate("/admin/planificacion")} style={{ marginTop: 12, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>← Volver a Planificación</button>
       </div>
     </Layout>
   );
@@ -221,16 +221,16 @@ export default function PlanificacionDetalle() {
         {/* Header / Breadcrumb */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
           <div>
-            <button onClick={back} style={{ background: "none", border: "none", color: "#4F7C82", fontSize: 13, fontWeight: 700, cursor: "pointer", padding: 0 }}>
+            <button onClick={back} style={{ background: "none", border: "none", color: "var(--primary)", fontSize: 13, fontWeight: 700, cursor: "pointer", padding: 0 }}>
               ← Planificación Semanal
             </button>
-            <h1 style={{ fontSize: 21, fontWeight: 800, color: "#0B2E33", margin: "4px 0 0" }}>Detalle y Gestión de Actividad</h1>
+            <h1 style={{ fontSize: 21, fontWeight: 800, color: "var(--primary)", margin: "4px 0 0" }}>Detalle y Gestión de Actividad</h1>
             <span style={{ fontSize: 11, color: "#9CA3AF" }}>ID: {act.id}</span>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             {dirty && <span style={{ color: "#EAB308", fontWeight: 700, fontSize: 12 }}>● Cambios sin guardar</span>}
             <button onClick={save} disabled={saving || !dirty}
-              style={{ background: dirty ? "#0B2E33" : "#9CA3AF", color: "white", border: "none", borderRadius: 9, padding: "9px 20px", fontSize: 13, fontWeight: 700, cursor: dirty && !saving ? "pointer" : "default", boxShadow: dirty ? "0 0 0 3px rgba(11,46,51,0.18)" : "none" }}>
+              style={{ background: dirty ? "var(--primary)" : "#9CA3AF", color: "white", border: "none", borderRadius: 9, padding: "9px 20px", fontSize: 13, fontWeight: 700, cursor: dirty && !saving ? "pointer" : "default", boxShadow: dirty ? "0 0 0 3px rgba(0,31,84,0.18)" : "none" }}>
               {saving ? "Guardando..." : "💾 Guardar Cambios"}
             </button>
           </div>
@@ -240,7 +240,7 @@ export default function PlanificacionDetalle() {
 
           {/* Columna izquierda: Datos */}
           <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, padding: 22, display: "flex", flexDirection: "column", gap: 14 }}>
-            <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#0B2E33" }}>📝 Detalles de la Actividad</h4>
+            <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "var(--primary)" }}>📝 Detalles de la Actividad</h4>
 
             <div>
               <label style={LABEL}>Descripción de Tarea ✱</label>
@@ -269,7 +269,7 @@ export default function PlanificacionDetalle() {
                   <input value={act.cliente || ""} onChange={e => upd("cliente", e.target.value)} style={FIELD} />
                   {act.cliente && (
                     <button onClick={goClient} title="Ver ficha del cliente"
-                      style={{ background: "#EEF7F8", color: "#0B2E33", border: "1px solid #B8E3E9", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}>🏢</button>
+                      style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}>🏢</button>
                   )}
                 </div>
               </div>
@@ -318,7 +318,7 @@ export default function PlanificacionDetalle() {
           {/* Columna derecha: Subtareas + Historial */}
           <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, padding: 22, display: "flex", flexDirection: "column", gap: 14 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#0B2E33" }}>📋 Checklist y Subtareas</h4>
+              <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "var(--primary)" }}>📋 Checklist y Subtareas</h4>
               <span style={{ background: "#DCFCE7", color: "#16A34A", border: "1px solid #BBF7D0", borderRadius: 6, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>⚡ Tiempo real</span>
             </div>
 
@@ -352,7 +352,7 @@ export default function PlanificacionDetalle() {
               <input ref={subInputRef} placeholder="Escribe una nueva subtarea..." style={{ flex: 1, border: "1px solid #D1D5DB", borderRadius: 8, padding: "6px 10px", fontSize: 12 }}
                 onKeyDown={e => { if (e.key === "Enter") { addSub(e.target.value); e.target.value = ""; } }} />
               <button onClick={() => { const v = subInputRef.current?.value; if (v && v.trim()) { addSub(v); subInputRef.current.value = ""; } }}
-                style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>+ Añadir</button>
+                style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>+ Añadir</button>
             </div>
 
             {historial.length > 0 && (
@@ -361,7 +361,7 @@ export default function PlanificacionDetalle() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 140, overflowY: "auto" }}>
                   {historial.map(h => (
                     <div key={h.id} style={{ fontSize: 11, color: "#6B7280", borderBottom: "1px solid #F3F4F6", paddingBottom: 4 }}>
-                      <strong style={{ color: "#0B2E33" }}>{new Date(h.created_at).toLocaleString("es-PE")}</strong>
+                      <strong style={{ color: "var(--primary)" }}>{new Date(h.created_at).toLocaleString("es-PE")}</strong>
                       {" · "}{h.guardado_por || "sistema"}
                       {" — "}{h.snapshot?.tarea || "—"} ({h.snapshot?.estado || "—"})
                     </div>

@@ -17,7 +17,7 @@ const ESTADO_COLOR    = {
   "Completado":  "#16A34A",
   "Retraso":     "#DC2626",
   "En espera":   "#CA8A04",
-  "En Progreso": "#0B2E33",
+  "En Progreso": "var(--primary)",
   "Cancelado":   "#6B7280",
 };
 
@@ -53,7 +53,7 @@ function ProgressBar({ pct }) {
     <div style={{ background: "#E5E7EB", borderRadius: 99, height: 5 }}>
       <div style={{
         width: `${p}%`, height: "100%", borderRadius: 99,
-        background: p >= 100 ? "#22C55E" : "#4F7C82", transition: "width 0.4s",
+        background: p >= 100 ? "#22C55E" : "var(--primary)", transition: "width 0.4s",
       }} />
     </div>
   );
@@ -332,8 +332,8 @@ function RowActionsMenu({ row, onEdit, onDuplicate, onCarryOver, onDelete }) {
           </button>
           <button
             onClick={() => { onCarryOver(row); setOpen(false); }}
-            style={{ border: "none", background: "none", textAlign: "left", padding: "8px 12px", fontSize: 12, cursor: "pointer", color: "#0B2E33", fontWeight: 600 }}
-            onMouseEnter={e => e.currentTarget.style.background = "#EEF7F8"}
+            style={{ border: "none", background: "none", textAlign: "left", padding: "8px 12px", fontSize: 12, cursor: "pointer", color: "var(--primary)", fontWeight: 600 }}
+            onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
             onMouseLeave={e => e.currentTarget.style.background = "none"}
             title="Marca la actual como completada y crea una copia idéntica"
           >
@@ -866,17 +866,17 @@ export default function AdminPlanificacion() {
         .gc { transition: background 0.1s; }
         .gc:focus {
           background: #F0FDFE !important;
-          outline: 1px solid #4F7C82 !important;
+          outline: 1px solid var(--primary) !important;
           border-radius: 3px;
         }
         .gc::placeholder { color: #D1D5DB; }
         .compact-input { transition: all 0.15s ease; }
         .compact-input:focus {
-          border-color: #4F7C82 !important;
+          border-color: var(--primary) !important;
           background-color: #FFFFFF !important;
           box-shadow: 0 0 0 2px rgba(79, 124, 130, 0.15) !important;
         }
-        .cell-link { color: #4F7C82; cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .cell-link { color: var(--primary); cursor: pointer; text-decoration: underline; font-weight: 600; }
         .cell-link:hover { color: #0b2e33; }
       `}</style>
 
@@ -890,7 +890,7 @@ export default function AdminPlanificacion() {
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>
               Planificación Semanal
             </h1>
             <p style={{ color: "#6B7280", fontSize: 13, margin: "4px 0 0" }}>
@@ -904,7 +904,7 @@ export default function AdminPlanificacion() {
               onClick={() => fileRef.current.click()}
               disabled={importing}
               style={{
-                background: "#EEF7F8", color: "#0B2E33", border: "1px solid #B8E3E9",
+                background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB",
                 borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
               }}
             >
@@ -923,7 +923,7 @@ export default function AdminPlanificacion() {
                 setShowExportModal(true);
               }}
               style={{
-                background: "white", color: "#0B2E33", border: "1px solid #D1D5DB",
+                background: "white", color: "var(--primary)", border: "1px solid #D1D5DB",
                 borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
               }}
             >
@@ -942,11 +942,11 @@ export default function AdminPlanificacion() {
               onClick={handleBulkSave}
               disabled={saving || !hasDirty}
               style={{
-                background: hasDirty ? "#0B2E33" : "#9CA3AF",
+                background: hasDirty ? "var(--primary)" : "#9CA3AF",
                 color: "white", border: "none", borderRadius: 9,
                 padding: "8px 18px", fontSize: 13, fontWeight: 700,
                 cursor: hasDirty && !saving ? "pointer" : "default",
-                boxShadow: hasDirty ? "0 0 0 3px rgba(11,46,51,0.18)" : "none",
+                boxShadow: hasDirty ? "0 0 0 3px rgba(0,31,84,0.18)" : "none",
                 transition: "all 0.2s",
               }}
             >
@@ -961,8 +961,8 @@ export default function AdminPlanificacion() {
             onClick={() => setViewMode("table")}
             style={{
               background: "none", border: "none", padding: "8px 16px", fontSize: 13, fontWeight: 700,
-              color: viewMode === "table" ? "#0B2E33" : "#9CA3AF",
-              borderBottom: viewMode === "table" ? "3px solid #4F7C82" : "3px solid transparent", cursor: "pointer",
+              color: viewMode === "table" ? "var(--primary)" : "#9CA3AF",
+              borderBottom: viewMode === "table" ? "3px solid var(--primary)" : "3px solid transparent", cursor: "pointer",
             }}
           >
             📋 Vista Cuadrícula
@@ -971,8 +971,8 @@ export default function AdminPlanificacion() {
             onClick={() => setViewMode("kanban")}
             style={{
               background: "none", border: "none", padding: "8px 16px", fontSize: 13, fontWeight: 700,
-              color: viewMode === "kanban" ? "#0B2E33" : "#9CA3AF",
-              borderBottom: viewMode === "kanban" ? "3px solid #4F7C82" : "3px solid transparent", cursor: "pointer",
+              color: viewMode === "kanban" ? "var(--primary)" : "#9CA3AF",
+              borderBottom: viewMode === "kanban" ? "3px solid var(--primary)" : "3px solid transparent", cursor: "pointer",
             }}
           >
             📊 Tablero Kanban (Notion)
@@ -981,8 +981,8 @@ export default function AdminPlanificacion() {
             onClick={() => setViewMode("compact")}
             style={{
               background: "none", border: "none", padding: "8px 16px", fontSize: 13, fontWeight: 700,
-              color: viewMode === "compact" ? "#0B2E33" : "#9CA3AF",
-              borderBottom: viewMode === "compact" ? "3px solid #4F7C82" : "3px solid transparent", cursor: "pointer",
+              color: viewMode === "compact" ? "var(--primary)" : "#9CA3AF",
+              borderBottom: viewMode === "compact" ? "3px solid var(--primary)" : "3px solid transparent", cursor: "pointer",
             }}
           >
             📱 Tarjetas Colapsables
@@ -997,8 +997,8 @@ export default function AdminPlanificacion() {
               onClick={() => setActiveTabFilter("activas")}
               style={{
                 border: "none", borderRadius: "6px 6px 0 0", padding: "6px 12px", fontSize: 12, fontWeight: 700,
-                background: activeTabFilter === "activas" ? "#EEF7F8" : "transparent",
-                color: activeTabFilter === "activas" ? "#0B2E33" : "#9CA3AF", cursor: "pointer"
+                background: activeTabFilter === "activas" ? "var(--primary-soft)" : "transparent",
+                color: activeTabFilter === "activas" ? "var(--primary)" : "#9CA3AF", cursor: "pointer"
               }}
             >
               🚀 Actividades Activas
@@ -1007,8 +1007,8 @@ export default function AdminPlanificacion() {
               onClick={() => setActiveTabFilter("completadas")}
               style={{
                 border: "none", borderRadius: "6px 6px 0 0", padding: "6px 12px", fontSize: 12, fontWeight: 700,
-                background: activeTabFilter === "completadas" ? "#EEF7F8" : "transparent",
-                color: activeTabFilter === "completadas" ? "#0B2E33" : "#9CA3AF", cursor: "pointer"
+                background: activeTabFilter === "completadas" ? "var(--primary-soft)" : "transparent",
+                color: activeTabFilter === "completadas" ? "var(--primary)" : "#9CA3AF", cursor: "pointer"
               }}
             >
               ✅ Completadas
@@ -1050,7 +1050,7 @@ export default function AdminPlanificacion() {
           
           {["semana", "mes", "anio"].map(p => (
             <button key={p} onClick={() => applyPeriodPreset(p)}
-              style={{ background: "#EEF7F8", color: "#0B2E33", border: "1px solid #B8E3E9", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+              style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
               {p === "semana" ? "Esta semana" : p === "mes" ? "Este mes" : "Este año"}
             </button>
           ))}
@@ -1089,7 +1089,7 @@ export default function AdminPlanificacion() {
           <div style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 16, alignItems: "flex-start" }}>
             {ESTADOS.filter(s => s !== "Completado" && s !== "Cancelado").map(colStatus => {
               const colItems = sortedGrid.filter(a => a.estado === colStatus);
-              const colColor = ESTADO_COLOR[colStatus] || "#4F7C82";
+              const colColor = ESTADO_COLOR[colStatus] || "var(--primary)";
               return (
                 <div
                   key={colStatus}
@@ -1142,7 +1142,7 @@ export default function AdminPlanificacion() {
                               />
                             </div>
 
-                            <div onClick={() => openActivityDetail(item)} style={{ cursor: "pointer", fontWeight: 700, fontSize: 13, color: "#0B2E33", textDecoration: "underline" }}>
+                            <div onClick={() => openActivityDetail(item)} style={{ cursor: "pointer", fontWeight: 700, fontSize: 13, color: "var(--primary)", textDecoration: "underline" }}>
                               {item.tarea}
                             </div>
 
@@ -1202,7 +1202,7 @@ export default function AdminPlanificacion() {
                         <span style={{ fontSize: 10, fontWeight: 800, background: `${PRIORIDAD_COLOR[row.prioridad]}15`, color: PRIORIDAD_COLOR[row.prioridad], padding: "2px 6px", borderRadius: 4 }}>
                           {row.prioridad}
                         </span>
-                        <div onClick={() => openActivityDetail(row)} style={{ cursor: "pointer", fontWeight: 700, fontSize: 13, color: "#0B2E33", textDecoration: "underline" }}>
+                        <div onClick={() => openActivityDetail(row)} style={{ cursor: "pointer", fontWeight: 700, fontSize: 13, color: "var(--primary)", textDecoration: "underline" }}>
                           {row.tarea}
                         </div>
                       </div>
@@ -1213,7 +1213,7 @@ export default function AdminPlanificacion() {
                         </span>
                         <button
                           onClick={() => toggleCardExpansion(row.id)}
-                          style={{ background: "#EEF7F8", color: "#0B2E33", border: "none", borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}
+                          style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "none", borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}
                         >
                           {isExpanded ? "▲ Colapsar" : "▼ Detalles"}
                         </button>
@@ -1282,7 +1282,7 @@ export default function AdminPlanificacion() {
           <div style={{ overflowX: "auto", borderRadius: 12, border: "1px solid #E5E7EB", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1780 }}>
               <thead>
-                <tr style={{ background: "#0B2E33" }}>
+                <tr style={{ background: "var(--primary)" }}>
                   {COLS.map((c, i) => (
                     <th key={i} style={{
                       color: "white", fontSize: 11, fontWeight: 700, textAlign: "left",
@@ -1295,7 +1295,7 @@ export default function AdminPlanificacion() {
                 </tr>
 
                 {/* Filtros inline por columna */}
-                <tr style={{ background: "#0B2E33", borderBottom: "1.5px solid rgba(255,255,255,0.08)" }}>
+                <tr style={{ background: "var(--primary)", borderBottom: "1.5px solid rgba(255,255,255,0.08)" }}>
                   {/* Prioridad */}
                   <td style={{ padding: "4px" }}>
                     <select
@@ -1441,7 +1441,7 @@ export default function AdminPlanificacion() {
                             style={{ ...CELL, outline: invalidTarea ? "1px solid #EF4444" : undefined, background: invalidTarea ? "#FEF2F2" : "transparent" }}
                           />
                           {row.id && (
-                            <button onClick={() => openActivityDetail(row)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#4F7C82" }} title="Ver detalles y subtareas">
+                            <button onClick={() => openActivityDetail(row)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--primary)" }} title="Ver detalles y subtareas">
                               📋
                             </button>
                           )}
@@ -1457,7 +1457,7 @@ export default function AdminPlanificacion() {
                             placeholder="Cliente..." style={{ ...CELL, paddingRight: 20 }}
                           />
                           {row.cliente && (
-                            <button onClick={() => handleClientClick(row.cliente)} style={{ position: "absolute", right: 2, background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#4F7C82" }} title="Ver ficha de cliente">
+                            <button onClick={() => handleClientClick(row.cliente)} style={{ position: "absolute", right: 2, background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--primary)" }} title="Ver ficha de cliente">
                               🏢
                             </button>
                           )}
@@ -1586,14 +1586,14 @@ export default function AdminPlanificacion() {
           }}>
             {/* Modal Header */}
             <div style={{
-              background: "#0B2E33", padding: "18px 24px", color: "white",
+              background: "var(--primary)", padding: "18px 24px", color: "white",
               display: "flex", justifyContent: "space-between", alignItems: "center"
             }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>
                   Detalle y Gestión de Actividad
                 </h3>
-                <span style={{ fontSize: 12, color: "#B8E3E9" }}>
+                <span style={{ fontSize: 12, color: "rgba(199,210,229,0.85)" }}>
                   {activityDetailModal.isNew ? "Nueva Actividad (Sin guardar en la base de datos)" : `ID Actividad: ${activityDetailModal.id}`}
                 </span>
               </div>
@@ -1614,7 +1614,7 @@ export default function AdminPlanificacion() {
                 display: "flex", flexDirection: "column", gap: 14
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#0B2E33" }}>
+                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "var(--primary)" }}>
                     📝 Detalles de la Actividad
                   </h4>
                   <span style={{
@@ -1670,7 +1670,7 @@ export default function AdminPlanificacion() {
                       {activityDetailModal.cliente && (
                         <button
                           onClick={() => handleClientClick(activityDetailModal.cliente)}
-                          style={{ background: "#EEF7F8", color: "#0B2E33", border: "1px solid #B8E3E9", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}
+                          style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}
                           title="Ver y editar en módulo comercial"
                         >
                           🏢
@@ -1689,7 +1689,7 @@ export default function AdminPlanificacion() {
                       {activityDetailModal.contacto && (
                         <button
                           onClick={() => handleContactClick(activityDetailModal.cliente, activityDetailModal.contacto)}
-                          style={{ background: "#EEF7F8", color: "#0B2E33", border: "1px solid #B8E3E9", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}
+                          style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "0 10px", fontSize: 12, cursor: "pointer" }}
                           title="Ver y editar en módulo comercial"
                         >
                           👤
@@ -1768,7 +1768,7 @@ export default function AdminPlanificacion() {
                 display: "flex", flexDirection: "column", gap: 14
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#0B2E33" }}>
+                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "var(--primary)" }}>
                     📋 Checklist y Subtareas
                   </h4>
                   <span style={{
@@ -1878,7 +1878,7 @@ export default function AdminPlanificacion() {
                             input.value = "";
                           }
                         }}
-                        style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                        style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                       >
                         + Añadir
                       </button>
@@ -1890,7 +1890,7 @@ export default function AdminPlanificacion() {
                         <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 120, overflowY: "auto" }}>
                           {activityHistorial.map(h => (
                             <div key={h.id} style={{ fontSize: 11, color: "#6B7280", borderBottom: "1px solid #F3F4F6", paddingBottom: 4 }}>
-                              <strong style={{ color: "#0B2E33" }}>{new Date(h.created_at).toLocaleString("es-PE")}</strong>
+                              <strong style={{ color: "var(--primary)" }}>{new Date(h.created_at).toLocaleString("es-PE")}</strong>
                               {" · "}{h.guardado_por || "sistema"}
                               {" — "}{h.snapshot?.tarea || "—"} ({h.snapshot?.estado || "—"})
                             </div>
@@ -1918,7 +1918,7 @@ export default function AdminPlanificacion() {
                 onClick={handleApplyChanges}
                 disabled={!activityDetailModal.tarea?.trim()}
                 style={{
-                  border: "none", background: "#0B2E33", color: "white", borderRadius: 8,
+                  border: "none", background: "var(--primary)", color: "white", borderRadius: 8,
                   padding: "8px 20px", fontSize: 13, fontWeight: 700, cursor: activityDetailModal.tarea?.trim() ? "pointer" : "not-allowed",
                   opacity: activityDetailModal.tarea?.trim() ? 1 : 0.6
                 }}
@@ -1938,7 +1938,7 @@ export default function AdminPlanificacion() {
           display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000
         }}>
           <div style={{ background: "white", borderRadius: 16, padding: 24, width: "100%", maxWidth: 460 }}>
-            <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "#0B2E33" }}>Exportar Planificación</h3>
+            <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "var(--primary)" }}>Exportar Planificación</h3>
             <p style={{ margin: "0 0 16px 0", fontSize: 12, color: "#6B7280" }}>Filtra qué actividades incluir en el Excel. Por defecto se usan tus filtros activos.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", gap: 8 }}>
@@ -2001,7 +2001,7 @@ export default function AdminPlanificacion() {
               ⚠️ Cancelar Actividad
             </h3>
             <p style={{ margin: "0 0 16px 0", fontSize: 13, color: "#4B5563" }}>
-              Por favor, ingresa el motivo de la cancelación de la tarea <strong style={{ color: "#0B2E33" }}>"{cancelModalData.row.tarea}"</strong>. Esto quedará registrado en las notas:
+              Por favor, ingresa el motivo de la cancelación de la tarea <strong style={{ color: "var(--primary)" }}>"{cancelModalData.row.tarea}"</strong>. Esto quedará registrado en las notas:
             </p>
 
             <textarea

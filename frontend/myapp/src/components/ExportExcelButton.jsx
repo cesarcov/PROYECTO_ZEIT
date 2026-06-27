@@ -55,16 +55,16 @@ export default function ExportExcelButton({ url, filename = "export.xlsx", label
           display: "flex", alignItems: "center", gap: 6,
           padding: "8px 14px",
           background: loading ? "#F3F4F6" : "white",
-          color: loading ? "#9CA3AF" : "#0B2E33",
-          border: "1.5px solid #B8E3E9",
+          color: loading ? "#9CA3AF" : "var(--primary)",
+          border: "1.5px solid #D1D5DB",
           borderRadius: 9,
           fontSize: 13, fontWeight: 600,
           cursor: loading ? "not-allowed" : "pointer",
           transition: "all 0.15s",
           whiteSpace: "nowrap",
         }}
-        onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = "#EEF7F8"; e.currentTarget.style.borderColor = "#4F7C82"; } }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = loading ? "#F3F4F6" : "white"; e.currentTarget.style.borderColor = "#B8E3E9"; }}
+        onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "var(--primary)"; } }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = loading ? "#F3F4F6" : "white"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
       >
         {loading ? (
           <>

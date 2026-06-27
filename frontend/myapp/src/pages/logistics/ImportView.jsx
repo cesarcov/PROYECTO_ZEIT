@@ -295,9 +295,9 @@ function ImportCard({ type }) {
 
         {/* Descargar plantilla */}
         <button onClick={downloadTemplate}
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 0", width: "100%", fontSize: 13, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", border: "1.5px dashed #93B1B5", borderRadius: 10, cursor: "pointer", transition: "all 0.15s" }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 0", width: "100%", fontSize: 13, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", border: "1.5px dashed #D1D5DB", borderRadius: 10, cursor: "pointer", transition: "all 0.15s" }}
           onMouseEnter={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "var(--primary)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "#93B1B5"; }}>
+          onMouseLeave={e => { e.currentTarget.style.background = "var(--primary-soft)"; e.currentTarget.style.borderColor = "#D1D5DB"; }}>
           <span style={{ fontSize: 16 }}>↓</span>
           Descargar plantilla Excel (con ejemplos e instrucciones)
         </button>
@@ -458,7 +458,7 @@ function ImportCard({ type }) {
             width: "100%", padding: "11px 0", fontSize: 13, fontWeight: 700,
             background: loading ? "#9CA3AF" : (!file ? "var(--primary-soft)" : (previewErr ? "#F3F4F6" : "var(--primary)")),
             color: loading ? "white" : (!file ? "var(--primary)" : (previewErr ? "#9CA3AF" : "white")),
-            border: !file ? "1.5px dashed #93B1B5" : "none",
+            border: !file ? "1.5px dashed #D1D5DB" : "none",
             borderRadius: 10,
             cursor: loading || (file && previewErr) ? "not-allowed" : "pointer",
             transition: "all 0.15s",

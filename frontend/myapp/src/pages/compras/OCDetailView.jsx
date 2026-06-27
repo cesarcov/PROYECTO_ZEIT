@@ -3,10 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { apiFetch } from "../../services/api";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#B8E3E9";
-const MID     = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "rgba(199,210,229,0.85)";
+const MID     = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 
 const STATUS_CONFIG = {
   BORRADOR:    { bg: "#F3F4F6", text: "#374151",  label: "Borrador",    icon: "✏️" },

@@ -295,8 +295,8 @@ export default function Login() {
                 { u: "juliet_alvis",       p: "123456",   r: "Administradora · Jefe",  color: "#B45309" },
                 { u: "yasmyn_machuca",     p: "123456",   r: "Asistente Admin",        color: "#EA580C" },
                 { u: "wilfredo_flores",    p: "123456",   r: "Jefe de Operaciones",    color: "#065F46" },
-                { u: "cesar_huamani",      p: "123456",   r: "Jefe Logística / Ing.",  color: "#0B2E33" },
-                { u: "tiburoncito_junior", p: "123456",   r: "Asistente Logística",    color: "#4F7C82" },
+                { u: "cesar_huamani",      p: "123456",   r: "Jefe Logística / Ing.",  color: "var(--primary)" },
+                { u: "tiburoncito_junior", p: "123456",   r: "Asistente Logística",    color: "var(--primary)" },
                 { u: "felipe_choque",      p: "123456",   r: "Técnico de Servicios",   color: "#0891B2" },
                 { u: "lagartija_segura",   p: "123456",   r: "Ing. de Seguridad",      color: "#16A34A" },
               ].map((user) => (

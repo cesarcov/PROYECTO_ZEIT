@@ -8,7 +8,7 @@ function Toggle({ value, onChange }) {
       onClick={() => onChange(!value)}
       style={{
         width: 44, height: 24, borderRadius: 99, border: "none",
-        background: value ? "#4F7C82" : "#D1D5DB",
+        background: value ? "var(--primary)" : "#D1D5DB",
         position: "relative", cursor: "pointer",
         transition: "background 0.2s", flexShrink: 0,
       }}
@@ -116,7 +116,7 @@ export default function Preferences() {
 
         {/* Encabezado */}
         <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0, letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0, letterSpacing: "-0.02em" }}>
             Preferencias
           </h1>
           <p style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
@@ -221,9 +221,9 @@ export default function Preferences() {
             onClick={handleSave}
             style={{
               padding: "10px 24px", borderRadius: 10, border: "none",
-              background: "linear-gradient(135deg, #0B2E33 0%, #4F7C82 100%)",
+              background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)",
               color: "white", fontSize: 13, fontWeight: 700,
-              cursor: "pointer", boxShadow: "0 3px 12px rgba(11,46,51,0.25)",
+              cursor: "pointer", boxShadow: "0 3px 12px rgba(0,31,84,0.25)",
               letterSpacing: "0.01em",
             }}
             onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}

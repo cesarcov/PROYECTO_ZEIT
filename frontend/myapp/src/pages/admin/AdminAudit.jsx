@@ -277,7 +277,7 @@ export default function AdminAudit() {
               ↓ Exportar en Excel
             </button>
             <button onClick={load} disabled={loading}
-              style={{ padding: "8px 16px", fontSize: 13, fontWeight: 600, background: loading ? "#E5E7EB" : "#4F7C82", color: loading ? "#9CA3AF" : "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer" }}>
+              style={{ padding: "8px 16px", fontSize: 13, fontWeight: 600, background: loading ? "#E5E7EB" : "var(--primary)", color: loading ? "#9CA3AF" : "white", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer" }}>
               {loading ? "Cargando..." : "↻ Actualizar"}
             </button>
           </div>
@@ -285,7 +285,7 @@ export default function AdminAudit() {
 
         {/* KPI cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-          <StatCard label="Total registros"    value={logs.length}  sub={`mostrando ${limit}`}  icon="📋" accent="#4F7C82" />
+          <StatCard label="Total registros"    value={logs.length}  sub={`mostrando ${limit}`}  icon="📋" accent="var(--primary)" />
           <StatCard label="Hoy"                value={todayCount}   sub="acciones del día"      icon="📅" accent="#059669" />
           <StatCard label="Usuarios activos"   value={activeUsers}  sub="en este período"       icon="👤" accent="#7C3AED" />
           <StatCard label="Módulo más activo"  value={topModule}    sub={moduleCounts[topModule] ? `${moduleCounts[topModule]} acciones` : ""} icon="⚡" accent="#D97706" />
@@ -300,7 +300,7 @@ export default function AdminAudit() {
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar por palabra clave..."
             style={{ flex: "1 1 200px", minWidth: 200, border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "8px 12px", fontSize: 13, outline: "none", transition: "border-color 0.15s" }}
-            onFocus={e => e.target.style.borderColor = "#4F7C82"}
+            onFocus={e => e.target.style.borderColor = "var(--primary)"}
             onBlur={e => e.target.style.borderColor = "#E5E7EB"}
           />
 
@@ -316,9 +316,9 @@ export default function AdminAudit() {
                   title={m.value === "Todos" ? "Ver todas las peticiones" : (FRIENDLY_METHODS[m.value]?.tooltip || "Modificar registros (PUT o PATCH)")}
                   style={{
                     padding: "6px 12px", fontSize: 12, fontWeight: active ? 700 : 500, borderRadius: 7,
-                    border: active ? `1.5px solid ${cfg?.color || "#4F7C82"}` : "1.5px solid #E5E7EB",
+                    border: active ? `1.5px solid ${cfg?.color || "var(--primary)"}` : "1.5px solid #E5E7EB",
                     background: active ? (cfg?.bg || "rgba(184,227,233,0.2)") : "white",
-                    color: active ? (cfg?.color || "#4F7C82") : "#6B7280",
+                    color: active ? (cfg?.color || "var(--primary)") : "#6B7280",
                     cursor: "pointer", transition: "all 0.12s"
                   }}
                 >
@@ -378,7 +378,7 @@ export default function AdminAudit() {
         <div style={{ background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
 
           {/* Table header with filters */}
-          <div style={{ background: "#0B2E33" }}>
+          <div style={{ background: "var(--primary)" }}>
             <div style={{ display: "grid", gridTemplateColumns: "minmax(90px,1fr) minmax(70px,0.8fr) minmax(110px,1.2fr) minmax(90px,1fr) minmax(100px,1fr) minmax(160px,2fr) minmax(90px,1fr)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               {[
                 "Fecha", "Hora", "Usuario", "Acción", "Módulo",
@@ -447,7 +447,7 @@ export default function AdminAudit() {
               {filtered.map((log, i) => (
                 <div key={i}
                   style={{ display: "grid", gridTemplateColumns: "minmax(90px,1fr) minmax(70px,0.8fr) minmax(110px,1.2fr) minmax(90px,1fr) minmax(100px,1fr) minmax(160px,2fr) minmax(90px,1fr)", background: i % 2 === 0 ? "white" : "#FAFAFA", borderBottom: "1px solid #F3F4F6", alignItems: "center", transition: "background 0.1s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#F0F9FA"}
+                  onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                   onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "white" : "#FAFAFA"}>
 
                   {/* Fecha */}
@@ -505,7 +505,7 @@ export default function AdminAudit() {
                 setSearch(""); setMethod("Todos"); setModule("Todos"); setFiltroUsuario("Todos"); setPeriodo("Todos"); setFechaInicio(""); setFechaFin("");
                 setColFilters({ fecha: "", hora: "", usuario: "", accion: "", modulo: "", endpoint: "", ip: "" });
               }}
-                style={{ marginLeft: 10, fontSize: 12, color: "#4F7C82", background: "none", border: "none", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
+                style={{ marginLeft: 10, fontSize: 12, color: "var(--primary)", background: "none", border: "none", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
                 Limpiar todos los filtros
               </button>
             )}
@@ -523,7 +523,7 @@ export default function AdminAudit() {
               background: "white", borderRadius: 16, padding: 24, width: "100%", maxWidth: 450,
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
             }}>
-              <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "#0B2E33" }}>
+              <h3 style={{ margin: "0 0 8px 0", fontSize: 16, fontWeight: 800, color: "var(--primary)" }}>
                 Exportar Auditoría a Excel
               </h3>
               <p style={{ margin: "0 0 20px 0", fontSize: 12, color: "#6B7280" }}>

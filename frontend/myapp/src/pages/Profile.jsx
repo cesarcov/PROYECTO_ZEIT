@@ -60,7 +60,7 @@ export default function Profile() {
 
         {/* Encabezado */}
         <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0, letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0, letterSpacing: "-0.02em" }}>
             Mi cuenta
           </h1>
           <p style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
@@ -70,14 +70,14 @@ export default function Profile() {
 
         {/* Card avatar + identidad */}
         <div style={{
-          background: "linear-gradient(135deg, #0B2E33 0%, #1a4a52 100%)",
+          background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)",
           borderRadius: 16, padding: "28px 28px",
           marginBottom: 16, display: "flex", alignItems: "center", gap: 20,
-          boxShadow: "0 4px 20px rgba(11,46,51,0.2)",
+          boxShadow: "0 4px 20px rgba(0,31,84,0.2)",
         }}>
           <div style={{
             width: 72, height: 72, borderRadius: 20, flexShrink: 0,
-            background: "linear-gradient(135deg, #4F7C82, #2a5a62)",
+            background: "linear-gradient(135deg, var(--primary), var(--primary-dark))",
             display: "flex", alignItems: "center", justifyContent: "center",
             border: "3px solid rgba(184,227,233,0.3)",
             boxShadow: "0 4px 16px rgba(0,0,0,0.25)",

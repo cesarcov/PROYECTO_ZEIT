@@ -100,7 +100,7 @@ function CreateUserModal({ roles, onClose, onSuccess }) {
               style={inputStyle}
               value={form[f.key]}
               onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
               onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
               placeholder={f.placeholder}
               minLength={f.key === "password" ? 8 : undefined}
@@ -120,7 +120,7 @@ function CreateUserModal({ roles, onClose, onSuccess }) {
                 style={{
                   display: "flex", alignItems: "center", gap: 10,
                   padding: "10px 12px", borderRadius: 10, cursor: "pointer",
-                  border: `1.5px solid ${form.role_ids.includes(r.id) ? "#93B1B5" : "#E5E7EB"}`,
+                  border: `1.5px solid ${form.role_ids.includes(r.id) ? "#94A3B8" : "#E5E7EB"}`,
                   background: form.role_ids.includes(r.id) ? "rgba(184,227,233,0.15)" : "white",
                   transition: "all 0.15s",
                 }}
@@ -129,7 +129,7 @@ function CreateUserModal({ roles, onClose, onSuccess }) {
                   type="checkbox"
                   checked={form.role_ids.includes(r.id)}
                   onChange={() => toggleRole(r.id)}
-                  style={{ width: 16, height: 16, accentColor: "#4F7C82", cursor: "pointer" }}
+                  style={{ width: 16, height: 16, accentColor: "var(--primary)", cursor: "pointer" }}
                 />
                 <span style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>{r.name}</span>
               </label>
@@ -150,7 +150,7 @@ function CreateUserModal({ roles, onClose, onSuccess }) {
             Cancelar
           </button>
           <button type="submit" disabled={loading}
-            style={{ flex: 1, padding: "10px 0", background: "#4F7C82", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ flex: 1, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Creando..." : "Crear usuario"}
           </button>
@@ -194,7 +194,7 @@ function EditRolesModal({ user, roles, onClose, onSuccess }) {
             style={{
               display: "flex", alignItems: "center", gap: 10,
               padding: "10px 12px", borderRadius: 10, cursor: "pointer",
-              border: `1.5px solid ${selected.includes(r.id) ? "#93B1B5" : "#E5E7EB"}`,
+              border: `1.5px solid ${selected.includes(r.id) ? "#94A3B8" : "#E5E7EB"}`,
               background: selected.includes(r.id) ? "rgba(184,227,233,0.15)" : "white",
               transition: "all 0.15s",
             }}
@@ -203,7 +203,7 @@ function EditRolesModal({ user, roles, onClose, onSuccess }) {
               type="checkbox"
               checked={selected.includes(r.id)}
               onChange={() => toggleRole(r.id)}
-              style={{ width: 16, height: 16, accentColor: "#4F7C82", cursor: "pointer" }}
+              style={{ width: 16, height: 16, accentColor: "var(--primary)", cursor: "pointer" }}
             />
             <span style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>{r.name}</span>
           </label>
@@ -237,7 +237,7 @@ function EditRolesModal({ user, roles, onClose, onSuccess }) {
             Cancelar
           </button>
           <button onClick={handleSave} disabled={loading}
-            style={{ flex: 1, padding: "10px 0", background: "#4F7C82", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ flex: 1, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Guardando..." : "Guardar cambios"}
           </button>
@@ -391,7 +391,7 @@ export default function AdminUsers() {
           {canManage && (
             <button
               onClick={() => setShowCreate(true)}
-              style={{ flexShrink: 0, padding: "8px 18px", background: "#4F7C82", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+              style={{ flexShrink: 0, padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
             >
               <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
               Nuevo usuario
@@ -410,7 +410,7 @@ export default function AdminUsers() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: "100%", paddingLeft: 36, paddingRight: 14, paddingTop: 10, paddingBottom: 10, border: "1.5px solid #E5E7EB", borderRadius: 10, fontSize: 13, outline: "none", boxSizing: "border-box", background: "white" }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           />
         </div>

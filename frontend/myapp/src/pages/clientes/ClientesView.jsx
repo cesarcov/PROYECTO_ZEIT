@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { apiFetch } from "../../services/api";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 
 const STATUS_COLORS = {
   BORRADOR:  { bg: "#F3F4F6", text: "#6B7280", label: "Borrador" },
@@ -329,7 +329,7 @@ export default function ClientesView() {
                   <span style={{ color: "#6B7280" }}>OTs completadas: </span>
                   <span style={{ fontWeight: 700, color: "#15803D" }}>{stats?.ots_completadas ?? 0}</span>
                 </div>
-                <div style={{ background: "#EEF7F8", borderRadius: 8, padding: "8px 16px", fontSize: 12 }}>
+                <div style={{ background: "var(--primary-soft)", borderRadius: 8, padding: "8px 16px", fontSize: 12 }}>
                   <span style={{ color: "#6B7280" }}>Actividades activas: </span>
                   <span style={{ fontWeight: 700, color: PRIMARY }}>{stats?.actividades_activas ?? 0}</span>
                 </div>
@@ -354,7 +354,7 @@ export default function ClientesView() {
                       cursor: "pointer",
                       transition: "all 0.15s"
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#D9EDF0"}
+                    onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={e => e.currentTarget.style.background = LIGHT}
                   >
                     + Añadir Contacto
@@ -371,7 +371,7 @@ export default function ClientesView() {
                       <div 
                         key={contacto.id}
                         style={{
-                          background: highlightContact === contacto.id ? "#EEF7F8" : "#FAFAFA",
+                          background: highlightContact === contacto.id ? "var(--primary-soft)" : "#FAFAFA",
                           border: highlightContact === contacto.id ? `2px solid ${ACCENT}` : "1px solid #E5E7EB",
                           borderRadius: 10,
                           padding: 12,
@@ -379,7 +379,7 @@ export default function ClientesView() {
                           display: "flex",
                           flexDirection: "column",
                           gap: 4,
-                          boxShadow: highlightContact === contacto.id ? "0 0 0 3px rgba(79,124,130,0.15)" : "none",
+                          boxShadow: highlightContact === contacto.id ? "0 0 0 3px rgba(0,58,140,0.15)" : "none",
                         }}
                       >
                         <button

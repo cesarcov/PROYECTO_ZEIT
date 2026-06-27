@@ -9,7 +9,7 @@ const MODULE_META = {
   requests:   { label: "Solicitudes",    icon: "📋", color: "#059669", bg: "#F0FDF4" },
   operations: { label: "Operaciones",    icon: "⚙",  color: "#D97706", bg: "#FFFBEB" },
   reporting:  { label: "Reportes",       icon: "📈", color: "#DB2777", bg: "#FDF2F8" },
-  inventory:  { label: "Inventario",     icon: "🗄",  color: "#4F7C82", bg: "#F0FDFA" },
+  inventory:  { label: "Inventario",     icon: "🗄",  color: "var(--primary)", bg: "#F0FDFA" },
 };
 
 function groupByModule(permissions) {
@@ -44,12 +44,12 @@ function NewRoleModal({ onClose, onSuccess }) {
         <input autoFocus value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === "Enter" && submit()}
           placeholder="Ej: Coordinador de Compras"
           style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "10px 12px", fontSize: 13, outline: "none", boxSizing: "border-box", marginBottom: 12 }}
-          onFocus={e => e.target.style.borderColor = "#4F7C82"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
+          onFocus={e => e.target.style.borderColor = "var(--primary)"} onBlur={e => e.target.style.borderColor = "#E5E7EB"} />
         {error && <p style={{ fontSize: 12, color: "#DC2626", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8, marginBottom: 12 }}>{error}</p>}
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
           <button onClick={onClose} style={{ padding: "8px 16px", fontSize: 13, color: "#6B7280", background: "white", border: "1px solid #E5E7EB", borderRadius: 8, cursor: "pointer" }}>Cancelar</button>
           <button onClick={submit} disabled={loading || !name.trim()}
-            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 700, background: !name.trim() ? "#93B1B5" : "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: (!name.trim() || loading) ? "not-allowed" : "pointer" }}>
+            style={{ padding: "8px 20px", fontSize: 13, fontWeight: 700, background: !name.trim() ? "#94A3B8" : "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: (!name.trim() || loading) ? "not-allowed" : "pointer" }}>
             {loading ? "Creando..." : "Crear rol"}
           </button>
         </div>
@@ -112,7 +112,7 @@ function PermissionsTab({ allPermissions, editPerms, onChange, saving, selected,
       <div style={{ padding: "14px 24px", borderBottom: "1px solid #F3F4F6", background: "#FAFAFA", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexShrink: 0 }}>
         <div>
           <span style={{ fontSize: 12, color: "#9CA3AF" }}>
-            <strong style={{ color: "#4F7C82", fontSize: 15 }}>{editPerms.length}</strong> de {allPermissions.length} permisos activos
+            <strong style={{ color: "var(--primary)", fontSize: 15 }}>{editPerms.length}</strong> de {allPermissions.length} permisos activos
           </span>
           {!canManage && <span style={{ marginLeft: 10, fontSize: 11, fontWeight: 700, color: "#B45309", background: "#FFFBEB", border: "1px solid #FCD34D", borderRadius: 99, padding: "2px 8px" }}>Solo lectura</span>}
           {canManage && dirty && <span style={{ marginLeft: 12, fontSize: 12, color: "#D97706", fontWeight: 700 }}>· Cambios sin guardar</span>}
@@ -125,7 +125,7 @@ function PermissionsTab({ allPermissions, editPerms, onChange, saving, selected,
               </span>
             )}
             <button onClick={onSave} disabled={!dirty || saving}
-              style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, background: (!dirty || saving) ? "#E5E7EB" : "#4F7C82", color: (!dirty || saving) ? "#9CA3AF" : "white", border: "none", borderRadius: 8, cursor: (!dirty || saving) ? "not-allowed" : "pointer" }}>
+              style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, background: (!dirty || saving) ? "#E5E7EB" : "var(--primary)", color: (!dirty || saving) ? "#9CA3AF" : "white", border: "none", borderRadius: 8, cursor: (!dirty || saving) ? "not-allowed" : "pointer" }}>
               {saving ? "Guardando..." : "Guardar cambios"}
             </button>
           </div>
@@ -134,7 +134,7 @@ function PermissionsTab({ allPermissions, editPerms, onChange, saving, selected,
 
       {/* Progress bar */}
       <div style={{ height: 4, background: "#F3F4F6", flexShrink: 0 }}>
-        <div style={{ height: "100%", background: "#4F7C82", width: `${allPermissions.length > 0 ? (editPerms.length / allPermissions.length) * 100 : 0}%`, transition: "width 0.3s" }} />
+        <div style={{ height: "100%", background: "var(--primary)", width: `${allPermissions.length > 0 ? (editPerms.length / allPermissions.length) * 100 : 0}%`, transition: "width 0.3s" }} />
       </div>
 
       {/* Permission groups — scrollable */}
@@ -275,9 +275,9 @@ function UsersTab({ role, allUsers, canManage }) {
     <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: 24, gap: 20, overflowY: "auto" }}>
 
       {/* Header info */}
-      <div style={{ background: "#0B2E33", borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ background: "var(--primary)", borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <p style={{ color: "#93B1B5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px" }}>Usuarios asignados a este rol</p>
+          <p style={{ color: "#94A3B8", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 4px" }}>Usuarios asignados a este rol</p>
           <p style={{ color: "white", fontSize: 26, fontWeight: 800, margin: 0, lineHeight: 1 }}>{roleUsers.length}</p>
         </div>
         {role?.name === "Administrador Maestro" && (
@@ -303,7 +303,7 @@ function UsersTab({ role, allUsers, canManage }) {
               ))}
             </select>
             <button onClick={addUser} disabled={!selectedUserId}
-              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: selectedUserId ? "#4F7C82" : "#E5E7EB", color: selectedUserId ? "white" : "#9CA3AF", border: "none", borderRadius: 8, cursor: selectedUserId ? "pointer" : "not-allowed" }}>
+              style={{ padding: "9px 20px", fontSize: 13, fontWeight: 700, background: selectedUserId ? "var(--primary)" : "#E5E7EB", color: selectedUserId ? "white" : "#9CA3AF", border: "none", borderRadius: 8, cursor: selectedUserId ? "pointer" : "not-allowed" }}>
               + Agregar
             </button>
           </div>
@@ -333,7 +333,7 @@ function UsersTab({ role, allUsers, canManage }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {roleUsers.map(u => (
             <div key={u.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", background: "white", border: "1px solid #E5E7EB", borderRadius: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#4F7C82", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <span style={{ color: "white", fontSize: 16, fontWeight: 800 }}>{u.username.charAt(0).toUpperCase()}</span>
               </div>
               <div style={{ flex: 1 }}>
@@ -431,10 +431,10 @@ export default function AdminRoles() {
 
         {/* ── Sidebar: lista de roles ── */}
         <div style={{ width: 230, flexShrink: 0, display: "flex", flexDirection: "column", background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
-          <div style={{ padding: "14px 16px", background: "#0B2E33", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: "#93B1B5", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Roles · {roles.length}</p>
+          <div style={{ padding: "14px 16px", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Roles · {roles.length}</p>
             {canManage && <button onClick={() => setShowNewRole(true)}
-              style={{ fontSize: 18, color: "#B8E3E9", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }}>+</button>}
+              style={{ fontSize: 18, color: "rgba(199,210,229,0.85)", background: "none", border: "none", cursor: "pointer", lineHeight: 1 }}>+</button>}
           </div>
 
           <div style={{ flex: 1, overflowY: "auto" }}>
@@ -448,10 +448,10 @@ export default function AdminRoles() {
                   onClick={() => { selectRole(r); setActiveTab("perms"); }}
                   onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F9FAFB"; }}
                   onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "white"; }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 9, background: isActive ? "#4F7C82" : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: isActive ? "var(--primary)" : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <span style={{ fontSize: 13, fontWeight: 800, color: isActive ? "white" : "#9CA3AF", textTransform: "uppercase" }}>{r.name.charAt(0)}</span>
                   </div>
-                  <p style={{ flex: 1, fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? "#0B2E33" : "#374151", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</p>
+                  <p style={{ flex: 1, fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? "var(--primary)" : "#374151", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</p>
                   {isActive && isMaster && (
                     <button onClick={e => { e.stopPropagation(); setDeleteTarget(r); }}
                       title="Eliminar rol"
@@ -467,7 +467,7 @@ export default function AdminRoles() {
           {canManage && (
             <div style={{ padding: "12px 14px", borderTop: "1px solid #F3F4F6" }}>
               <button onClick={() => setShowNewRole(true)}
-                style={{ width: "100%", padding: "9px 0", fontSize: 13, fontWeight: 700, background: "#4F7C82", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
+                style={{ width: "100%", padding: "9px 0", fontSize: 13, fontWeight: 700, background: "var(--primary)", color: "white", border: "none", borderRadius: 8, cursor: "pointer" }}>
                 + Nuevo rol
               </button>
             </div>
@@ -488,7 +488,7 @@ export default function AdminRoles() {
             <>
               {/* Role header */}
               <div style={{ padding: "16px 24px", borderBottom: "1px solid #E5E7EB", background: "#F9FAFB", display: "flex", alignItems: "center", gap: 14 }}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: "#0B2E33", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span style={{ color: "white", fontSize: 18, fontWeight: 800 }}>{selected.name.charAt(0).toUpperCase()}</span>
                 </div>
                 <div style={{ flex: 1 }}>
@@ -502,7 +502,7 @@ export default function AdminRoles() {
                 <div style={{ display: "flex", background: "#F3F4F6", borderRadius: 9, padding: 3, gap: 2 }}>
                   {TABS.map(t => (
                     <button key={t.key} onClick={() => setActiveTab(t.key)}
-                      style={{ padding: "7px 18px", fontSize: 13, fontWeight: activeTab === t.key ? 700 : 500, borderRadius: 7, border: "none", cursor: "pointer", background: activeTab === t.key ? "#0B2E33" : "transparent", color: activeTab === t.key ? "white" : "#6B7280", transition: "all 0.15s" }}>
+                      style={{ padding: "7px 18px", fontSize: 13, fontWeight: activeTab === t.key ? 700 : 500, borderRadius: 7, border: "none", cursor: "pointer", background: activeTab === t.key ? "var(--primary)" : "transparent", color: activeTab === t.key ? "white" : "#6B7280", transition: "all 0.15s" }}>
                       {t.label}
                     </button>
                   ))}

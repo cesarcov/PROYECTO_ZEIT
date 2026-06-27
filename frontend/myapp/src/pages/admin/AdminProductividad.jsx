@@ -58,14 +58,14 @@ function UserActivityCard({ username, logs, users, filtroFecha, filtroMes }) {
           {/* Avatar circular */}
           <div style={{
             width: 40, height: 40, borderRadius: "50%",
-            background: "#4F7C82", color: "white",
+            background: "var(--primary)", color: "white",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontWeight: 800, fontSize: 16,
           }}>
             {username.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h4 style={{ margin: 0, fontSize: 15, fontWeight: 750, color: "#0B2E33" }}>
+            <h4 style={{ margin: 0, fontSize: 15, fontWeight: 750, color: "var(--primary)" }}>
               {formattedName}
             </h4>
             <span style={{ fontSize: 12, color: "#6B7280" }}>
@@ -77,7 +77,7 @@ function UserActivityCard({ username, logs, users, filtroFecha, filtroMes }) {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }} onClick={e => e.stopPropagation()}>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 10, color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>Tiempo Total</div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#4F7C82" }}>{totalHoras}h</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "var(--primary)" }}>{totalHoras}h</div>
           </div>
           
           {/* Export individual excel */}
@@ -140,7 +140,7 @@ function UserActivityCard({ username, logs, users, filtroFecha, filtroMes }) {
                     {log.hora_fin?.slice(0,5) || "—"}
                   </td>
                   <td style={{ padding: "12px 12px", textAlign: "center" }}>
-                    <span style={{ background: "#EEF7F8", color: "#0B2E33", borderRadius: 99, padding: "3px 8px", fontSize: 11, fontWeight: 700 }}>
+                    <span style={{ background: "var(--primary-soft)", color: "var(--primary)", borderRadius: 99, padding: "3px 8px", fontSize: 11, fontWeight: 700 }}>
                       {Math.floor(log.duracion_minutos / 60)}h {log.duracion_minutos % 60}m
                     </span>
                   </td>
@@ -297,7 +297,7 @@ export default function AdminProductividad() {
 
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Dashboard de Productividad</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Dashboard de Productividad</h1>
           <p style={{ color: "#6B7280", fontSize: 13, margin: "4px 0 0" }}>Monitoreo de horas y finalización de tareas del equipo</p>
         </div>
 
@@ -307,9 +307,9 @@ export default function AdminProductividad() {
         ) : kpis && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
             {[
-              { label: "Tareas totales",      value: kpis.tareas_total,            color: "#4F7C82", sub: "en sistema" },
+              { label: "Tareas totales",      value: kpis.tareas_total,            color: "var(--primary)", sub: "en sistema" },
               { label: "Completadas",         value: kpis.tareas_completadas,      color: "#22C55E", sub: "finalizadas" },
-              { label: "Tasa finalización",   value: `${kpis.ratio_finalizacion_pct}%`, color: "#0B2E33", sub: "del total" },
+              { label: "Tasa finalización",   value: `${kpis.ratio_finalizacion_pct}%`, color: "var(--primary)", sub: "del total" },
               { label: "Tareas retrasadas",   value: kpis.tareas_retrasadas,       color: "#EF4444", sub: "vencidas sin completar" },
             ].map(kpi => (
               <div key={kpi.label} style={{
@@ -328,7 +328,7 @@ export default function AdminProductividad() {
 
           {/* Carga de trabajo por colaborador (Grouped by Area) */}
           <div style={{ background: "white", borderRadius: 14, padding: "20px 24px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0B2E33", margin: "0 0 4px" }}>Carga de trabajo por colaborador</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--primary)", margin: "0 0 4px" }}>Carga de trabajo por colaborador</h3>
             <p style={{ color: "#6B7280", fontSize: 11, margin: "0 0 16px" }}>Distribución de tareas asignadas agrupadas por área de la empresa</p>
             
             {loadingKpis ? (
@@ -351,7 +351,7 @@ export default function AdminProductividad() {
                     <div style={{
                       fontSize: 11,
                       fontWeight: 800,
-                      color: "#4F7C82",
+                      color: "var(--primary)",
                       textTransform: "uppercase",
                       letterSpacing: "0.08em",
                       borderBottom: "1.5px solid #EEF2F6",
@@ -362,7 +362,7 @@ export default function AdminProductividad() {
                       justifyContent: "space-between"
                     }}>
                       <span>{areaName}</span>
-                      <span style={{ fontSize: 10, background: "#EEF7F8", color: "#0B2E33", padding: "1px 6px", borderRadius: 4, fontWeight: 700 }}>
+                      <span style={{ fontSize: 10, background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 6px", borderRadius: 4, fontWeight: 700 }}>
                         {usersInArea.length} {usersInArea.length === 1 ? "usuario" : "usuarios"}
                       </span>
                     </div>
@@ -385,7 +385,7 @@ export default function AdminProductividad() {
                           </div>
                           <div style={{ width: "100%", background: "#E5E7EB", borderRadius: 99, height: 8, display: "flex", overflow: "hidden" }}>
                             {pctComp > 0 && <div style={{ width: `${pctComp}%`, background: "#22C55E" }} title={`Completado: ${u["Completado"]}`} />}
-                            {pctProg > 0 && <div style={{ width: `${pctProg}%`, background: "#0B2E33" }} title={`En Progreso: ${u["En Progreso"]}`} />}
+                            {pctProg > 0 && <div style={{ width: `${pctProg}%`, background: "var(--primary)" }} title={`En Progreso: ${u["En Progreso"]}`} />}
                             {pctWait > 0 && <div style={{ width: `${pctWait}%`, background: "#EAB308" }} title={`En espera: ${u["En espera"]}`} />}
                             {pctRetr > 0 && <div style={{ width: `${pctRetr}%`, background: "#EF4444" }} title={`Retraso: ${u["Retraso"]}`} />}
                           </div>
@@ -403,7 +403,7 @@ export default function AdminProductividad() {
             
             {/* Tareas por estado */}
             <div style={{ background: "white", borderRadius: 14, padding: "20px 24px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0B2E33", margin: "0 0 16px" }}>Distribución de tareas</h3>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--primary)", margin: "0 0 16px" }}>Distribución de tareas</h3>
               {kpis && (() => {
                 const total = kpis.tareas_total || 1;
                 const completadas = kpis.tareas_completadas || 0;
@@ -426,14 +426,14 @@ export default function AdminProductividad() {
                       boxShadow: "inset 0 1px 3px rgba(0,0,0,0.1)"
                     }}>
                       {pctComp > 0 && <div style={{ width: `${pctComp}%`, background: "#22C55E", transition: "width 0.5s" }} title={`Completadas: ${completadas}`} />}
-                      {pctProg > 0 && <div style={{ width: `${pctProg}%`, background: "#0B2E33", transition: "width 0.5s" }} title={`En Progreso: ${enProgreso}`} />}
+                      {pctProg > 0 && <div style={{ width: `${pctProg}%`, background: "var(--primary)", transition: "width 0.5s" }} title={`En Progreso: ${enProgreso}`} />}
                       {pctRetr > 0 && <div style={{ width: `${pctRetr}%`, background: "#EF4444", transition: "width 0.5s" }} title={`Retrasadas: ${retrasadas}`} />}
                     </div>
                     
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
                       {[
                         { label: "Completado",  value: completadas, percent: pctComp, color: "#22C55E", bg: "#DCFCE7" },
-                        { label: "En Progreso", value: enProgreso,  percent: pctProg, color: "#0B2E33", bg: "#EEF7F8" },
+                        { label: "En Progreso", value: enProgreso,  percent: pctProg, color: "var(--primary)", bg: "var(--primary-soft)" },
                         { label: "Retrasadas",  value: retrasadas,  percent: pctRetr, color: "#EF4444", bg: "#FEE2E2" }
                       ].map(d => (
                         <div key={d.label} style={{ background: d.bg, padding: "12px 14px", borderRadius: 10, border: `1px solid ${d.color}15` }}>
@@ -459,7 +459,7 @@ export default function AdminProductividad() {
                 border: "1px solid #E5E7EB",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
               }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0B2E33", margin: "0 0 16px" }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--primary)", margin: "0 0 16px" }}>
                   Diagnóstico y Alertas de Carga
                 </h3>
                 
@@ -489,7 +489,7 @@ export default function AdminProductividad() {
                     {diag.healthScore === "Excelente" ? "✓" : "!"}
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: "#0B2E33" }}>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: "var(--primary)" }}>
                       Estado del Equipo: <span style={{ color: diag.healthColor }}>{diag.healthScore}</span>
                     </div>
                     <p style={{ margin: "2px 0 0", fontSize: 11, color: "#4B5563", lineHeight: 1.4 }}>
@@ -515,7 +515,7 @@ export default function AdminProductividad() {
                   
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#4B5563" }}>
                     <span>Tareas activas en curso</span>
-                    <span style={{ fontWeight: 750, color: "#0B2E33" }}>
+                    <span style={{ fontWeight: 750, color: "var(--primary)" }}>
                       {diag.totalActivas} tareas
                     </span>
                   </div>
@@ -554,7 +554,7 @@ export default function AdminProductividad() {
             gap: 16,
           }}>
             <div>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: "#0B2E33", margin: 0 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: "var(--primary)", margin: 0 }}>
                 Log de actividades del equipo
               </h3>
               <p style={{ color: "#6B7280", fontSize: 12, margin: "2px 0 0" }}>

@@ -83,7 +83,7 @@ export default function ClientesDashboard() {
         
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Dashboard de Clientes</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Dashboard de Clientes</h1>
           <p style={{ color: "#6B7280", fontSize: 13, margin: "4px 0 0" }}>
             Visualización gráfica de tareas pendientes organizadas por etapas comerciales
           </p>
@@ -95,8 +95,8 @@ export default function ClientesDashboard() {
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
             {[
-              { label: "Clientes con Pendientes", value: stats.totalClientes, color: "#4F7C82", sub: "activos con tareas" },
-              { label: "Tareas Pendientes Totales", value: stats.totalTareas, color: "#0B2E33", sub: "en todas las etapas" },
+              { label: "Clientes con Pendientes", value: stats.totalClientes, color: "var(--primary)", sub: "activos con tareas" },
+              { label: "Tareas Pendientes Totales", value: stats.totalTareas, color: "var(--primary)", sub: "en todas las etapas" },
               { label: "Promedio Tareas/Cliente", value: stats.promedioTareas, color: "#7C3AED", sub: "intensidad de carga" },
               { 
                 label: "Etapa Más Crítica", 
@@ -170,32 +170,32 @@ export default function ClientesDashboard() {
                             width: 36,
                             height: 36,
                             borderRadius: 10,
-                            background: "linear-gradient(135deg, #4F7C82, #0B2E33)",
+                            background: "linear-gradient(135deg, var(--primary), var(--primary-dark))",
                             color: "white",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontWeight: 800,
                             fontSize: 13,
-                            boxShadow: "0 2px 6px rgba(11,46,51,0.15)"
+                            boxShadow: "0 2px 6px rgba(0,31,84,0.15)"
                           }}>
                             {initials}
                           </div>
                           <div>
-                            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: "#0B2E33" }}>
+                            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: "var(--primary)" }}>
                               {item.cliente}
                             </h3>
                             <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 600 }}>CLIENTE ACTIVO</span>
                           </div>
                         </div>
                         <span style={{
-                          background: "#EEF7F8",
-                          color: "#0B2E33",
+                          background: "var(--primary-soft)",
+                          color: "var(--primary)",
                           borderRadius: 8,
                           padding: "4px 10px",
                           fontSize: 12,
                           fontWeight: 800,
-                          border: "1px solid #B8E3E9"
+                          border: "1px solid #D1D5DB"
                         }}>
                           {totalPendientes} pendientes
                         </span>
@@ -285,7 +285,7 @@ export default function ClientesDashboard() {
                       style={{
                         width: "100%",
                         padding: "9px 0",
-                        background: "#4F7C82",
+                        background: "var(--primary)",
                         color: "white",
                         border: "none",
                         borderRadius: 8,
@@ -299,10 +299,10 @@ export default function ClientesDashboard() {
                         transition: "all 0.15s"
                       }}
                       onMouseEnter={e => {
-                        e.currentTarget.style.background = "#0B2E33";
+                        e.currentTarget.style.background = "var(--primary)";
                       }}
                       onMouseLeave={e => {
-                        e.currentTarget.style.background = "#4F7C82";
+                        e.currentTarget.style.background = "var(--primary)";
                       }}
                     >
                       Ver Ficha Comercial ➔

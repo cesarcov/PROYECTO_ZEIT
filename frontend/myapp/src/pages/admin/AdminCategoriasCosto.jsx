@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { apiFetch } from "../../services/api";
 
-const PRIMARY   = "#0B2E33";
-const ACCENT    = "#4F7C82";
-const LIGHT     = "#EEF7F8";
+const PRIMARY   = "var(--primary)";
+const ACCENT    = "var(--primary)";
+const LIGHT     = "var(--primary-soft)";
 const BORDER    = "#C5D8DB";
 
 function CategoryModal({ item, onClose, onSaved }) {
@@ -14,7 +14,7 @@ function CategoryModal({ item, onClose, onSaved }) {
     nombre:     item?.nombre     ?? "",
     es_directo: item?.es_directo ?? true,
     orden:      item?.orden      ?? 0,
-    color_hex:  item?.color_hex  ?? "#4F7C82",
+    color_hex:  item?.color_hex  ?? "var(--primary)",
     activo:     item?.activo     ?? true,
   });
   const [loading, setLoading] = useState(false);
@@ -80,7 +80,7 @@ function CategoryModal({ item, onClose, onSaved }) {
               <input type="color" value={form.color_hex} onChange={e => set("color_hex", e.target.value)}
                 style={{ width: 36, height: 36, border: `1px solid ${BORDER}`, borderRadius: 7, padding: 2, cursor: "pointer" }} />
               <input value={form.color_hex} onChange={e => set("color_hex", e.target.value)}
-                style={{ ...inp, flex: 1, fontFamily: "monospace", fontSize: 12 }} placeholder="#4F7C82" />
+                style={{ ...inp, flex: 1, fontFamily: "monospace", fontSize: 12 }} placeholder="var(--primary)" />
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function AdminCategoriasCosto() {
 
   return (
     <Layout>
-      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "var(--primary-soft)" }}>
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>

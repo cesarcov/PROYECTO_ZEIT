@@ -100,7 +100,7 @@ function Section({ title, children }) {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#4F7C82", whiteSpace: "nowrap" }}>
+        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--primary)", whiteSpace: "nowrap" }}>
           {title}
         </span>
         <div style={{ flex: 1, height: 1, background: "#E5E7EB" }} />
@@ -343,7 +343,7 @@ function MaterialForm({ form, setForm, codeAuto, setCodeAuto, loading, error, on
           Cancelar
         </button>
         <button onClick={onSubmit} disabled={loading}
-          style={{ padding: "9px 26px", fontSize: 13, fontWeight: 700, color: "white", background: loading ? "#93B1B5" : "#0B2E33", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", minWidth: 140, boxShadow: loading ? "none" : "0 2px 8px rgba(11,46,51,0.30)" }}>
+          style={{ padding: "9px 26px", fontSize: 13, fontWeight: 700, color: "white", background: loading ? "#94A3B8" : "var(--primary)", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer", minWidth: 140, boxShadow: loading ? "none" : "0 2px 8px rgba(0,31,84,0.30)" }}>
           {loading ? "Guardando..." : submitLabel}
         </button>
       </div>
@@ -529,16 +529,16 @@ function DetailPanel({ material, onClose, onEdit }) {
 
   return (
     <div style={{ position: "fixed", right: 0, top: 0, bottom: 0, width: 340, background: "white", boxShadow: "-4px 0 24px rgba(0,0,0,0.12)", zIndex: 40, display: "flex", flexDirection: "column" }}>
-      <div style={{ background: "#0B2E33", padding: "20px 20px 16px", flexShrink: 0 }}>
+      <div style={{ background: "var(--primary)", padding: "20px 20px 16px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <p style={{ color: "#93B1B5", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <p style={{ color: "#94A3B8", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               {material.category || "Sin categoría"}
             </p>
             <p style={{ color: "white", fontWeight: 800, fontSize: 16, marginTop: 4 }}>{material.name}</p>
-            <p style={{ color: "#93B1B5", fontFamily: "monospace", fontSize: 12, marginTop: 2 }}>{material.code}</p>
+            <p style={{ color: "#94A3B8", fontFamily: "monospace", fontSize: 12, marginTop: 2 }}>{material.code}</p>
           </div>
-          <button onClick={onClose} style={{ color: "#93B1B5", background: "none", border: "none", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>×</button>
+          <button onClick={onClose} style={{ color: "#94A3B8", background: "none", border: "none", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>×</button>
         </div>
       </div>
 
@@ -581,7 +581,7 @@ function DetailPanel({ material, onClose, onEdit }) {
 
       <div style={{ padding: "12px 20px", borderTop: "1px solid #F3F4F6", flexShrink: 0 }}>
         <button onClick={() => onEdit(material)}
-          style={{ width: "100%", padding: "9px 0", background: "#4F7C82", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+          style={{ width: "100%", padding: "9px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
           Editar este material
         </button>
       </div>
@@ -635,15 +635,15 @@ function ValidateModal({ material, onClose, onSuccess }) {
     <Modal title="Validar material propuesto" subtitle={`Código: ${material.code} · Propuesto por: ${material.proposed_by || "—"}`} onClose={onClose} maxWidth={500}>
       <div className="space-y-3">
         {/* Context from operations */}
-        <div style={{ background: "#EEF7F8", border: "1px solid #B8E3E9", borderRadius: 8, padding: "10px 14px", display: "flex", gap: 20, flexWrap: "wrap" }}>
+        <div style={{ background: "var(--primary-soft)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "10px 14px", display: "flex", gap: 20, flexWrap: "wrap" }}>
           {material.precio_referencia && (
-            <span style={{ fontSize: 12, color: "#0B2E33" }}>Precio referencial: <strong>S/ {Number(material.precio_referencia).toFixed(2)}</strong></span>
+            <span style={{ fontSize: 12, color: "var(--primary)" }}>Precio referencial: <strong>S/ {Number(material.precio_referencia).toFixed(2)}</strong></span>
           )}
           {material.proveedor_referencia && (
-            <span style={{ fontSize: 12, color: "#0B2E33" }}>Proveedor sugerido: <strong>{material.proveedor_referencia}</strong></span>
+            <span style={{ fontSize: 12, color: "var(--primary)" }}>Proveedor sugerido: <strong>{material.proveedor_referencia}</strong></span>
           )}
           {material.propuesto_desde && (
-            <span style={{ fontSize: 12, color: "#0B2E33" }}>Origen: <strong>{material.propuesto_desde}</strong></span>
+            <span style={{ fontSize: 12, color: "var(--primary)" }}>Origen: <strong>{material.propuesto_desde}</strong></span>
           )}
         </div>
         {material.logistics_notes && (
@@ -698,7 +698,7 @@ function ValidateModal({ material, onClose, onSuccess }) {
           <button onClick={onClose} style={{ padding: "9px 22px", fontSize: 13, fontWeight: 600, color: "#374151", background: "white", border: "1.5px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}>
             Cancelar
           </button>
-          <button onClick={submit} disabled={loading} style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, color: "white", background: loading ? "#93B1B5" : "#4F7C82", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer" }}>
+          <button onClick={submit} disabled={loading} style={{ padding: "9px 22px", fontSize: 13, fontWeight: 700, color: "white", background: loading ? "#94A3B8" : "var(--primary)", border: "none", borderRadius: 8, cursor: loading ? "not-allowed" : "pointer" }}>
             {loading ? "Validando..." : "Validar y publicar al catálogo"}
           </button>
         </div>
@@ -800,7 +800,7 @@ export default function Materials() {
 
   const headerCell = {
     fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-    letterSpacing: "0.08em", color: "#93B1B5", padding: "10px 14px", textAlign: "left",
+    letterSpacing: "0.08em", color: "#94A3B8", padding: "10px 14px", textAlign: "left",
   };
 
   return (
@@ -831,7 +831,7 @@ export default function Materials() {
             <ExportExcelButton url="/logistics/materials/export" filename="materiales.xlsx" />
             {canEdit && tab === "catalog" && (
               <button onClick={() => setShowNew(true)}
-                style={{ display: "flex", alignItems: "center", gap: 8, background: "#0B2E33", color: "white", padding: "9px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(11,46,51,0.35)" }}>
+                style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--primary)", color: "white", padding: "9px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(0,31,84,0.35)" }}>
                 <span style={{ fontSize: 18, lineHeight: 1 }}>+</span> Nuevo material
               </button>
             )}
@@ -849,7 +849,7 @@ export default function Materials() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginRight: 4 }}>Categoría:</span>
             <button onClick={() => setCatFilter("all")}
-              style={{ fontSize: 12, padding: "3px 12px", borderRadius: 99, fontWeight: 700, border: "none", cursor: "pointer", background: catFilter === "all" ? "#0B2E33" : "#E5E7EB", color: catFilter === "all" ? "white" : "#6B7280" }}>
+              style={{ fontSize: 12, padding: "3px 12px", borderRadius: 99, fontWeight: 700, border: "none", cursor: "pointer", background: catFilter === "all" ? "var(--primary)" : "#E5E7EB", color: catFilter === "all" ? "white" : "#6B7280" }}>
               Todos ({materials.length})
             </button>
             {presentCats.map((c) => {
@@ -898,9 +898,9 @@ export default function Materials() {
                   <div key={m.id} style={{ background: "white", border: "1px solid #FDE68A", borderLeft: "4px solid #EAB308", borderRadius: 10, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                        <span style={{ fontWeight: 700, fontSize: 15, color: "#0B2E33" }}>{m.name}</span>
+                        <span style={{ fontWeight: 700, fontSize: 15, color: "var(--primary)" }}>{m.name}</span>
                         <span style={{ background: "#F3F4F6", color: "#6B7280", fontFamily: "monospace", fontSize: 11, padding: "1px 7px", borderRadius: 6 }}>{m.code}</span>
-                        <span style={{ background: "#F0F9FA", color: "#4F7C82", fontSize: 11, padding: "1px 7px", borderRadius: 8, fontWeight: 600 }}>{m.category}</span>
+                        <span style={{ background: "var(--primary-soft)", color: "var(--primary)", fontSize: 11, padding: "1px 7px", borderRadius: 8, fontWeight: 600 }}>{m.category}</span>
                       </div>
                       <div style={{ fontSize: 12, color: "#64748B", display: "flex", gap: 16, flexWrap: "wrap", marginTop: 4 }}>
                         <span>Por: <strong>{m.proposed_by || "—"}</strong></span>
@@ -921,7 +921,7 @@ export default function Materials() {
                     </div>
                     <button
                       onClick={() => setValidating(m)}
-                      style={{ marginLeft: 16, padding: "8px 18px", background: "#4F7C82", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
+                      style={{ marginLeft: 16, padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
                     >
                       Validar precio
                     </button>
@@ -939,7 +939,7 @@ export default function Materials() {
         <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ background: "#0B2E33" }}>
+              <tr style={{ background: "var(--primary)" }}>
                 <th style={{ ...headerCell, width: 44, textAlign: "center" }}>#</th>
                 <th style={{ ...headerCell, width: 110 }}>Código</th>
                 <th style={headerCell}>Nombre</th>
@@ -1096,7 +1096,7 @@ export default function Materials() {
                           minWidth: 32, padding: "4px 8px", borderRadius: 7,
                           fontSize: 13, fontWeight: p === safePage ? 700 : 500,
                           border: p === safePage ? "none" : "1px solid #E5E7EB",
-                          background: p === safePage ? "#0B2E33" : "white",
+                          background: p === safePage ? "var(--primary)" : "white",
                           color: p === safePage ? "white" : "#374151",
                           cursor: "pointer",
                         }}

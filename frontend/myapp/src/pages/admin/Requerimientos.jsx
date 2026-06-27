@@ -7,7 +7,7 @@ const CATEGORIAS = ["Hospedaje", "Transporte", "Alimentación", "Exámenes Médi
 const ESTADOS_REQ = ["Cotizado", "En Curso", "Finalizado", "Cancelado"];
 
 const CATEGORIA_COLOR = {
-  "Hospedaje":        "#4F7C82",
+  "Hospedaje":        "var(--primary)",
   "Transporte":       "#CA8A04",
   "Alimentación":     "#16A34A",
   "Exámenes Médicos": "#2563EB",
@@ -299,7 +299,7 @@ export default function Requerimientos() {
         .btn-act:hover { opacity: 0.9; transform: scale(1.02); }
         .table-input { border: 1px solid transparent; background: transparent; padding: 4px 6px; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
         .table-input:hover { border-color: #D1D5DB; background: #FFFFFF; }
-        .table-input:focus { border-color: #4F7C82; background: #FFFFFF; outline: none; box-shadow: 0 0 0 2px rgba(79,124,130,0.1); }
+        .table-input:focus { border-color: var(--primary); background: #FFFFFF; outline: none; box-shadow: 0 0 0 2px rgba(0,58,140,0.1); }
       `}</style>
 
       <div style={{ padding: "0 4px" }}>
@@ -307,7 +307,7 @@ export default function Requerimientos() {
         {/* ── Cabecera ────────────────────────────────────────────────────── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0B2E33", margin: 0 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: "var(--primary)", margin: 0 }}>
               Requerimientos de Servicios y Costos
             </h1>
             <p style={{ color: "#6B7280", fontSize: 13, margin: "4px 0 0" }}>
@@ -319,9 +319,9 @@ export default function Requerimientos() {
               onClick={() => setShowNewReqModal(true)}
               className="btn-act"
               style={{
-                background: "#0B2E33", color: "white", border: "none", borderRadius: 9,
+                background: "var(--primary)", color: "white", border: "none", borderRadius: 9,
                 padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(11,46,51,0.2)"
+                boxShadow: "0 2px 6px rgba(0,31,84,0.2)"
               }}
             >
               + Nuevo Requerimiento
@@ -337,7 +337,7 @@ export default function Requerimientos() {
             {/* ── PANEL IZQUIERDO: Requerimientos de Servicios (1/3 Ancho) ────── */}
             <div style={{ flex: "1 1 320px", display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ background: "white", borderRadius: 12, border: "1px solid #E5E7EB", padding: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.02)" }}>
-                <h2 style={{ fontSize: 14, fontWeight: 800, color: "#0B2E33", margin: "0 0 12px 0", textTransform: "uppercase" }}>
+                <h2 style={{ fontSize: 14, fontWeight: 800, color: "var(--primary)", margin: "0 0 12px 0", textTransform: "uppercase" }}>
                   Servicios Activos por Cliente ({requerimientos.length})
                 </h2>
                 
@@ -355,8 +355,8 @@ export default function Requerimientos() {
                           onClick={() => selectRequirement(req)}
                           className="req-card"
                           style={{
-                            background: isSelected ? "#EEF7F8" : "#F9FAFB",
-                            border: isSelected ? "1px solid #4F7C82" : "1px solid #E5E7EB",
+                            background: isSelected ? "var(--primary-soft)" : "#F9FAFB",
+                            border: isSelected ? "1px solid var(--primary)" : "1px solid #E5E7EB",
                             borderRadius: 10, padding: 12, boxShadow: "0 1px 2px rgba(0,0,0,0.01)"
                           }}
                         >
@@ -400,10 +400,10 @@ export default function Requerimientos() {
                   {/* Detalles del Requerimiento Seleccionado */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: 12 }}>
                     <div>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: "#4F7C82", textTransform: "uppercase" }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: "var(--primary)", textTransform: "uppercase" }}>
                         Ficha de Costos de Administración
                       </span>
-                      <h2 style={{ fontSize: 16, fontWeight: 800, color: "#0B2E33", margin: "2px 0 0 0" }}>
+                      <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--primary)", margin: "2px 0 0 0" }}>
                         {selectedReq.nombre_servicio} · {selectedReq.cliente_razon_social}
                       </h2>
                     </div>
@@ -448,7 +448,7 @@ export default function Requerimientos() {
                             onClick={handleSaveCostos}
                             disabled={savingCostos || (costos.length === 0 && deletedCostoIds.length === 0)}
                             style={{
-                              background: "#0B2E33", color: "white", border: "none",
+                              background: "var(--primary)", color: "white", border: "none",
                               borderRadius: 8, padding: "6px 16px", fontSize: 12, fontWeight: 700, cursor: "pointer"
                             }}
                           >
@@ -537,9 +537,9 @@ export default function Requerimientos() {
                                       <button
                                         onClick={() => setEditingDetailsCosto(costo)}
                                         style={{
-                                          background: hasDetails ? "#EEF7F8" : "#F3F4F6",
-                                          color: hasDetails ? "#4F7C82" : "#4B5563",
-                                          border: `1px solid ${hasDetails ? "#B8E3E9" : "#D1D5DB"}`,
+                                          background: hasDetails ? "var(--primary-soft)" : "#F3F4F6",
+                                          color: hasDetails ? "var(--primary)" : "#4B5563",
+                                          border: `1px solid ${hasDetails ? "#D1D5DB" : "#D1D5DB"}`,
                                           borderRadius: 6, padding: "4px 8px", fontSize: 11, fontWeight: 700, cursor: "pointer"
                                         }}
                                       >
@@ -585,7 +585,7 @@ export default function Requerimientos() {
         {/* ── SECCIÓN INFERIOR: KPIs y Consolidado Histórico de Costos ────── */}
         <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 16 }}>
           
-          <h2 style={{ fontSize: 15, fontWeight: 800, color: "#0B2E33", margin: "10px 0 0 0", textTransform: "uppercase" }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: "var(--primary)", margin: "10px 0 0 0", textTransform: "uppercase" }}>
             Resumen de Costos y Reporte Consolidado Global
           </h2>
 
@@ -614,13 +614,13 @@ export default function Requerimientos() {
             
             {/* Total General */}
             <div style={{
-              flex: "1 1 180px", background: "#EEF7F8", borderRadius: 10, border: "1px solid #B8E3E9",
-              padding: 12, borderTop: "4px solid #0B2E33", boxShadow: "0 1px 2px rgba(0,0,0,0.01)"
+              flex: "1 1 180px", background: "var(--primary-soft)", borderRadius: 10, border: "1px solid #D1D5DB",
+              padding: 12, borderTop: "4px solid var(--primary)", boxShadow: "0 1px 2px rgba(0,0,0,0.01)"
             }}>
-              <span style={{ fontSize: 11, fontWeight: 800, color: "#4F7C82", display: "block", marginBottom: 4 }}>
+              <span style={{ fontSize: 11, fontWeight: 800, color: "var(--primary)", display: "block", marginBottom: 4 }}>
                 TOTAL GENERAL DE SERVICIOS
               </span>
-              <span style={{ fontSize: 18, fontWeight: 900, color: "#0B2E33" }}>
+              <span style={{ fontSize: 18, fontWeight: 900, color: "var(--primary)" }}>
                 S/ {totalCostoGeneral.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
@@ -631,7 +631,7 @@ export default function Requerimientos() {
             
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, flexWrap: "wrap", gap: 10 }}>
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 800, color: "#0B2E33", margin: 0 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 800, color: "var(--primary)", margin: 0 }}>
                   Detalle Consolidado de Costos
                 </h3>
                 <p style={{ fontSize: 11, color: "#6B7280", margin: "2px 0 0 0" }}>
@@ -700,7 +700,7 @@ export default function Requerimientos() {
 
                       return (
                         <tr key={costo.id} style={{ borderBottom: "1px solid #F3F4F6", fontSize: 12 }}>
-                          <td style={{ padding: "10px", fontWeight: 700, color: "#4F7C82" }}>{costo.cliente}</td>
+                          <td style={{ padding: "10px", fontWeight: 700, color: "var(--primary)" }}>{costo.cliente}</td>
                           <td style={{ padding: "10px", color: "#111827" }}>{costo.nombre_servicio}</td>
                           <td style={{ padding: "10px" }}>
                             <span style={{
@@ -738,7 +738,7 @@ export default function Requerimientos() {
         }}>
           <div style={{ background: "white", borderRadius: 12, padding: 20, width: "100%", maxWidth: "480px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: 10, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: "#0B2E33", margin: 0 }}>Crear Nuevo Servicio y Requerimientos</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: "var(--primary)", margin: 0 }}>Crear Nuevo Servicio y Requerimientos</h3>
               <button onClick={() => setShowNewReqModal(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18 }}>×</button>
             </div>
             <form onSubmit={handleCreateReq} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -819,7 +819,7 @@ export default function Requerimientos() {
                 </button>
                 <button
                   type="submit" disabled={savingReq}
-                  style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                  style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                 >
                   {savingReq ? "Creando..." : "Crear Requerimiento"}
                 </button>
@@ -837,7 +837,7 @@ export default function Requerimientos() {
         }}>
           <div style={{ background: "white", borderRadius: 12, padding: 20, width: "100%", maxWidth: "460px", boxShadow: "0 10px 25px rgba(0,0,0,0.15)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #E5E7EB", paddingBottom: 10, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 800, color: "#0B2E33", margin: 0 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 800, color: "var(--primary)", margin: 0 }}>
                 Detalles Específicos: {editingDetailsCosto.categoria}
               </h3>
               <button onClick={() => setEditingDetailsCosto(null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18 }}>×</button>
@@ -1006,7 +1006,7 @@ export default function Requerimientos() {
                     }
                     saveEditingDetails(vals);
                   }}
-                  style={{ background: "#0B2E33", color: "white", border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                  style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
                 >
                   Asignar Detalles
                 </button>

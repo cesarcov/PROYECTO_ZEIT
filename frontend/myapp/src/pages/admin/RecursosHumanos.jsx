@@ -4,9 +4,9 @@ import { apiFetch } from "../../services/api";
 import { formatUsername } from "../../hooks/useAuth";
 import ExportExcelButton from "../../components/ExportExcelButton";
 
-const PRIMARY = "#0B2E33";
-const ACCENT  = "#4F7C82";
-const LIGHT   = "#EEF7F8";
+const PRIMARY = "var(--primary)";
+const ACCENT  = "var(--primary)";
+const LIGHT   = "var(--primary-soft)";
 
 const AREAS = ["TI", "GERENCIA", "ADMINISTRACIÓN", "OPERACIONES", "LOGÍSTICA"];
 
@@ -449,7 +449,7 @@ export default function RecursosHumanos() {
                                       width: 34,
                                       height: 34,
                                       borderRadius: "50%",
-                                      background: u.is_active ? "linear-gradient(135deg, #4F7C82, #0B2E33)" : "#9CA3AF",
+                                      background: u.is_active ? "linear-gradient(135deg, var(--primary), var(--primary-dark))" : "#9CA3AF",
                                       color: "white",
                                       fontWeight: 800,
                                       fontSize: 12,

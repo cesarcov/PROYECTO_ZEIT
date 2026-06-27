@@ -235,7 +235,7 @@ export default function DispatchView() {
     }
   };
 
-  const palette = { deep: "var(--primary)", dark: "var(--primary)", mid: "#93B1B5", light: "rgba(199,210,229,0.85)" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)", mid: "#94A3B8", light: "rgba(199,210,229,0.85)" };
 
   return (
     <Layout>
