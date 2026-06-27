@@ -7,10 +7,10 @@ const TOKEN = () => localStorage.getItem("access_token");
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
-  deep:  "#0B2E33",
-  mid:   "#4F7C82",
-  light: "#B8E3E9",
-  sub:   "#93B1B5",
+  deep:  "var(--primary)",
+  mid:   "var(--primary)",
+  light: "rgba(199,210,229,0.85)",
+  sub:   "rgba(199,210,229,0.7)",
 };
 
 const STATUS_CFG = {
@@ -186,7 +186,7 @@ function OTCard({ ot, onClick }) {
     >
       {/* Code + priority */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 700, color: C.mid, background: "#F0F9FA", padding: "1px 6px", borderRadius: 4 }}>
+        <span style={{ fontFamily: "monospace", fontSize: 11, fontWeight: 700, color: C.mid, background: "var(--primary-soft)", padding: "1px 6px", borderRadius: 4 }}>
           {ot.code}
         </span>
         <span style={{ fontSize: 11, fontWeight: 700, color: prio.color }}>{prio.label}</span>
@@ -275,11 +275,11 @@ function ListView({ ots, onRowClick }) {
               <tr key={ot.id}
                 style={{ background: i % 2 === 0 ? "#fff" : "#F9FAFB", cursor: "pointer" }}
                 onClick={() => onRowClick(ot.id)}
-                onMouseEnter={e => e.currentTarget.style.background = "#EEF7F8"}
+                onMouseEnter={e => e.currentTarget.style.background = "var(--primary-soft)"}
                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "#fff" : "#F9FAFB"}
               >
                 <td style={{ padding: "8px 12px" }}>
-                  <span style={{ fontFamily: "monospace", fontSize: 11, background: "#F0F9FA", color: C.mid, padding: "1px 6px", borderRadius: 4, fontWeight: 700 }}>{ot.code}</span>
+                  <span style={{ fontFamily: "monospace", fontSize: 11, background: "var(--primary-soft)", color: C.mid, padding: "1px 6px", borderRadius: 4, fontWeight: 700 }}>{ot.code}</span>
                 </td>
                 <td style={{ padding: "8px 12px", fontWeight: 600, color: C.deep, maxWidth: 260 }}>{ot.titulo}</td>
                 <td style={{ padding: "8px 12px" }}>
@@ -364,7 +364,7 @@ export default function OrdenesTrabajoView() {
 
   return (
     <Layout>
-      <div style={{ padding: "24px 28px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "24px 28px", minHeight: "100vh", background: "var(--primary-soft)" }}>
         {loadError && (
           <div style={{ background: "#FEE2E2", color: "#991B1B", borderRadius: 8, padding: "12px 16px", marginBottom: 16, fontSize: 13 }}>
             {loadError}

@@ -62,7 +62,7 @@ function NewPlanModal({ token, onClose, onCreate }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 28, width: 460, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-        <h3 style={{ margin: "0 0 6px", color: "#0B2E33", fontSize: 17 }}>Nuevo plan de proyecto</h3>
+        <h3 style={{ margin: "0 0 6px", color: "var(--primary)", fontSize: 17 }}>Nuevo plan de proyecto</h3>
         <p style={{ margin: "0 0 18px", color: "#64748B", fontSize: 13 }}>
           El código se genera automáticamente (ej: <strong>PRO-2026-0001</strong>).
         </p>
@@ -90,7 +90,7 @@ function NewPlanModal({ token, onClose, onCreate }) {
 
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
           <button onClick={onClose} style={{ padding: "8px 20px", borderRadius: 7, border: "1px solid #D1D5DB", background: "#fff", cursor: "pointer" }}>Cancelar</button>
-          <button onClick={submit} disabled={loading} style={{ padding: "8px 20px", borderRadius: 7, border: "none", background: "#4F7C82", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
+          <button onClick={submit} disabled={loading} style={{ padding: "8px 20px", borderRadius: 7, border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
             {loading ? "Creando..." : "Crear plan"}
           </button>
         </div>
@@ -124,7 +124,7 @@ function EditPlanModal({ token, plan, onClose, onSaved }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 26, width: 420, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-        <h3 style={{ margin: "0 0 4px", color: "#0B2E33", fontSize: 16 }}>Editar nombre del plan</h3>
+        <h3 style={{ margin: "0 0 4px", color: "var(--primary)", fontSize: 16 }}>Editar nombre del plan</h3>
         <p style={{ margin: "0 0 16px", color: "#64748B", fontSize: 12 }}>
           Código: <strong style={{ fontFamily: "monospace", color: "#0F766E" }}>{plan.project_code}</strong>
         </p>
@@ -138,7 +138,7 @@ function EditPlanModal({ token, plan, onClose, onSaved }) {
         {err && <p style={{ color: "#DC2626", fontSize: 13, margin: "0 0 12px" }}>{err}</p>}
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
           <button onClick={onClose} style={{ padding: "8px 18px", borderRadius: 7, border: "1px solid #D1D5DB", background: "#fff", cursor: "pointer" }}>Cancelar</button>
-          <button onClick={submit} disabled={loading} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "#4F7C82", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
+          <button onClick={submit} disabled={loading} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
             {loading ? "Guardando..." : "Guardar"}
           </button>
         </div>
@@ -149,7 +149,7 @@ function EditPlanModal({ token, plan, onClose, onSaved }) {
 
 // ── Plan card ──────────────────────────────────────────────────────────────────
 function PlanCard({ plan, onClick, onViewLogistics, onEdit, onDelete, onClone }) {
-  const borderColor = { DRAFT: "#4F7C82", ACTIVE: "#3B82F6", SUBMITTED: "#22C55E" }[plan.status] ?? "#4F7C82";
+  const borderColor = { DRAFT: "var(--primary)", ACTIVE: "#3B82F6", SUBMITTED: "#22C55E" }[plan.status] ?? "var(--primary)";
 
   return (
     <div style={{
@@ -167,9 +167,9 @@ function PlanCard({ plan, onClick, onViewLogistics, onEdit, onDelete, onClone })
       <div style={{ padding: "18px 20px", cursor: "pointer" }} onClick={onClick}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
           <div style={{ flex: 1, minWidth: 0, marginRight: 10 }}>
-            <div style={{ fontWeight: 800, fontSize: 15, color: "#0B2E33" }}>{plan.title}</div>
+            <div style={{ fontWeight: 800, fontSize: 15, color: "var(--primary)" }}>{plan.title}</div>
             <div style={{ color: "#64748B", fontSize: 12, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontFamily: "monospace", background: "#F0F9FA", color: "#0F766E", padding: "1px 6px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>{plan.project_code}</span>
+              <span style={{ fontFamily: "monospace", background: "var(--primary-soft)", color: "#0F766E", padding: "1px 6px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>{plan.project_code}</span>
               {plan.project_name}
             </div>
           </div>
@@ -180,7 +180,7 @@ function PlanCard({ plan, onClick, onViewLogistics, onEdit, onDelete, onClone })
               onClick={e => { e.stopPropagation(); onEdit(); }}
               title="Editar nombre"
               style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: 6, padding: "3px 7px", cursor: "pointer", color: "#64748B", fontSize: 13, lineHeight: 1 }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#4F7C82"; e.currentTarget.style.color = "#4F7C82"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--primary)"; e.currentTarget.style.color = "var(--primary)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.color = "#64748B"; }}
             >✏️</button>
             {/* Duplicar */}
@@ -205,11 +205,11 @@ function PlanCard({ plan, onClick, onViewLogistics, onEdit, onDelete, onClone })
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
           <div style={{ background: "#F9FAFB", borderRadius: 8, padding: "8px 10px" }}>
             <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Materiales</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#4F7C82" }}>{plan.item_count}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "var(--primary)" }}>{plan.item_count}</div>
           </div>
           <div style={{ background: "#F9FAFB", borderRadius: 8, padding: "8px 10px" }}>
             <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Costo est.</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#0B2E33" }}>{fmtMoney(plan.total_cost)}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--primary)" }}>{fmtMoney(plan.total_cost)}</div>
           </div>
           <div style={{ background: "#F9FAFB", borderRadius: 8, padding: "8px 10px" }}>
             <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Actualizado</div>
@@ -222,7 +222,7 @@ function PlanCard({ plan, onClick, onViewLogistics, onEdit, onDelete, onClone })
       {plan.project_id && (
         <div style={{ padding: "10px 20px", borderTop: "1px solid #F3F4F6", background: "#FAFAFA", display: "flex", justifyContent: "flex-end" }}>
           <button onClick={e => { e.stopPropagation(); onViewLogistics(plan.project_id); }}
-            style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", background: "#0B2E33", color: "white", border: "none", borderRadius: 7, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
+            style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", background: "var(--primary)", color: "white", border: "none", borderRadius: 7, cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
             📦 Ver en Logística →
           </button>
         </div>
@@ -288,7 +288,7 @@ export default function MyProjects() {
     finally { setDeleteLoading(false); }
   };
 
-  const palette = { deep: "#0B2E33", dark: "#4F7C82" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)" };
   const drafts = plans.filter(p => p.status === "DRAFT");
   const active  = plans.filter(p => ["ACTIVE", "SUBMITTED"].includes(p.status));
 
@@ -304,7 +304,7 @@ export default function MyProjects() {
 
   return (
     <Layout>
-      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "var(--primary-soft)" }}>
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -325,7 +325,7 @@ export default function MyProjects() {
         {/* KPIs */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 28 }}>
           {[
-            { label: "Total planes",          value: plans.length,   color: "#4F7C82" },
+            { label: "Total planes",          value: plans.length,   color: "var(--primary)" },
             { label: "En borrador",            value: drafts.length,  color: "#EAB308" },
             { label: "Con requerimientos",     value: active.length,  color: "#1D4ED8" },
           ].map(k => (
@@ -390,7 +390,7 @@ export default function MyProjects() {
       {cloningPlan && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#fff", borderRadius: 12, padding: 26, width: 420, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-            <h3 style={{ margin: "0 0 8px", color: "#0B2E33", fontSize: 16 }}>Duplicar proyecto</h3>
+            <h3 style={{ margin: "0 0 8px", color: "var(--primary)", fontSize: 16 }}>Duplicar proyecto</h3>
             <p style={{ margin: "0 0 6px", color: "#374151", fontSize: 14 }}>
               ¿Estás seguro de duplicar <strong>"{cloningPlan.title}"</strong>?
             </p>
@@ -412,7 +412,7 @@ export default function MyProjects() {
       {deletingPlan && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#fff", borderRadius: 12, padding: 26, width: 400, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-            <h3 style={{ margin: "0 0 8px", color: "#0B2E33", fontSize: 16 }}>Eliminar plan</h3>
+            <h3 style={{ margin: "0 0 8px", color: "var(--primary)", fontSize: 16 }}>Eliminar plan</h3>
             <p style={{ margin: "0 0 6px", color: "#374151", fontSize: 14 }}>
               ¿Estás seguro de eliminar <strong>"{deletingPlan.title}"</strong>?
             </p>

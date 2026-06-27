@@ -135,7 +135,7 @@ function AddMaterialModal({ token, planId, onClose, onAdded }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 24, width: 540, maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-        <h3 style={{ margin: "0 0 4px", color: "#0B2E33", fontSize: 16 }}>
+        <h3 style={{ margin: "0 0 4px", color: "var(--primary)", fontSize: 16 }}>
           {proposing ? "Proponer nuevo material" : "Agregar material al plan"}
         </h3>
         {proposing && <p style={{ margin: "0 0 14px", color: "#64748B", fontSize: 12 }}>El precio que coloques es tentativo — logística lo validará.</p>}
@@ -152,7 +152,7 @@ function AddMaterialModal({ token, planId, onClose, onAdded }) {
                     {m.validation_status === "PENDING" && <span style={{ marginLeft: 6, background: "#FEF9C3", color: "#854D0E", fontSize: 10, padding: "1px 6px", borderRadius: 8, fontWeight: 700 }}>propuesto</span>}
                   </div>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    {m.category && <span style={{ background: "#F0F9FA", color: "#4F7C82", padding: "1px 7px", borderRadius: 10, fontSize: 10, fontWeight: 600 }}>{m.category}</span>}
+                    {m.category && <span style={{ background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 7px", borderRadius: 10, fontSize: 10, fontWeight: 600 }}>{m.category}</span>}
                     {m.unit_cost != null && <span style={{ color: "#64748B", fontSize: 11 }}>{fmtMoney(m.unit_cost)}</span>}
                   </div>
                 </div>
@@ -167,7 +167,7 @@ function AddMaterialModal({ token, planId, onClose, onAdded }) {
               )}
             </div>
             {selected && (
-              <div style={{ background: "#F0F9FA", borderRadius: 8, padding: "9px 13px", marginBottom: 12, fontSize: 13, color: "#0B2E33" }}>
+              <div style={{ background: "var(--primary-soft)", borderRadius: 8, padding: "9px 13px", marginBottom: 12, fontSize: 13, color: "var(--primary)" }}>
                 <strong>{selected.name}</strong>{selected.unit_cost != null ? ` — ${fmtMoney(selected.unit_cost)} c/u` : " — precio pendiente"}
               </div>
             )}
@@ -211,12 +211,12 @@ function AddMaterialModal({ token, planId, onClose, onAdded }) {
         {err && <p style={{ color: "#DC2626", fontSize: 12, margin: "0 0 10px" }}>{err}</p>}
 
         <div style={{ display: "flex", gap: 8, justifyContent: "space-between", alignItems: "center" }}>
-          <div>{proposing && <button onClick={() => { setProposing(false); setErr(""); }} style={{ background: "none", border: "none", color: "#4F7C82", cursor: "pointer", fontSize: 13 }}>← Volver</button>}</div>
+          <div>{proposing && <button onClick={() => { setProposing(false); setErr(""); }} style={{ background: "none", border: "none", color: "var(--primary)", cursor: "pointer", fontSize: 13 }}>← Volver</button>}</div>
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={onClose} style={{ padding: "8px 18px", borderRadius: 7, border: "1px solid #D1D5DB", background: "#fff", cursor: "pointer", fontSize: 13 }}>Cancelar</button>
             {proposing
               ? <button onClick={submitPropose} disabled={loading} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "#EAB308", color: "#fff", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>{loading ? "Enviando..." : "Proponer y añadir"}</button>
-              : <button onClick={submit} disabled={loading || !selected} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "#4F7C82", color: "#fff", cursor: "pointer", fontWeight: 700, fontSize: 13, opacity: selected ? 1 : 0.6 }}>{loading ? "Agregando..." : "Agregar"}</button>
+              : <button onClick={submit} disabled={loading || !selected} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", fontWeight: 700, fontSize: 13, opacity: selected ? 1 : 0.6 }}>{loading ? "Agregando..." : "Agregar"}</button>
             }
           </div>
         </div>
@@ -231,7 +231,7 @@ function SubmitModal({ onClose, onSubmit, pendingCount, submissionNumber }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 26, width: 440, boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-        <h3 style={{ margin: "0 0 6px", color: "#0B2E33", fontSize: 16 }}>Enviar Requerimiento #{submissionNumber}</h3>
+        <h3 style={{ margin: "0 0 6px", color: "var(--primary)", fontSize: 16 }}>Enviar Requerimiento #{submissionNumber}</h3>
         <p style={{ margin: "0 0 14px", color: "#64748B", fontSize: 13 }}>
           Se enviarán <strong>{pendingCount}</strong> ítem(s) nuevos a logística como un lote numerado.
           Los ítems anteriores no se repiten.
@@ -244,7 +244,7 @@ function SubmitModal({ onClose, onSubmit, pendingCount, submissionNumber }) {
         />
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
           <button onClick={onClose} style={{ padding: "8px 18px", borderRadius: 7, border: "1px solid #D1D5DB", background: "#fff", cursor: "pointer" }}>Cancelar</button>
-          <button onClick={() => onSubmit(reason)} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "#4F7C82", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
+          <button onClick={() => onSubmit(reason)} style={{ padding: "8px 18px", borderRadius: 7, border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
             Enviar Req. #{submissionNumber}
           </button>
         </div>
@@ -271,7 +271,7 @@ function EditableCell({ value, onSave, min, max, suffix = "" }) {
         onBlur={commit}
         onKeyDown={e => { if (e.key === "Enter") commit(); if (e.key === "Escape") { setEditing(false); setLocal(String(value)); } }}
         autoFocus
-        style={{ width: 70, padding: "3px 6px", borderRadius: 5, border: "1.5px solid #4F7C82", fontSize: 13, textAlign: "right" }}
+        style={{ width: 70, padding: "3px 6px", borderRadius: 5, border: "1.5px solid var(--primary)", fontSize: 13, textAlign: "right" }}
       />
     );
   }
@@ -358,7 +358,7 @@ export default function ProjectPlanView() {
     } catch (e) { flash(e.message, true); }
   };
 
-  const palette = { deep: "#0B2E33", dark: "#4F7C82", mid: "#93B1B5", light: "#B8E3E9" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)", mid: "rgba(199,210,229,0.7)", light: "rgba(199,210,229,0.85)" };
 
   if (loading) return <Layout><div style={{ padding: 40, textAlign: "center", color: "#9CA3AF" }}>Cargando plan...</div></Layout>;
   if (!plan) return <Layout><div style={{ padding: 40, color: "#DC2626" }}>{actionErr || "Plan no encontrado"}</div></Layout>;
@@ -377,7 +377,7 @@ export default function ProjectPlanView() {
 
   return (
     <Layout>
-      <div style={{ padding: "24px 32px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "24px 32px", minHeight: "100vh", background: "var(--primary-soft)" }}>
 
         {/* Breadcrumb */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, fontSize: 13, color: "#64748B" }}>
@@ -387,7 +387,7 @@ export default function ProjectPlanView() {
         </div>
 
         {/* Banner */}
-        <div style={{ background: `linear-gradient(135deg, ${palette.deep} 0%, #1A4A50 100%)`, borderRadius: 14, padding: "22px 28px", marginBottom: 22, color: "#fff", display: "grid", gridTemplateColumns: "1fr auto" }}>
+        <div style={{ background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)", borderRadius: 14, padding: "22px 28px", marginBottom: 22, color: "#fff", display: "grid", gridTemplateColumns: "1fr auto" }}>
           <div>
             <div style={{ fontSize: 12, color: palette.light, letterSpacing: "0.6px", fontWeight: 700 }}>PROYECTO</div>
             <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{plan.project_name}</div>
@@ -469,7 +469,7 @@ export default function ProjectPlanView() {
                           ? <EditableCell value={item.wear_percentage} min={0} max={100} suffix="%" onSave={v => patchItem(item.id, { wear_percentage: v })} />
                           : <span style={{ fontSize: 13 }}>{item.wear_percentage}%</span>}
                       </div>
-                      <div style={{ textAlign: "right", fontWeight: 700, color: "#0B2E33" }}>{fmtMoney(effCost)}</div>
+                      <div style={{ textAlign: "right", fontWeight: 700, color: "var(--primary)" }}>{fmtMoney(effCost)}</div>
                       <div style={{ textAlign: "center" }}>
                         <Badge cfg={SUB_CFG[item.submission_status]} />
                       </div>
@@ -486,10 +486,10 @@ export default function ProjectPlanView() {
           )}
 
           {items.length > 0 && (
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 0.8fr 0.8fr 0.9fr 0.9fr 0.9fr 1fr 1fr 50px", padding: "13px 20px", background: "#F0F9FA", borderTop: "2px solid #E2E8F0", fontWeight: 700, fontSize: 13 }}>
-              <span style={{ color: "#0B2E33" }}>TOTAL ESTIMADO</span>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 0.8fr 0.8fr 0.9fr 0.9fr 0.9fr 1fr 1fr 50px", padding: "13px 20px", background: "var(--primary-soft)", borderTop: "2px solid #E2E8F0", fontWeight: 700, fontSize: 13 }}>
+              <span style={{ color: "var(--primary)" }}>TOTAL ESTIMADO</span>
               <span></span><span></span><span></span><span></span><span></span>
-              <span style={{ textAlign: "right", fontSize: 15, color: "#0B2E33" }}>{fmtMoney(totalCost)}</span>
+              <span style={{ textAlign: "right", fontSize: 15, color: "var(--primary)" }}>{fmtMoney(totalCost)}</span>
               <span></span><span></span>
             </div>
           )}
@@ -526,7 +526,7 @@ export default function ProjectPlanView() {
                 return (
                   <div key={s.id} style={{ background: "#fff", borderRadius: 10, padding: "14px 20px", boxShadow: "0 1px 4px rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center", borderLeft: `4px solid ${cfg.bg === "#DCFCE7" ? "#22C55E" : cfg.bg === "#FEE2E2" ? "#EF4444" : "#EAB308"}` }}>
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: "#0B2E33" }}>
+                      <div style={{ fontWeight: 700, fontSize: 14, color: "var(--primary)" }}>
                         Requerimiento #{s.submission_number}
                         <span style={{ marginLeft: 10, background: cfg.bg, color: cfg.color, padding: "2px 9px", borderRadius: 20, fontSize: 11 }}>{cfg.label}</span>
                       </div>

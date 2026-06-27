@@ -97,7 +97,7 @@ function ReserveModal({ request, onClose, onSuccess }) {
             <label style={labelStyle}>Almacén de origen *</label>
             <select style={selectStyle} value={form.warehouse_id}
               onChange={(e) => setForm({ ...form, warehouse_id: e.target.value })}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
               required>
               <option value="">Seleccionar almacén...</option>
               {warehouses.map((w) => <option key={w.id} value={w.id}>{w.name} {w.code ? `(${w.code})` : ""}</option>)}
@@ -107,7 +107,7 @@ function ReserveModal({ request, onClose, onSuccess }) {
             <label style={labelStyle}>Proyecto (opcional)</label>
             <select style={selectStyle} value={form.project_id}
               onChange={(e) => setForm({ ...form, project_id: e.target.value })}
-              onFocus={(e) => e.target.style.borderColor = "#4F7C82"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
+              onFocus={(e) => e.target.style.borderColor = "var(--primary)"} onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}>
               <option value="">Sin proyecto</option>
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name} {p.code ? `· ${p.code}` : ""}</option>)}
             </select>
@@ -119,7 +119,7 @@ function ReserveModal({ request, onClose, onSuccess }) {
               Cancelar
             </button>
             <button type="submit" disabled={loading}
-              style={{ flex: 1, padding: "10px 0", background: "#4F7C82", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
+              style={{ flex: 1, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}>
               {loading ? "Reservando..." : "Confirmar reserva"}
             </button>
           </div>
@@ -188,13 +188,13 @@ function ItemReviewRow({ item, onReview }) {
         <div>
           <span style={{ fontWeight: 600, color: "#1E293B" }}>{item.material_name}</span>
           <span style={{ marginLeft: 8, fontSize: 11, color: "#94A3B8" }}>{item.material_code}</span>
-          {item.category && <span style={{ marginLeft: 6, background: "#F0F9FA", color: "#4F7C82", padding: "1px 7px", borderRadius: 8, fontSize: 10, fontWeight: 600 }}>{item.category}</span>}
+          {item.category && <span style={{ marginLeft: 6, background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 7px", borderRadius: 8, fontSize: 10, fontWeight: 600 }}>{item.category}</span>}
         </div>
         <div style={{ textAlign: "right", fontFamily: "monospace" }}>{item.quantity}</div>
         <div style={{ textAlign: "right", color: "#64748B", fontSize: 12 }}>
           {item.unit_cost != null ? `S/${item.unit_cost.toFixed(2)}` : "—"}
         </div>
-        <div style={{ textAlign: "right", fontWeight: 700, color: "#0B2E33", fontSize: 12 }}>
+        <div style={{ textAlign: "right", fontWeight: 700, color: "var(--primary)", fontSize: 12 }}>
           S/{effCost.toFixed(2)}
         </div>
         <div style={{ textAlign: "center" }}>
@@ -281,12 +281,12 @@ function SubmissionCard({ sub, onReviewItem, onRefresh }) {
         onMouseLeave={e => e.currentTarget.style.background = "white"}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-            <span style={{ fontWeight: 700, fontSize: 14, color: "#0B2E33" }}>Req. #{sub.submission_number}</span>
+            <span style={{ fontWeight: 700, fontSize: 14, color: "var(--primary)" }}>Req. #{sub.submission_number}</span>
             <span style={{ background: cfg.bg, color: cfg.color, padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
             <span style={{ fontSize: 12, color: "#64748B" }}>·  {sub.item_count} ítems · {reviewed}/{sub.item_count} revisados</span>
           </div>
           <div style={{ fontSize: 12, color: "#64748B", display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <span>Proyecto: <strong style={{ color: "#0B2E33" }}>{sub.project_name}</strong> [{sub.project_code}]</span>
+            <span>Proyecto: <strong style={{ color: "var(--primary)" }}>{sub.project_name}</strong> [{sub.project_code}]</span>
             <span>Ingeniero: <strong>{sub.engineer_name}</strong></span>
             <span>{new Date(sub.submitted_at).toLocaleDateString("es-PE", { day: "2-digit", month: "short", year: "numeric" })}</span>
             {sub.reason && <span>"{sub.reason}"</span>}
@@ -317,8 +317,8 @@ function SubmissionCard({ sub, onReviewItem, onRefresh }) {
             <ItemReviewRow key={item.id} item={item} onReview={handleReviewItem} />
           ))}
           {detail && (
-            <div style={{ padding: "10px 20px", background: "#F0F9FA", borderTop: "1px solid #E2E8F0", display: "flex", justifyContent: "space-between", fontSize: 12, color: "#64748B" }}>
-              <span>Total estimado: <strong style={{ color: "#0B2E33" }}>S/{detail.total_cost?.toFixed(2)}</strong></span>
+            <div style={{ padding: "10px 20px", background: "var(--primary-soft)", borderTop: "1px solid #E2E8F0", display: "flex", justifyContent: "space-between", fontSize: 12, color: "#64748B" }}>
+              <span>Total estimado: <strong style={{ color: "var(--primary)" }}>S/{detail.total_cost?.toFixed(2)}</strong></span>
               {detail.logistics_notes && <span>Nota: {detail.logistics_notes}</span>}
             </div>
           )}
@@ -364,7 +364,7 @@ function ByProjectView() {
             <button key={f.key} onClick={() => setStatusFilter(f.key)}
               style={{ padding: "6px 14px", borderRadius: 7, fontSize: 12, border: "none", cursor: "pointer", fontWeight: active ? 600 : 500, background: active ? "white" : "transparent", color: active ? "#111827" : "#6B7280", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.1)" : "none" }}>
               {f.label}
-              <span style={{ marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99, background: active ? "rgba(184,227,233,0.4)" : "#E5E7EB", color: active ? "#4F7C82" : "#6B7280" }}>{count}</span>
+              <span style={{ marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99, background: active ? "rgba(199,210,229,0.4)" : "#E5E7EB", color: active ? "var(--primary)" : "#6B7280" }}>{count}</span>
             </button>
           );
         })}
@@ -495,7 +495,7 @@ export default function AllRequests() {
             { key: "project",    label: "Por proyecto" },
           ].map(v => (
             <button key={v.key} onClick={() => setView(v.key)}
-              style={{ padding: "8px 22px", fontSize: 13, fontWeight: view === v.key ? 700 : 500, border: "none", background: "none", cursor: "pointer", color: view === v.key ? "#0B2E33" : "#6B7280", borderBottom: view === v.key ? "2px solid #0B2E33" : "2px solid transparent", marginBottom: -2, transition: "color 0.15s" }}>
+              style={{ padding: "8px 22px", fontSize: 13, fontWeight: view === v.key ? 700 : 500, border: "none", background: "none", cursor: "pointer", color: view === v.key ? "var(--primary)" : "#6B7280", borderBottom: view === v.key ? "2px solid var(--primary)" : "2px solid transparent", marginBottom: -2, transition: "color 0.15s" }}>
               {v.label}
             </button>
           ))}
@@ -522,11 +522,11 @@ export default function AllRequests() {
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
               style={{
-                width: "100%", border: `1.5px solid ${searchFocused ? "#4F7C82" : "#E5E7EB"}`,
+                width: "100%", border: `1.5px solid ${searchFocused ? "var(--primary)" : "#E5E7EB"}`,
                 borderRadius: 10, paddingLeft: 38, paddingRight: search ? 36 : 12,
                 paddingTop: 9, paddingBottom: 9, fontSize: 13, outline: "none",
                 boxSizing: "border-box", background: "white",
-                boxShadow: searchFocused ? "0 0 0 3px rgba(79,124,130,0.1)" : "none",
+                boxShadow: searchFocused ? "0 0 0 3px rgba(0,58,140,0.1)" : "none",
                 transition: "border-color 0.15s, box-shadow 0.15s",
               }}
             />
@@ -559,7 +559,7 @@ export default function AllRequests() {
                   {t.label}
                   <span style={{
                     marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99,
-                    ...(active ? { background: "rgba(184,227,233,0.4)", color: "#4F7C82" } : { background: "#E5E7EB", color: "#6B7280" })
+                    ...(active ? { background: "rgba(199,210,229,0.4)", color: "var(--primary)" } : { background: "#E5E7EB", color: "#6B7280" })
                   }}>
                     {counts[t.key]}
                   </span>
@@ -584,7 +584,7 @@ export default function AllRequests() {
         ) : (
           <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
             {/* Table header */}
-            <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 70px 1fr 80px 100px 160px", gap: 8, padding: "12px 20px", background: "#0B2E33" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 70px 1fr 80px 100px 160px", gap: 8, padding: "12px 20px", background: "var(--primary)" }}>
               {["Usuario", "Material", "Cant.", "Motivo", "SLA", "Estado", "Acciones"].map((h) => (
                 <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{h}</div>
               ))}
@@ -602,7 +602,7 @@ export default function AllRequests() {
                       borderBottom: idx < filtered.length - 1 ? "1px solid #F3F4F6" : "none",
                       background: idx % 2 === 0 ? "white" : "#FAFAFA",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "#F0F9FA"}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary-soft)"}
                     onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? "white" : "#FAFAFA"}
                   >
                     <div style={{ fontWeight: 500, color: "#374151", fontSize: 13 }}>{r.requested_by || "—"}</div>
@@ -635,7 +635,7 @@ export default function AllRequests() {
                       ) : r.status === "APPROVED" ? (
                         <button
                           onClick={() => setReserving(r)}
-                          style={{ fontSize: 11, padding: "5px 14px", borderRadius: 7, background: "#EEF6F7", color: "#0B2E33", border: "1px solid #93B1B5", fontWeight: 600, cursor: "pointer" }}
+                          style={{ fontSize: 11, padding: "5px 14px", borderRadius: 7, background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", fontWeight: 600, cursor: "pointer" }}
                         >
                           Reservar stock
                         </button>

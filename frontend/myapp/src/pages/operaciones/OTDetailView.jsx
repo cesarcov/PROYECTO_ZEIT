@@ -5,7 +5,7 @@ import { apiFetch, BASE_URL as API } from "../../services/api";
 const TOKEN = () => localStorage.getItem("access_token");
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
-const C = { deep: "#0B2E33", mid: "#4F7C82", light: "#B8E3E9", bg: "#F0F9FA" };
+const C = { deep: "var(--primary)", mid: "var(--primary)", light: "rgba(199,210,229,0.85)", bg: "var(--primary-soft)" };
 
 const STATUS_CFG = {
   PENDIENTE:    { label: "Pendiente",    bg: "#FEF3C7", color: "#92400E", border: "#FCD34D" },
@@ -461,7 +461,7 @@ function GenerarOCModal({ ot, matItem, onClose, onCreated }) {
                     display: "flex", alignItems: "center", gap: 10, padding: "8px 12px",
                     border: `1px solid ${provSel?.id === p.id ? C.mid : "#E5E7EB"}`,
                     borderRadius: 8, cursor: "pointer",
-                    background: provSel?.id === p.id ? "#EEF9FA" : "#fff",
+                    background: provSel?.id === p.id ? "var(--primary-soft)" : "#fff",
                   }}>
                     <input type="radio" name="proveedor" checked={provSel?.id === p.id} onChange={() => setProvSel(p)} />
                     <div>
@@ -685,11 +685,11 @@ function TiemposSection({ ot, onRefresh, readonly }) {
 
       {/* Total horas */}
       <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-        <div style={{ background: "#F0F9FA", borderRadius: 8, padding: "10px 16px", border: "1px solid #B8E3E9" }}>
+        <div style={{ background: "var(--primary-soft)", borderRadius: 8, padding: "10px 16px", border: "1px solid #D1D5DB" }}>
           <div style={{ fontSize: 10, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>Horas estimadas</div>
           <div style={{ fontSize: 18, fontWeight: 800, color: C.mid }}>{fmtHoras(ot.horas_estimadas)}</div>
         </div>
-        <div style={{ background: "#F0F9FA", borderRadius: 8, padding: "10px 16px", border: "1px solid #B8E3E9" }}>
+        <div style={{ background: "var(--primary-soft)", borderRadius: 8, padding: "10px 16px", border: "1px solid #D1D5DB" }}>
           <div style={{ fontSize: 10, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>Horas registradas</div>
           <div style={{ fontSize: 18, fontWeight: 800, color: totalHoras > (ot.horas_estimadas ?? 999) ? "#DC2626" : C.deep }}>
             {fmtHoras(totalHoras)}
@@ -992,7 +992,7 @@ export default function OTDetailView() {
             ← Órdenes de Trabajo
           </button>
           <span>›</span>
-          <span style={{ fontFamily: "monospace", background: "#F0F9FA", color: C.mid, padding: "1px 8px", borderRadius: 4, fontWeight: 700 }}>{ot.code}</span>
+          <span style={{ fontFamily: "monospace", background: "var(--primary-soft)", color: C.mid, padding: "1px 8px", borderRadius: 4, fontWeight: 700 }}>{ot.code}</span>
         </div>
 
         {/* Header card */}

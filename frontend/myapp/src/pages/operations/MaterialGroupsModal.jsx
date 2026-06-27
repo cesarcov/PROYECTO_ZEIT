@@ -44,7 +44,7 @@ function GroupList({ token, onSelect, onCreateNew, onApplied, planId }) {
           <div style={{ fontSize: 32, marginBottom: 8 }}>📦</div>
           <div style={{ fontWeight: 600, color: "#374151", marginBottom: 6 }}>Sin bóvedas todavía</div>
           <div style={{ fontSize: 13, marginBottom: 18 }}>Crea grupos de materiales que puedas aplicar de golpe a cualquier proyecto</div>
-          <button onClick={onCreateNew} style={btnStyle("#4F7C82")}>+ Crear primera bóveda</button>
+          <button onClick={onCreateNew} style={btnStyle("var(--primary)")}>+ Crear primera bóveda</button>
         </div>
       ) : (
         groups.map(g => {
@@ -61,7 +61,7 @@ function GroupList({ token, onSelect, onCreateNew, onApplied, planId }) {
                   {cs.emoji}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "#0B2E33", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.name}</div>
                   <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>
                     <span style={{ background: cs.bg, color: cs.color, padding: "1px 7px", borderRadius: 10, fontWeight: 600, marginRight: 6 }}>{g.category}</span>
                     {g.item_count} material{g.item_count !== 1 ? "es" : ""}
@@ -70,7 +70,7 @@ function GroupList({ token, onSelect, onCreateNew, onApplied, planId }) {
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                <button onClick={() => onSelect(g)} style={{ ...btnStyle("#F1F5F9", "#4F7C82"), fontSize: 12 }}>
+                <button onClick={() => onSelect(g)} style={{ ...btnStyle("#F1F5F9", "var(--primary)"), fontSize: 12 }}>
                   Ver / Editar
                 </button>
                 {planId && (
@@ -106,7 +106,7 @@ function ApplyButton({ token, planId, groupId, groupName, onApplied }) {
   };
 
   return (
-    <button onClick={apply} disabled={loading || done} style={btnStyle(done ? "#22C55E" : "#0B2E33", "#fff", done ? "1px solid #22C55E" : "none")}>
+    <button onClick={apply} disabled={loading || done} style={btnStyle(done ? "#22C55E" : "var(--primary)", "#fff", done ? "1px solid #22C55E" : "none")}>
       {loading ? "Aplicando..." : done ? "✓ Aplicado" : "Aplicar al plan"}
     </button>
   );
@@ -185,20 +185,20 @@ function GroupDetail({ token, group: initialGroup, onBack, onDeleted, planId, on
                 <input value={editDesc} onChange={e => setEditDesc(e.target.value)} style={inpStyle} placeholder="Descripción (opcional)" />
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={saveHeader} disabled={saving} style={btnStyle("#4F7C82")}>{saving ? "Guardando..." : "Guardar"}</button>
+                <button onClick={saveHeader} disabled={saving} style={btnStyle("var(--primary)")}>{saving ? "Guardando..." : "Guardar"}</button>
                 <button onClick={() => setEditing(false)} style={btnStyle("#F1F5F9", "#374151")}>Cancelar</button>
               </div>
             </div>
           ) : (
             <>
-              <div style={{ fontWeight: 800, fontSize: 16, color: "#0B2E33" }}>{group.name}</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: "var(--primary)" }}>{group.name}</div>
               <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3 }}>
                 <span style={{ background: cs.bg, color: cs.color, padding: "1px 7px", borderRadius: 10, fontWeight: 600, marginRight: 6 }}>{group.category}</span>
                 {items.length} material{items.length !== 1 ? "es" : ""}
               </div>
               {group.description && <div style={{ fontSize: 12, color: "#64748B", marginTop: 3 }}>{group.description}</div>}
               <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                <button onClick={() => setEditing(true)} style={{ ...btnStyle("#F1F5F9", "#4F7C82"), fontSize: 12 }}>✏️ Editar</button>
+                <button onClick={() => setEditing(true)} style={{ ...btnStyle("#F1F5F9", "var(--primary)"), fontSize: 12 }}>✏️ Editar</button>
                 <button onClick={deleteGroup} style={{ ...btnStyle("#FEF2F2", "#DC2626"), fontSize: 12 }}>🗑️ Eliminar bóveda</button>
                 {planId && <ApplyButton token={token} planId={planId} groupId={group.id} groupName={group.name} onApplied={onApplied} />}
               </div>
@@ -211,7 +211,7 @@ function GroupDetail({ token, group: initialGroup, onBack, onDeleted, planId, on
       <div style={{ marginBottom: 12 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px" }}>Materiales en esta bóveda</span>
-          <button onClick={() => setShowAddMat(true)} style={{ ...btnStyle("#4F7C82"), fontSize: 12 }}>+ Agregar material</button>
+          <button onClick={() => setShowAddMat(true)} style={{ ...btnStyle("var(--primary)"), fontSize: 12 }}>+ Agregar material</button>
         </div>
 
         {loadingItems ? (
@@ -222,7 +222,7 @@ function GroupDetail({ token, group: initialGroup, onBack, onDeleted, planId, on
           </div>
         ) : (
           <div style={{ border: "1px solid #E5E7EB", borderRadius: 8, overflow: "hidden" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.7fr 36px", background: "#0B2E33", color: "#B8E3E9", padding: "7px 14px", fontSize: 10, fontWeight: 700, letterSpacing: "0.5px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.7fr 36px", background: "var(--primary)", color: "rgba(199,210,229,0.85)", padding: "7px 14px", fontSize: 10, fontWeight: 700, letterSpacing: "0.5px" }}>
               <span>MATERIAL</span>
               <span style={{ textAlign: "right" }}>CANT.</span>
               <span style={{ textAlign: "right" }}>% DESG.</span>
@@ -234,7 +234,7 @@ function GroupDetail({ token, group: initialGroup, onBack, onDeleted, planId, on
                   <div style={{ fontWeight: 600, color: "#1E293B" }}>{item.material_name}</div>
                   <div style={{ fontSize: 10, color: "#94A3B8" }}>{item.material_code} {item.unit_cost != null ? `· ${fmtMoney(item.unit_cost)}` : ""}</div>
                 </div>
-                <div style={{ textAlign: "right", fontWeight: 700, color: "#0B2E33" }}>{item.quantity}</div>
+                <div style={{ textAlign: "right", fontWeight: 700, color: "var(--primary)" }}>{item.quantity}</div>
                 <div style={{ textAlign: "right", color: "#64748B" }}>{item.wear_percentage}%</div>
                 <div style={{ textAlign: "center" }}>
                   <button onClick={() => removeItem(item.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "#CBD5E1", fontSize: 15, padding: 3 }}
@@ -303,13 +303,13 @@ function AddMaterialToGroupModal({ token, groupId, onClose, onAdded }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 12, padding: 22, width: 500, maxHeight: "80vh", display: "flex", flexDirection: "column", boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}>
-        <h4 style={{ margin: "0 0 12px", color: "#0B2E33" }}>Agregar material a la bóveda</h4>
+        <h4 style={{ margin: "0 0 12px", color: "var(--primary)" }}>Agregar material a la bóveda</h4>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar material..." style={{ ...inpStyle, marginBottom: 10 }} autoFocus />
         <div style={{ flex: 1, overflowY: "auto", border: "1px solid #E5E7EB", borderRadius: 7, marginBottom: 10, maxHeight: 200 }}>
           {filtered.slice(0, 60).map(m => (
             <div key={m.id} onClick={() => setSelected(m)} style={{ padding: "8px 12px", cursor: "pointer", fontSize: 13, borderBottom: "1px solid #F1F5F9", background: selected?.id === m.id ? "#EFF6FF" : "#fff", display: "flex", justifyContent: "space-between" }}>
               <span style={{ fontWeight: 600, color: "#1E293B" }}>{m.name} <span style={{ fontWeight: 400, color: "#94A3B8", fontSize: 11 }}>{m.code}</span></span>
-              {m.category && <span style={{ fontSize: 10, background: "#F0F9FA", color: "#4F7C82", padding: "1px 7px", borderRadius: 10, fontWeight: 600 }}>{m.category}</span>}
+              {m.category && <span style={{ fontSize: 10, background: "var(--primary-soft)", color: "var(--primary)", padding: "1px 7px", borderRadius: 10, fontWeight: 600 }}>{m.category}</span>}
             </div>
           ))}
           {filtered.length === 0 && <div style={{ padding: 16, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Sin resultados</div>}
@@ -327,7 +327,7 @@ function AddMaterialToGroupModal({ token, groupId, onClose, onAdded }) {
         {err && <p style={{ color: "#DC2626", fontSize: 12, margin: "0 0 8px" }}>{err}</p>}
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
           <button onClick={onClose} style={btnStyle("#F1F5F9", "#374151")}>Cancelar</button>
-          <button onClick={submit} disabled={loading || !selected} style={{ ...btnStyle("#4F7C82"), opacity: selected ? 1 : 0.6 }}>{loading ? "Agregando..." : "Agregar"}</button>
+          <button onClick={submit} disabled={loading || !selected} style={{ ...btnStyle("var(--primary)"), opacity: selected ? 1 : 0.6 }}>{loading ? "Agregando..." : "Agregar"}</button>
         </div>
       </div>
     </div>
@@ -360,7 +360,7 @@ function CreateGroupFlow({ token, onCreated, onCancel }) {
 
   return (
     <div>
-      <h4 style={{ margin: "0 0 16px", color: "#0B2E33", fontSize: 15 }}>Nueva bóveda de materiales</h4>
+      <h4 style={{ margin: "0 0 16px", color: "var(--primary)", fontSize: 15 }}>Nueva bóveda de materiales</h4>
       <p style={{ margin: "0 0 14px", color: "#64748B", fontSize: 13 }}>
         Una bóveda es una plantilla de materiales que puedes aplicar de golpe a cualquier proyecto. El contenido del proyecto es independiente — puedes editar cantidades sin afectar la bóveda.
       </p>
@@ -381,7 +381,7 @@ function CreateGroupFlow({ token, onCreated, onCancel }) {
       {err && <p style={{ color: "#DC2626", fontSize: 12, margin: "0 0 10px" }}>{err}</p>}
       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
         <button onClick={onCancel} style={btnStyle("#F1F5F9", "#374151")}>Cancelar</button>
-        <button onClick={submit} disabled={loading} style={btnStyle("#4F7C82")}>{loading ? "Creando..." : "Crear bóveda"}</button>
+        <button onClick={submit} disabled={loading} style={btnStyle("var(--primary)")}>{loading ? "Creando..." : "Crear bóveda"}</button>
       </div>
     </div>
   );
@@ -394,7 +394,7 @@ const inpStyle = {
   boxSizing: "border-box",
 };
 
-function btnStyle(bg = "#4F7C82", color = "#fff", border = "none") {
+function btnStyle(bg = "var(--primary)", color = "#fff", border = "none") {
   return {
     padding: "7px 16px", borderRadius: 7, border, background: bg,
     color, cursor: "pointer", fontWeight: 600, fontSize: 13,
@@ -434,26 +434,26 @@ export default function MaterialGroupsModal({ token, planId, onClose, onApplied 
         overflow: "hidden",
       }}>
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg, #0B2E33, #1a4a52)", padding: "18px 24px", flexShrink: 0 }}>
+        <div style={{ background: "linear-gradient(135deg, var(--primary-dark), var(--primary))", padding: "18px 24px", flexShrink: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <div style={{ color: "#B8E3E9", fontSize: 11, fontWeight: 700, letterSpacing: "0.6px" }}>BÓVEDAS DE MATERIALES</div>
+              <div style={{ color: "rgba(199,210,229,0.85)", fontSize: 11, fontWeight: 700, letterSpacing: "0.6px" }}>BÓVEDAS DE MATERIALES</div>
               <div style={{ color: "#fff", fontWeight: 800, fontSize: 17, marginTop: 2 }}>
                 {screen === "list" ? "Grupos predefinidos" : screen === "create" ? "Nueva bóveda" : selectedGroup?.name}
               </div>
               {screen === "detail" && (
-                <div style={{ color: "#93B1B5", fontSize: 12, marginTop: 2 }}>
+                <div style={{ color: "#94A3B8", fontSize: 12, marginTop: 2 }}>
                   Edita la bóveda o aplícala a este proyecto — los cambios en el plan no afectan la bóveda
                 </div>
               )}
             </div>
-            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#B8E3E9", cursor: "pointer", padding: "6px 12px", fontSize: 18, lineHeight: 1 }}>✕</button>
+            <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "rgba(199,210,229,0.85)", cursor: "pointer", padding: "6px 12px", fontSize: 18, lineHeight: 1 }}>✕</button>
           </div>
 
           {/* Breadcrumb */}
           {screen !== "list" && (
             <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
-              <button onClick={() => { setScreen("list"); setSelectedGroup(null); }} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 6, color: "#B8E3E9", cursor: "pointer", padding: "3px 10px" }}>
+              <button onClick={() => { setScreen("list"); setSelectedGroup(null); }} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 6, color: "rgba(199,210,229,0.85)", cursor: "pointer", padding: "3px 10px" }}>
                 ← Bóvedas
               </button>
               {screen === "detail" && <span style={{ color: "rgba(255,255,255,0.5)" }}>/ {selectedGroup?.name}</span>}
@@ -465,7 +465,7 @@ export default function MaterialGroupsModal({ token, planId, onClose, onApplied 
         {/* Actions bar (solo en lista) */}
         {screen === "list" && (
           <div style={{ padding: "12px 24px", borderBottom: "1px solid #F1F5F9", background: "#FAFBFC", flexShrink: 0, display: "flex", justifyContent: "flex-end" }}>
-            <button onClick={() => setScreen("create")} style={btnStyle("#4F7C82")}>+ Nueva bóveda</button>
+            <button onClick={() => setScreen("create")} style={btnStyle("var(--primary)")}>+ Nueva bóveda</button>
           </div>
         )}
 

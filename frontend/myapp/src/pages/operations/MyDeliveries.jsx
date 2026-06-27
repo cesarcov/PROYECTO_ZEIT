@@ -64,7 +64,7 @@ function ConfirmModal({ dispatch, onClose, onConfirmed }) {
         background: "#fff", borderRadius: 12, padding: 28, width: 420,
         boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
       }}>
-        <h3 style={{ margin: "0 0 6px", color: "#0B2E33", fontSize: 17 }}>Confirmar recepción</h3>
+        <h3 style={{ margin: "0 0 6px", color: "var(--primary)", fontSize: 17 }}>Confirmar recepción</h3>
         <p style={{ margin: "0 0 18px", color: "#64748B", fontSize: 13 }}>
           {dispatch.material_name} · {dispatch.quantity} unidades
         </p>
@@ -115,14 +115,14 @@ function ConfirmModal({ dispatch, onClose, onConfirmed }) {
 
 // ── Delivery card ─────────────────────────────────────────────────────────────
 function DeliveryCard({ d, onConfirm }) {
-  const palette = { deep: "#0B2E33", dark: "#4F7C82", light: "#B8E3E9" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)", light: "rgba(199,210,229,0.85)" };
   const isActive = d.status !== "DELIVERED";
 
   return (
     <div style={{
       background: "#fff", borderRadius: 12, padding: 20,
       boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      borderLeft: `4px solid ${isActive ? "#4F7C82" : "#22C55E"}`,
+      borderLeft: `4px solid ${isActive ? "var(--primary)" : "#22C55E"}`,
       display: "flex", flexDirection: "column", gap: 10,
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -165,7 +165,7 @@ function DeliveryCard({ d, onConfirm }) {
       {d.notes && (
         <div style={{
           background: "#F8FAFC", borderRadius: 7, padding: "8px 12px",
-          fontSize: 13, color: "#4B5563", borderLeft: "3px solid #93B1B5",
+          fontSize: 13, color: "#4B5563", borderLeft: "3px solid #D1D5DB",
         }}>
           {d.notes}
         </div>
@@ -225,11 +225,11 @@ export default function MyDeliveries() {
   const done   = deliveries.filter(d => d.status === "DELIVERED");
   const visible = tab === "active" ? active : done;
 
-  const palette = { deep: "#0B2E33", dark: "#4F7C82" };
+  const palette = { deep: "var(--primary)", dark: "var(--primary)" };
 
   return (
     <Layout>
-      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#F0F9FA" }}>
+      <div style={{ padding: "28px 32px", minHeight: "100vh", background: "var(--primary-soft)" }}>
 
         {/* Header */}
         <div style={{ marginBottom: 24 }}>

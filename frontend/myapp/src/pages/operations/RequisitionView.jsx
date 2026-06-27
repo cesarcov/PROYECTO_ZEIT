@@ -192,7 +192,7 @@ export default function RequisitionView() {
 
   // ── Styles ───────────────────────────────────────────────────────────────────
   const panelCard  = { background: "white", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column" };
-  const sectionHdr = { background: "#0B2E33", padding: "12px 16px", color: "white" };
+  const sectionHdr = { background: "var(--primary)", padding: "12px 16px", color: "white" };
   const inputSt    = { border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "7px 10px", fontSize: 13, outline: "none", background: "#FAFAFA", boxSizing: "border-box" };
 
   // ── Render ───────────────────────────────────────────────────────────────────
@@ -229,7 +229,7 @@ export default function RequisitionView() {
             value={projectId}
             onChange={(e) => { setProjectId(e.target.value); setServiceName(""); }}
             style={{ ...inputSt, minWidth: 220 }}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
           >
             <option value="">Sin proyecto (servicio libre)</option>
@@ -246,13 +246,13 @@ export default function RequisitionView() {
                 value={serviceName}
                 onChange={(e) => setServiceName(e.target.value)}
                 style={{ ...inputSt, minWidth: 260 }}
-                onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+                onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
                 onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
               />
             </>
           )}
           {projectLabel !== "Sin proyecto" && (
-            <span style={{ fontSize: 12, fontWeight: 600, background: "#EEF6F7", color: "#0B2E33", padding: "4px 12px", borderRadius: 99, border: "1px solid #B8E3E9" }}>
+            <span style={{ fontSize: 12, fontWeight: 600, background: "var(--primary-soft)", color: "var(--primary)", padding: "4px 12px", borderRadius: 99, border: "1px solid #D1D5DB" }}>
               📌 {projectLabel}
             </span>
           )}
@@ -265,7 +265,7 @@ export default function RequisitionView() {
           <div style={panelCard}>
             <div style={sectionHdr}>
               <p style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>Catálogo de materiales</p>
-              <p style={{ fontSize: 11, color: "rgba(184,227,233,0.7)", marginTop: 2 }}>
+              <p style={{ fontSize: 11, color: "rgba(199,210,229,0.7)", marginTop: 2 }}>
                 {loadingData ? "Cargando..." : `${materials.length} materiales disponibles`}
               </p>
             </div>
@@ -284,10 +284,10 @@ export default function RequisitionView() {
                   onFocus={() => setSearchFocus(true)}
                   onBlur={() => setSearchFocus(false)}
                   style={{
-                    width: "100%", border: `1.5px solid ${searchFocus ? "#4F7C82" : "#E5E7EB"}`, borderRadius: 9,
+                    width: "100%", border: `1.5px solid ${searchFocus ? "var(--primary)" : "#E5E7EB"}`, borderRadius: 9,
                     paddingLeft: 32, paddingRight: search ? 30 : 10, paddingTop: 8, paddingBottom: 8,
                     fontSize: 13, outline: "none", boxSizing: "border-box", background: "white",
-                    boxShadow: searchFocus ? "0 0 0 3px rgba(79,124,130,0.1)" : "none",
+                    boxShadow: searchFocus ? "0 0 0 3px rgba(0,58,140,0.1)" : "none",
                   }}
                 />
                 {search && (
@@ -307,7 +307,7 @@ export default function RequisitionView() {
                   <button key={f.key} onClick={() => setStockFilter(f.key)}
                     style={{
                       padding: "4px 12px", borderRadius: 99, fontSize: 11, fontWeight: 600, border: "none", cursor: "pointer",
-                      background: stockFilter === f.key ? "#0B2E33" : "#F3F4F6",
+                      background: stockFilter === f.key ? "var(--primary)" : "#F3F4F6",
                       color: stockFilter === f.key ? "white" : "#6B7280",
                     }}>
                     {f.label}
@@ -335,11 +335,11 @@ export default function RequisitionView() {
                     display: "flex", alignItems: "center", gap: 12,
                     padding: "11px 14px",
                     borderBottom: idx < filteredMaterials.length - 1 ? "1px solid #F9FAFB" : "none",
-                    background: inCart ? "#F0F9FA" : "white",
+                    background: inCart ? "var(--primary-soft)" : "white",
                     transition: "background 0.1s",
                   }}
                     onMouseEnter={(e) => { if (!inCart) e.currentTarget.style.background = "#FAFAFA"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = inCart ? "#F0F9FA" : "white"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = inCart ? "var(--primary-soft)" : "white"; }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
@@ -359,9 +359,9 @@ export default function RequisitionView() {
                       onClick={() => addToCart(m)}
                       style={{
                         flexShrink: 0, padding: "5px 14px", fontSize: 12, fontWeight: 700,
-                        background: inCart ? "#EEF6F7" : "#4F7C82",
-                        color: inCart ? "#4F7C82" : "white",
-                        border: inCart ? "1px solid #93B1B5" : "none",
+                        background: inCart ? "var(--primary-soft)" : "var(--primary)",
+                        color: inCart ? "var(--primary)" : "white",
+                        border: inCart ? "1px solid #D1D5DB" : "none",
                         borderRadius: 7, cursor: "pointer",
                         transition: "all 0.15s",
                       }}
@@ -382,12 +382,12 @@ export default function RequisitionView() {
                   <p style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>
                     Lista de Requisición
                     {cart.length > 0 && (
-                      <span style={{ marginLeft: 8, background: "#4F7C82", color: "white", fontSize: 11, padding: "1px 8px", borderRadius: 99 }}>
+                      <span style={{ marginLeft: 8, background: "var(--primary)", color: "white", fontSize: 11, padding: "1px 8px", borderRadius: 99 }}>
                         {cart.length}
                       </span>
                     )}
                   </p>
-                  <p style={{ fontSize: 11, color: "rgba(184,227,233,0.7)", marginTop: 2 }}>
+                  <p style={{ fontSize: 11, color: "rgba(199,210,229,0.7)", marginTop: 2 }}>
                     {projectLabel}
                   </p>
                 </div>
@@ -457,7 +457,7 @@ export default function RequisitionView() {
                           value={item.quantity}
                           onChange={(e) => updateQty(item.id, e.target.value)}
                           style={{ width: 70, border: "1.5px solid #E5E7EB", borderRadius: 7, padding: "5px 8px", fontSize: 13, fontWeight: 700, textAlign: "center", outline: "none" }}
-                          onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+                          onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
                           onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
                         />
                         {item.stock > 0 && item.stock < item.quantity && (
@@ -474,7 +474,7 @@ export default function RequisitionView() {
                           value={item.notes}
                           onChange={(e) => updateNotes(item.id, e.target.value)}
                           style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 7, padding: "5px 10px", fontSize: 12, outline: "none", boxSizing: "border-box", color: "#374151" }}
-                          onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+                          onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
                           onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
                         />
                       </div>
@@ -541,7 +541,7 @@ export default function RequisitionView() {
                       disabled={submitting || cart.length === 0}
                       style={{
                         flex: 2, padding: "9px 0", fontSize: 13, fontWeight: 700,
-                        background: submitting ? "#93B1B5" : "#0B2E33",
+                        background: submitting ? "#94A3B8" : "var(--primary)",
                         color: "white", border: "none", borderRadius: 9,
                         cursor: submitting ? "not-allowed" : "pointer",
                         display: "flex", alignItems: "center", justifyContent: "center", gap: 6,

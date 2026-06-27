@@ -71,7 +71,7 @@ function NewRequestModal({ materials, onClose, onSuccess }) {
             style={inputStyle}
             value={form.related_material_id}
             onChange={(e) => setForm({ ...form, related_material_id: e.target.value })}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
             required
           >
@@ -91,7 +91,7 @@ function NewRequestModal({ materials, onClose, onSuccess }) {
             style={inputStyle}
             value={form.quantity}
             onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
             placeholder="ej: 10"
             required
@@ -107,7 +107,7 @@ function NewRequestModal({ materials, onClose, onSuccess }) {
             rows={3}
             value={form.reason}
             onChange={(e) => setForm({ ...form, reason: e.target.value })}
-            onFocus={(e) => e.target.style.borderColor = "#4F7C82"}
+            onFocus={(e) => e.target.style.borderColor = "var(--primary)"}
             onBlur={(e) => e.target.style.borderColor = "#E5E7EB"}
             placeholder="Describe por qué necesitas este material..."
             required
@@ -131,7 +131,7 @@ function NewRequestModal({ materials, onClose, onSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            style={{ flex: 1, padding: "10px 0", background: "#4F7C82", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+            style={{ flex: 1, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
           >
             {loading ? "Enviando..." : "Enviar solicitud"}
           </button>
@@ -188,7 +188,7 @@ function MyProjectSubmissions() {
                 color: active ? "#111827" : "#6B7280", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.1)" : "none" }}>
               {f.label}
               <span style={{ marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99,
-                background: active ? "rgba(184,227,233,0.4)" : "#E5E7EB", color: active ? "#4F7C82" : "#6B7280" }}>
+                background: active ? "rgba(199,210,229,0.4)" : "#E5E7EB", color: active ? "var(--primary)" : "#6B7280" }}>
                 {count}
               </span>
             </button>
@@ -220,11 +220,11 @@ function MyProjectSubmissions() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: "#0B2E33" }}>Req. #{s.submission_number}</span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: "var(--primary)" }}>Req. #{s.submission_number}</span>
                       <span style={{ background: cfg.bg, color: cfg.color, padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
                     </div>
                     <div style={{ fontSize: 12, color: "#64748B", marginBottom: 4 }}>
-                      <strong style={{ color: "#0B2E33" }}>{s.project_name}</strong>
+                      <strong style={{ color: "var(--primary)" }}>{s.project_name}</strong>
                       {s.project_code && <span style={{ marginLeft: 6, color: "#94A3B8" }}>[{s.project_code}]</span>}
                     </div>
                     <div style={{ fontSize: 11, color: "#9CA3AF", display: "flex", gap: 14, flexWrap: "wrap" }}>
@@ -246,7 +246,7 @@ function MyProjectSubmissions() {
                     </div>
                     <button
                       onClick={() => navigate(`/operations/plans/${s.plan_id}`)}
-                      style={{ fontSize: 11, padding: "5px 12px", borderRadius: 7, border: "1px solid #CBD5E1", background: "white", color: "#4F7C82", cursor: "pointer", fontWeight: 600 }}>
+                      style={{ fontSize: 11, padding: "5px 12px", borderRadius: 7, border: "1px solid #CBD5E1", background: "white", color: "var(--primary)", cursor: "pointer", fontWeight: 600 }}>
                       Ver plan →
                     </button>
                   </div>
@@ -330,7 +330,7 @@ export default function MyRequests() {
           {view === "individual" && (
             <button
               onClick={() => setShowNew(true)}
-              style={{ flexShrink: 0, padding: "8px 18px", background: "#4F7C82", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+              style={{ flexShrink: 0, padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
             >
               <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
               Nueva solicitud
@@ -347,8 +347,8 @@ export default function MyRequests() {
             <button key={v.key} onClick={() => setView(v.key)} style={{
               padding: "9px 18px", fontSize: 13, border: "none", cursor: "pointer", background: "transparent",
               fontWeight: view === v.key ? 700 : 500,
-              color: view === v.key ? "#0B2E33" : "#6B7280",
-              borderBottom: view === v.key ? "2px solid #4F7C82" : "2px solid transparent",
+              color: view === v.key ? "var(--primary)" : "#6B7280",
+              borderBottom: view === v.key ? "2px solid var(--primary)" : "2px solid transparent",
               marginBottom: -2,
             }}>{v.label}</button>
           ))}
@@ -374,7 +374,7 @@ export default function MyRequests() {
                 }}
               >
                 {t.label}
-                <span style={{ marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99, ...(filter === t.key ? { background: "rgba(184,227,233,0.4)", color: "#4F7C82" } : { background: "#E5E7EB", color: "#6B7280" }) }}>
+                <span style={{ marginLeft: 6, fontSize: 11, padding: "2px 6px", borderRadius: 99, ...(filter === t.key ? { background: "rgba(199,210,229,0.4)", color: "var(--primary)" } : { background: "#E5E7EB", color: "#6B7280" }) }}>
                   {counts[t.key]}
                 </span>
               </button>
