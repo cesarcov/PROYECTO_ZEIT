@@ -18,7 +18,7 @@ def get_branding():
 @router.put("")
 def update_branding(payload: BrandingUpdate, _=Depends(_ADMIN)):
     try:
-        return service.update_branding(payload.dict(exclude_unset=True))
+        return service.update_branding(payload.model_dump(exclude_unset=True))
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
