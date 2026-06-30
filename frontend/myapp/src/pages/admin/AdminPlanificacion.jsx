@@ -23,6 +23,7 @@ const ESTADO_COLOR    = {
 
 // Cabeceras y anchos mínimos de columna
 const COLS = [
+  { label: "Item",         minW: 50  },
   { label: "Prioridad",    minW: 100 },
   { label: "Tarea ✱",      minW: 240 },
   { label: "Cliente",      minW: 150 },
@@ -433,19 +434,6 @@ export default function AdminPlanificacion() {
   }
 
   useEffect(() => { load(); }, []);
-
-  // Drag and Drop para Kanban
-  function handleDragStart(e, id) {
-    e.dataTransfer.setData("text/plain", id);
-  }
-  function handleDragOver(e) {
-    e.preventDefault();
-  }
-  function handleDrop(e, status) {
-    e.preventDefault();
-    const id = e.dataTransfer.getData("text/plain");
-    updateRow(id, "estado", status);
-  }
 
   function updateRow(rowId, field, value) {
     if (field === "estado" && value === "Cancelado") {
@@ -1016,16 +1004,6 @@ export default function AdminPlanificacion() {
             📋 Vista Cuadrícula
           </button>
           <button
-            onClick={() => setViewMode("kanban")}
-            style={{
-              background: "none", border: "none", padding: "8px 16px", fontSize: 13, fontWeight: 700,
-              color: viewMode === "kanban" ? "var(--primary)" : "#9CA3AF",
-              borderBottom: viewMode === "kanban" ? "3px solid var(--primary)" : "3px solid transparent", cursor: "pointer",
-            }}
-          >
-            📊 Tablero Kanban (Notion)
-          </button>
-          <button
             onClick={() => setViewMode("compact")}
             style={{
               background: "none", border: "none", padding: "8px 16px", fontSize: 13, fontWeight: 700,
@@ -1133,94 +1111,6 @@ export default function AdminPlanificacion() {
         {/* ── Grilla editable ─────────────────────────────────────────────── */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "48px 0", color: "#9CA3AF" }}>Cargando planificación...</div>
-        ) : viewMode === "kanban" ? (
-          <div style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 16, alignItems: "flex-start" }}>
-            {ESTADOS.filter(s => s !== "Completado" && s !== "Cancelado").map(colStatus => {
-              const colItems = sortedGrid.filter(a => a.estado === colStatus);
-              const colColor = ESTADO_COLOR[colStatus] || "var(--primary)";
-              return (
-                <div
-                  key={colStatus}
-                  onDragOver={handleDragOver}
-                  onDrop={(e) => handleDrop(e, colStatus)}
-                  style={{
-                    flex: 1, minWidth: 290, background: "#F3F4F6", borderRadius: 12, padding: 12,
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column", gap: 12, alignSelf: "stretch"
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 6, borderBottom: `2.5px solid ${colColor}` }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: "#1F2937" }}>{colStatus}</span>
-                    <span style={{ background: "white", color: "#6B7280", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>
-                      {colItems.length}
-                    </span>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10, overflowY: "auto", maxHeight: "calc(100vh - 280px)" }}>
-                    {colItems.length === 0 ? (
-                      <div style={{ padding: "24px 10px", textAlign: "center", border: "1.5px dashed #D1D5DB", borderRadius: 10, color: "#9CA3AF", fontSize: 11 }}>
-                        Arrastra una tarea aquí
-                      </div>
-                    ) : (
-                      colItems.map(item => {
-                        const invalidTarea = saveAttempted && !item.tarea?.trim();
-                        const vencida = item.fecha_limite && new Date(item.fecha_limite) < new Date() && item.estado !== "Completado";
-
-                        return (
-                          <div
-                            key={item.id}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, item.id)}
-                            style={{
-                              background: item.isNew ? "#F0FFF4" : item.isDirty ? "#FEFCE8" : "white",
-                              border: invalidTarea ? "1.5px solid #EF4444" : "1px solid #E5E7EB",
-                              borderRadius: 10, padding: 12, boxShadow: "0 1.5px 3px rgba(0,0,0,0.04)",
-                              display: "flex", flexDirection: "column", gap: 8, cursor: "grab", position: "relative"
-                            }}
-                          >
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <span style={{ fontSize: 10, fontWeight: 800, background: `${PRIORIDAD_COLOR[item.prioridad]}15`, color: PRIORIDAD_COLOR[item.prioridad], padding: "2px 6px", borderRadius: 6 }}>
-                                {item.prioridad}
-                              </span>
-                              <RowActionsMenu
-                                row={item}
-                                onEdit={openActivityDetail}
-                                onDuplicate={duplicateRow}
-                                onCarryOver={carryOverRow}
-                                onDelete={deleteRow}
-                              />
-                            </div>
-
-                            <div onClick={() => openActivityDetail(item)} style={{ cursor: "pointer", fontWeight: 700, fontSize: 13, color: "var(--primary)", textDecoration: "underline" }}>
-                              {item.tarea}
-                            </div>
-
-                            <div style={{ fontSize: 11, color: "#6B7280" }}>
-                              🏢 <span onClick={() => handleClientClick(item.cliente)} className="cell-link">{item.cliente || "—"}</span>
-                            </div>
-
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
-                              <span style={{ fontSize: 10, color: "#9CA3AF" }}>Límite:</span>
-                              <span style={{ fontSize: 11, fontWeight: vencida ? 700 : 400, color: vencida ? "#EF4444" : "#4B5563" }}>
-                                {item.fecha_limite ? fmtDate(item.fecha_limite) : "—"}
-                              </span>
-                            </div>
-
-                            <div style={{ marginTop: 4 }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
-                                <span style={{ fontSize: 9, color: "#9CA3AF" }}>Subtareas</span>
-                                <span style={{ fontSize: 10, fontWeight: 700, color: "#4B5563" }}>{Math.round(item.progreso_pct || 0)}%</span>
-                              </div>
-                              <ProgressBar pct={item.progreso_pct} />
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         ) : viewMode === "compact" ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {sortedGrid.length === 0 ? (
@@ -1344,6 +1234,8 @@ export default function AdminPlanificacion() {
 
                 {/* Filtros inline por columna */}
                 <tr style={{ background: "var(--primary)", borderBottom: "1.5px solid rgba(255,255,255,0.08)" }}>
+                  {/* Item (sin filtro) */}
+                  <td style={{ padding: "4px" }}></td>
                   {/* Prioridad */}
                   <td style={{ padding: "4px" }}>
                     <select
@@ -1465,6 +1357,11 @@ export default function AdminPlanificacion() {
                   return (
                     <tr key={row.id} style={{ background: rowBg, borderBottom: "1px solid #F0F0F0" }}>
                       
+                      {/* Item */}
+                      <td style={{ padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "#6B7280", textAlign: "center" }}>
+                        {idx + 1}
+                      </td>
+
                       {/* Prioridad */}
                       <td style={{ padding: "2px 4px" }}>
                         <select
