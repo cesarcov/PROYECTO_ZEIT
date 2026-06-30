@@ -899,8 +899,11 @@ def import_planificacion_excel_service(file_bytes: bytes):
     try:
         import openpyxl
         from io import BytesIO
+        from datetime import datetime
     except ImportError:
         return {"error": "openpyxl no instalado"}
+
+    batch_id = f"import_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     wb = openpyxl.load_workbook(BytesIO(file_bytes), data_only=True)
     sheets_sem = [s for s in wb.sheetnames if s.upper().startswith("SEM")]
@@ -974,10 +977,10 @@ def import_planificacion_excel_service(file_bytes: bytes):
                         cur.execute(
                             """INSERT INTO planificacion_semanal
                                (prioridad, tarea, cliente, contacto, fecha_solicitud,
-                                responsable_id, etapa, estado, fecha_limite, seguimiento_id, notas)
-                               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                                responsable_id, etapa, estado, fecha_limite, seguimiento_id, notas, import_batch_id)
+                               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                             (prioridad, tarea, cliente, contacto, fecha_sol,
-                             responsable_id, etapa, estado, fecha_lim, seguimiento_id, notas)
+                             responsable_id, etapa, estado, fecha_lim, seguimiento_id, notas, batch_id)
                         )
                     inserted += 1
                 except Exception as e:
@@ -985,7 +988,7 @@ def import_planificacion_excel_service(file_bytes: bytes):
 
         conn.commit()
 
-    return {"inserted": inserted, "errors": errors, "sheets_procesadas": sheets_sem}
+    return {"inserted": inserted, "errors": errors, "sheets_procesadas": sheets_sem, "batch_id": batch_id}
 
 
 def list_active_users_service():
@@ -1006,4 +1009,52 @@ def count_my_pending_tasks_service(user: dict) -> dict:
             """, (user_id, f"%{user_id}%"))
             count = cur.fetchone()[0]
     return {"count": int(count)}
+
+
+def get_last_import_service():
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT import_batch_id, MAX(created_at) as imported_at, COUNT(*) as row_count
+                FROM planificacion_semanal
+                WHERE import_batch_id IS NOT NULL
+                GROUP BY import_batch_id
+                ORDER BY imported_at DESC
+                LIMIT 1
+            """)
+            row = cur.fetchone()
+            if not row:
+                return None
+            return {
+                "batch_id": row[0],
+                "imported_at": row[1].isoformat() if row[1] else None,
+                "count": row[2]
+            }
+
+
+def revert_last_import_service():
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            # Encontrar el último lote
+            cur.execute("""
+                SELECT import_batch_id FROM planificacion_semanal
+                WHERE import_batch_id IS NOT NULL
+                ORDER BY created_at DESC
+                LIMIT 1
+            """)
+            row = cur.fetchone()
+            if not row:
+                raise ValueError("No se encontraron importaciones para deshacer.")
+
+            batch_id = row[0]
+
+            # Borrar las actividades asociadas
+            cur.execute("""
+                DELETE FROM planificacion_semanal
+                WHERE import_batch_id = %s
+            """, (batch_id,))
+            deleted_count = cur.rowcount
+
+        conn.commit()
+    return {"status": "ok", "batch_id": batch_id, "deleted_count": deleted_count}
 

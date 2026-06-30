@@ -34,6 +34,19 @@ def import_excel(
     return service.import_planificacion_excel_service(content)
 
 
+@router.get("/last-import")
+def get_last_import(_=Depends(_PLAN_ADMIN)):
+    return service.get_last_import_service()
+
+
+@router.post("/revert-import")
+def revert_last_import(_=Depends(_PLAN_ADMIN)):
+    try:
+        return service.revert_last_import_service()
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 # ─── CRUD Actividades ────────────────────────────────────────────────────────
 
 @router.get("/actividades")

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import ExportExcelButton from "../../components/ExportExcelButton";
 import { apiFetch, BASE_URL } from "../../services/api";
-import { formatUsername } from "../../hooks/useAuth";
+import { useAuth, formatUsername } from "../../hooks/useAuth";
 
 const PRIORIDADES = ["Alta", "Media", "Baja"];
 const ESTADOS     = ["En Progreso", "En espera", "Retraso", "Completado", "Cancelado"];
@@ -357,6 +357,10 @@ function RowActionsMenu({ row, onEdit, onDuplicate, onCarryOver, onDelete }) {
 // ── Página Principal ──────────────────────────────────────────────────────────
 export default function AdminPlanificacion() {
   const navigate = useNavigate();
+  const auth = useAuth();
+  const isMaster = auth.role === "admin";
+  const [lastImport, setLastImport] = useState(null);
+
   const [gridData, setGridData]       = useState([]);
   const [users, setUsers]             = useState([]);
   const [clientesList, setClientesList] = useState([]);
@@ -419,6 +423,11 @@ export default function AdminPlanificacion() {
       setClientesList(clis);
       setDeletedIds([]);
       setSaveAttempted(false);
+      if (isMaster) {
+        apiFetch("/planificacion/last-import")
+          .then(data => setLastImport(data))
+          .catch(() => setLastImport(null));
+      }
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }
@@ -561,12 +570,36 @@ export default function AdminPlanificacion() {
       });
       const data = await res.json();
       setImportResult(data);
-      if (data.inserted > 0) load();
+      if (data.inserted > 0) {
+        await load();
+      }
     } catch {
       setImportResult({ error: "Error al importar el archivo." });
     } finally {
       setImporting(false);
       e.target.value = "";
+    }
+  }
+
+  async function handleRevertImport() {
+    if (!lastImport) return;
+    const dateStr = lastImport.imported_at ? new Date(lastImport.imported_at).toLocaleString("es-PE") : "Desconocido";
+    const confirmMsg = `¿Estás seguro de que deseas deshacer la última importación de Excel?\n\n` +
+                       `Fecha: ${dateStr}\n` +
+                       `Actividades a eliminar: ${lastImport.count}\n\n` +
+                       `Esta acción es irreversible y eliminará de forma permanente todas las actividades cargadas en ese lote. ¿Deseas continuar?`;
+    
+    if (!window.confirm(confirmMsg)) return;
+
+    setLoading(true);
+    try {
+      const res = await apiFetch("/planificacion/revert-import", { method: "POST" });
+      showToast(`Se eliminaron ${res.deleted_count} actividades de la última importación.`);
+      await load();
+    } catch (e) {
+      showToast(e.message || "Error al deshacer la importación.", "error");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -910,6 +943,21 @@ export default function AdminPlanificacion() {
             >
               {importing ? "Importando..." : "⬆ Importar Excel"}
             </button>
+            {isMaster && lastImport && (
+              <button
+                onClick={handleRevertImport}
+                disabled={loading || importing}
+                style={{
+                  background: "#FEF2F2", color: "#DC2626", border: "1px solid #FCA5A5",
+                  borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 6
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "#FEE2E2"}
+                onMouseLeave={e => e.currentTarget.style.background = "#FEF2F2"}
+              >
+                ↩ Deshacer Importación ({lastImport.count} filas)
+              </button>
+            )}
             <button
               onClick={() => {
                 setExportFilters({
