@@ -416,7 +416,7 @@ export default function Layout({ children }) {
 
   const W = collapsed ? SLIM : WIDE;
 
-  const visibleModules = auth.role === "superadmin"
+  const visibleModules = (auth.role === "superadmin" || auth.role === "admin")
     ? MODULES
     : MODULES.filter((m) =>
         (Array.isArray(auth.blocks) ? auth.blocks : []).some(
@@ -649,7 +649,7 @@ export default function Layout({ children }) {
         <div style={{ margin: "0 12px 10px", borderTop: "1px solid rgba(255,255,255,0.1)", flexShrink: 0 }} />
 
         {/* Sub-nav */}
-        {visibleModules.length === 0 && auth.role !== "superadmin" ? (
+        {visibleModules.length === 0 && auth.role !== "superadmin" && auth.role !== "admin" ? (
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 16px", textAlign: "center" }}>
             {!collapsed && (
               <>
