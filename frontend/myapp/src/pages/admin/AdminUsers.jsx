@@ -371,7 +371,7 @@ function ResetPasswordModal({ user, onClose, onSuccess }) {
 
 
 export default function AdminUsers() {
-  const { canExact, role, userId } = useAuth();
+  const { canExact, role, userId, isSuperadmin } = useAuth();
   const canManage = canExact("admin:users");
   const isMaster = role === "admin";
 
