@@ -10,6 +10,7 @@ from app.modules.admin.schemas import (
     UserStatusUpdate,
     RolePermissionsUpdate,
     RoleCreate,
+    UserPasswordReset,
 )
 from app.modules.admin.service import (
     create_user_service,
@@ -23,7 +24,10 @@ from app.modules.admin.service import (
     update_role_permissions_service,
     create_role_service,
     reset_all_data_service,
+    reset_user_password_service,
+    impersonate_user_service,
 )
+
 
 router = APIRouter(
     prefix="/admin",
@@ -161,6 +165,43 @@ def update_user_status(
 
 
 # ============================
+# Restablecer contraseña de usuario (solo admin)
+# ============================
+@router.post("/users/{user_id}/reset-password")
+def reset_user_password(
+    user_id: UUID,
+    payload: UserPasswordReset,
+    current_user=Depends(require_permission(_WRITE))
+):
+    try:
+        return reset_user_password_service(str(user_id), payload.new_password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ============================
+# Impersonar usuario (solo admin)
+# ============================
+@router.post("/users/{user_id}/impersonate")
+def impersonate_user(
+    user_id: UUID,
+    current_user=Depends(require_permission(_WRITE))
+):
+    if current_user.get("primary_module") != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Solo el Administrador Maestro (TI) puede impersonar usuarios"
+        )
+    if str(user_id) == str(current_user["id"]):
+        raise HTTPException(status_code=400, detail="No puedes impersonarte a ti mismo")
+    try:
+        return impersonate_user_service(str(user_id))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ============================
+
 # Permisos disponibles
 # ============================
 @router.get("/permissions")

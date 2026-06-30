@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Materials from "./pages/Materials";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import SuperadminUserBlocks from "./pages/admin/SuperadminUserBlocks";
 import AdminBranding from "./pages/admin/AdminBranding";
 import AdminAudit from "./pages/admin/AdminAudit";
 import AdminRoles from "./pages/admin/AdminRoles";
@@ -90,6 +91,14 @@ function App() {
           element={
             <ProtectedRoute requirePermission="admin:">
               <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/users"
+          element={
+            <ProtectedRoute requirePermission="admin:">
+              <SuperadminUserBlocks />
             </ProtectedRoute>
           }
         />

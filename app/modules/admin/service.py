@@ -496,3 +496,77 @@ def export_audit_logs_excel_service(
         ], alternate=(i % 2 == 0))
 
     return excel_response(wb, f"auditoria_{datetime.now().strftime('%Y%m%d')}.xlsx")
+
+
+def reset_user_password_service(user_id: str, new_password: str):
+    hashed_password = hash_password(new_password)
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE users SET hashed_password = %s WHERE id = %s",
+                (hashed_password, user_id)
+            )
+            if cur.rowcount == 0:
+                raise ValueError("Usuario no encontrado")
+        conn.commit()
+    return {"status": "password reset successfully"}
+
+
+def impersonate_user_service(user_id: str):
+    from app.core.security.auth import (
+        _compute_modules,
+        create_access_token,
+        create_refresh_token,
+        store_refresh_token,
+    )
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT id, username, email, is_active FROM users WHERE id = %s",
+                (user_id,)
+            )
+            row = cur.fetchone()
+            if not row:
+                raise ValueError("Usuario no encontrado")
+            
+            target_id, target_username, target_email, is_active = row
+            if not is_active:
+                raise ValueError("El usuario objetivo está inactivo")
+            
+            # Obtener permisos
+            cur.execute("""
+                SELECT DISTINCT rp.permission_code
+                FROM user_roles ur
+                JOIN role_permissions rp ON rp.role_id = ur.role_id
+                WHERE ur.user_id = %s
+            """, (user_id,))
+            permissions = [r[0] for r in cur.fetchall()]
+
+            # Obtener nombres de roles
+            cur.execute("""
+                SELECT r.name
+                FROM user_roles ur
+                JOIN roles r ON r.id = ur.role_id
+                WHERE ur.user_id = %s
+            """, (user_id,))
+            role_names = [r[0] for r in cur.fetchall()]
+
+    modules = _compute_modules(role_names)
+    primary_module = modules[0] if modules else "operations"
+
+    # Generar tokens
+    access_token = create_access_token(
+        user_id=str(target_id),
+        permissions=permissions,
+        primary_module=primary_module,
+        modules=modules
+    )
+    refresh_token = create_refresh_token()
+    store_refresh_token(str(target_id), refresh_token)
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer"
+    }
+

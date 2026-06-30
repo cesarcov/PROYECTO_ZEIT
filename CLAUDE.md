@@ -1,20 +1,21 @@
 <!-- SPECKIT START -->
-## Feature activo: 007-multi-tenant
+## Feature activo: 008-control-acceso-bloques
 
-Plan de implementación: `specs/007-multi-tenant/plan.md`
+Plan de implementación: `specs/008-control-acceso-bloques/plan.md`
 
 Contexto técnico (para esta feature):
 - Backend: Python 3.11 · FastAPI · psycopg2 — sin dependencias nuevas
-- Patrón central: `ContextVar` en `app/core/tenant_context.py` → `db_connection()` lo lee → routing transparente
-- Nuevo módulo: `app/modules/superadmin/` (router + service + schemas)
-- Archivos core nuevos: `tenant_context.py`, `tenant_middleware.py`, `master_db.py`
-- Archivos core modificados: `database.py`, `config.py`, `security/auth.py`, `main.py`
-- Middleware: `TenantMiddleware` lee `X-Tenant-ID` header, resuelve DB URL desde `erp_master`
-- Superadmin: credenciales en `.env` (`SUPERADMIN_USERNAME`, `SUPERADMIN_PASSWORD_HASH`), JWT con `role=superadmin`
-- Provisionamiento: `POST /superadmin/tenants` → CREATE DATABASE + run migrations + crear admin
-- Fallback dev: sin `X-Tenant-ID` → usa `DATABASE_URL` del `.env` (17 smoke tests pasan sin cambios)
-- Migración: `038_create_master_db.sql` se aplica manualmente a `erp_master` (NO al runner de tenants)
-- Compuerta: `verify.ps1` (import backend + `pytest tests/smoke` → 22 tests + `npm run build`)
+- Nueva tabla: `user_block_permissions (user_id, block_slug, level)` — migración 040
+- Bloque slugs válidos: `logistica`, `operaciones`, `administracion`, `gerencia`
+- Niveles: `view` (solo lectura) o `edit` (lectura + escritura)
+- Constantes centralizadas: `app/core/blocks.py` (VALID_BLOCKS, BLOCK_TO_MODULES)
+- Nuevos endpoints en `app/modules/superadmin/`: GET/PUT /superadmin/users + /blocks
+- JWT ampliado: campo `blocks: [{slug, level}]` añadido al payload (sin romper `modules`)
+- Superadmin: recibe `blocks="all"` (string), Layout detecta y muestra todo
+- Ghost button fix: `Layout.jsx` línea ~419 — `visibleModules` filtra por `auth.blocks`, no por `auth.modules`
+- Frontend nuevo: `src/constants/blocks.js` + `src/pages/admin/SuperadminUserBlocks.jsx`
+- Frontend modificado: `useAuth.js` (auth.blocks + canEditBlock()), `Login.jsx` (guarda blocks en localStorage)
+- Compuerta: `verify.ps1` (import backend + `pytest tests/smoke` + `npm run build`)
 
-Para detalles del QUÉ/CÓMO, leer el plan y la spec en `specs/007-multi-tenant/`.
+Para detalles del QUÉ/CÓMO, leer el plan y la spec en `specs/008-control-acceso-bloques/`.
 <!-- SPECKIT END -->

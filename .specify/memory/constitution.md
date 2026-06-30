@@ -1,40 +1,37 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Versión: 1.3.1 → 1.4.0 (MINOR) — supercede 1.3.1
-Fecha: 2026-06-24
-Razón del bump: cierre de los 3 TODOs del Art. 8; corrección del conteo de endpoints
-(276 tras eliminar dispatch-legacy); aclaración de patrón de auth a nivel de router;
-confirmación de que todos los endpoints reset están debidamente protegidos.
+Versión: 1.4.0 → 1.5.0 (MINOR)
+Fecha: 2026-06-30
+Razón del bump: Art. 4 reestructurado completamente — se formalizan:
+  (a) jerarquía de 3 niveles (superadmin / admin / usuario),
+  (b) concepto de "bloques" de acceso (agrupación UI de módulos),
+  (c) niveles granulares view vs edit por bloque,
+  (d) principio anti-"ghost buttons" (consistencia UI-permiso, NO NEGOCIABLE).
+  El rol superadmin ya existía en feature 007; esta enmienda lo eleva a
+  principio de gobernanza con control total del ERP.
 
-Segunda auditoría backend (2026-06-24) — resultado LIMPIO:
-────────────────────────────────────────────────────────────
-✅ dispatch-legacy ELIMINADO → 276 endpoints (era 277).
-✅ /docs, /redoc, /openapi.json deshabilitados en ENV=production (app/main.py).
-✅ /reporting/* — falso positivo de auditoría: auth aplicada a nivel de router
-   mediante dependencies=[Depends(get_current_user)]; todos protegidos.
-✅ /admin/reset-all protegido con require_permission("admin:users").
-✅ /logistics/admin/reset protegido con require_permission("logistics:admin:reset").
-✅ Endpoints públicos sin justificación: NINGUNO.
-✅ Violaciones Art.2/7 (API_BASE literal, localhost) corregidas en feature 003.
-ℹ Módulo logistics (87 endpoints, 31% del total) candidato a sub-dividir a futuro.
+Principios modificados:
+  Art. 4 "Control de Permisos" → restructurado en 4 subsecciones (4.1–4.4).
+  Sin cambios de nombre; el artículo es más explícito y normativo.
 
-Secciones añadidas/removidas: ninguna (solo actualizaciones en Art. 8).
+Secciones añadidas: Art. 4.1 (Jerarquía), 4.2 (Bloques), 4.3 (Scopes), 4.4 (Consistencia UI-Permiso).
+Secciones removidas: ninguna (Art. 4 anterior absorbido y expandido).
 
 Plantillas / artefactos:
-- .specify/templates/plan-template.md   -> ✅ sin cambios
+- .specify/templates/plan-template.md   -> ✅ sin cambios (Constitution Check dinámico)
 - .specify/templates/spec-template.md   -> ✅ sin cambios
 - .specify/templates/tasks-template.md  -> ✅ sin cambios
 
 Follow-ups / TODOs:
-- ℹ INFO: patrón de auth a nivel de router (dependencies=[]) es válido y equivalente
-  a require_permission en cada función. Las auditorías futuras deben inspectar también
-  router.dependencies, no solo el cuerpo de la función.
-- ℹ INFO: módulo logistics (87 endpoints) es candidato a sub-dividir cuando el
-  mantenimiento lo justifique. No bloquea trabajo actual.
-- ✅ CERRADO: dispatch-legacy eliminado (commit 30b7917).
-- ✅ CERRADO: /docs y /redoc deshabilitados en producción (commit 7a6bf97).
-- ✅ CERRADO: violaciones API_BASE / localhost corregidas (feature 003, commit c7b409f).
+- ⚠ PENDIENTE: feature 008-permission-blocks aún no existe en specs/.
+  El TI (superadmin) requiere UI de gestión de bloques → iniciar con /speckit-specify.
+- ⚠ PENDIENTE: la tabla `user_block_permissions` (ver Art. 4.2) debe crearse
+  como migración nueva (039_user_block_permissions.sql o similar).
+- ⚠ PENDIENTE: endpoints de gestión de bloques deben añadirse al inventario
+  Art. 8.3 cuando se complete la feature.
+- ℹ INFO: el inventario Art. 8 sigue siendo válido (276 endpoints); ningún
+  endpoint fue añadido o eliminado en esta enmienda.
 -->
 
 # Constitución del Proyecto: ZEIT SOLUTIONS ERP
@@ -125,18 +122,90 @@ estrictamente estas reglas.
 ---
 
 ## 4. Control de Permisos
-*   **Scopes:** Los endpoints se protegen mediante scopes de permisos específicos.
-    Los roles soportados son:
-    *   `admin` - Gestión de usuarios, roles generales e inspección de auditoría.
-    *   `logistics` - Inventario, almacenes, despachos y compras.
-    *   `operations` - Planes de proyecto y envío de requerimientos.
-*   **Verificación:** Utiliza siempre la dependencia `require_permission("scope:name")`
-    en la firma de tus endpoints para validar la autorización del usuario actual.
-*   **Lecturas públicas justificadas:** se permiten endpoints de **solo lectura** sin
-    `require_permission` cuando sean necesarios **antes de autenticar** (p. ej. la
-    identidad de marca que muestra la pantalla de login) y **no expongan datos
-    sensibles**; deben documentarse explícitamente en el plan de la feature. Toda
-    **escritura** (`POST/PUT/PATCH/DELETE`) sigue exigiendo `require_permission`.
+
+### 4.1 Jerarquía de Roles (3 niveles)
+
+El sistema tiene tres niveles de autorización, en orden descendente de privilegio:
+
+1.  **Superadmin (TI):** Control total e irrestricto del ERP. Puede crear/suspender
+    cualquier usuario, asignar o revocar cualquier bloque/permiso, y resolver
+    atascamientos de acceso sin importar el tenant o módulo. Sus credenciales se
+    gestionan en `.env` (`SUPERADMIN_USERNAME`, `SUPERADMIN_PASSWORD_HASH`); el JWT
+    resultante lleva `role=superadmin`. El superadmin MUST poder acceder a todos los
+    módulos del sistema en todo momento, incluso si las tablas de permisos estuvieran
+    vacías o corruptas.
+
+2.  **Admin de empresa / módulo:** Gestión de usuarios dentro de su scope. Puede
+    asignar bloques a usuarios bajo su cargo, limitado a los bloques que él mismo
+    tiene asignados. No puede elevarse a superadmin ni asignar bloques que no posee.
+
+3.  **Usuario:** Accede exclusivamente a los bloques y nivel de permiso (ver/editar)
+    que le asignó un admin o el superadmin.
+
+### 4.2 Bloques de Acceso (agrupación UI de módulos)
+
+Los módulos del ERP se agrupan en **bloques** de acceso. Un bloque es la unidad
+mínima que el superadmin o admin puede conceder a un usuario:
+
+| Bloque | Módulos / prefijos de ruta incluidos |
+|--------|--------------------------------------|
+| **Operaciones** | `/operations`, `/canal`, `/requerimientos`, `/planificacion` |
+| **Administración** | `/admin`, `/reporting`, `/ot`, `/compras` |
+| **Logística** | `/logistics`, `/requests` |
+| **Gerencia** | `/gerencia`, `/cotizaciones`, `/clientes` |
+
+Cada bloque puede asignarse con uno de dos niveles de acceso:
+
+| Nivel | Qué permite |
+|-------|-------------|
+| `view` | Solo lectura: el usuario puede navegar y consultar datos del bloque |
+| `edit` | Lectura + escritura: el usuario puede crear, editar y eliminar dentro del bloque |
+
+La ausencia de asignación equivale a **denegación total**: el bloque no se muestra
+y sus endpoints devuelven 403.
+
+**Modelo de datos:** la relación usuario ↔ bloque se persiste en la tabla
+`user_block_permissions (user_id, block_slug, level)` con restricción UNIQUE
+`(user_id, block_slug)`.
+
+### 4.3 Scopes de Permisos (granularidad de endpoint)
+
+Dentro de cada bloque, los endpoints individuales siguen protegidos con
+`require_permission("scope:name")`. Los scopes soportados son:
+
+*   `admin` — Gestión de usuarios, roles generales e inspección de auditoría.
+*   `logistics` — Inventario, almacenes, despachos y compras.
+*   `operations` — Planes de proyecto y envío de requerimientos.
+
+La asignación de bloque NO reemplaza los scopes; ambas capas coexisten. El bloque
+controla la **visibilidad UI y el acceso de alto nivel**; los scopes controlan la
+**autorización por endpoint**. Cuando el superadmin asigna un bloque, el sistema
+debe conceder automáticamente los scopes correspondientes al usuario.
+
+**Verificación:** Utiliza siempre `require_permission("scope:name")` en la firma de
+endpoints para validar la autorización del usuario actual.
+
+**Lecturas públicas justificadas:** se permiten endpoints de **solo lectura** sin
+`require_permission` cuando sean necesarios **antes de autenticar** (p. ej. la
+identidad de marca) y **no expongan datos sensibles**; deben documentarse
+explícitamente en el plan de la feature.
+
+### 4.4 Consistencia UI-Permiso — Principio Anti-Ghost-Button (NO NEGOCIABLE)
+
+Un botón, tarjeta, enlace o ítem de menú que apunta a un recurso para el cual el
+usuario **no tiene asignado el bloque correspondiente** MUST NOT renderizarse en
+pantalla.
+
+**No se permite el patrón "elemento visible → clic → acceso denegado".**
+
+El frontend MUST consultar los permisos del usuario (obtenidos del JWT o del endpoint
+`/auth/me`) antes de renderizar cualquier elemento de navegación a un bloque. Si el
+usuario no tiene el bloque, el elemento no existe en el DOM — no está oculto con CSS,
+no está deshabilitado: simplemente no se renderiza.
+
+Las únicas excepciones son elementos de UI que muestran el estado de acceso
+explícitamente (ej. "Solicitar acceso a Gerencia"), que sí pueden mostrarse a usuarios
+sin permiso.
 
 ---
 
@@ -209,7 +278,7 @@ estrictamente estas reglas.
 | Método | Ruta | Justificación |
 |--------|------|---------------|
 | GET | `/` | Health check mínimo |
-| GET | `/branding` | Marca visible antes de login (Art. 4) |
+| GET | `/branding` | Marca visible antes de login (Art. 4.3) |
 | POST | `/auth/login` | Punto de entrada de auth |
 | POST | `/auth/refresh` | Renovación de token (usa refresh_token en body) |
 | POST | `/auth/logout` | Invalidación client-side (token expira por TTL) |
@@ -236,7 +305,8 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 | Gerencia | `/gerencia` | 2 | Aprobaciones gerenciales |
 | Requerimientos | `/requerimientos` | 7 | CRUD requerimientos, costos, KPIs |
 | Branding | `/branding` | 4 | Marca configurable white-label |
-| **TOTAL** | | **276** | |
+| Superadmin | `/superadmin` | — | Gestión de tenants y permisos de bloque (feature 007/008) |
+| **TOTAL** | | **276+** | (superadmin endpoints se añaden al completar feature 008) |
 
 ### 8.4 Deuda técnica registrada
 
@@ -257,6 +327,8 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 *   **Tabla más activa**: `audit_logs` (9.631 filas — crece con cada operación).
 *   **Tabla más compleja**: `materials` (41 columnas — núcleo del módulo logistics).
 *   **Tabla más grande en sesiones**: `refresh_tokens` (276 filas — una por sesión activa).
+*   **Pendiente (feature 008)**: tabla `user_block_permissions` (Art. 4.2) aún no
+    existe — se crea con la migración correspondiente.
 
 ### 9.2 Tablas por dominio de negocio
 
@@ -391,6 +463,11 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
 |-------|------|-------|-----------|
 | `branding` | 12 | 1 | Marca configurable (singleton id=1; NULL = usar default ZEIT) |
 
+#### Permisos de Bloque — PENDIENTE feature 008 (0 tablas por ahora)
+| Tabla | Cols | Filas | Propósito |
+|-------|------|-------|-----------|
+| `user_block_permissions` | *(por definir)* | — | Asignación bloque+nivel por usuario (Art. 4.2) |
+
 ### 9.3 Vistas (8 vistas — solo lectura, sin persistencia propia)
 
 | Vista | Propósito |
@@ -436,4 +513,4 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
     feature que agregue o elimine endpoints. El comando `/speckit-constitution` con
     solicitud de auditoría genera el inventario actualizado automáticamente.
 
-**Version**: 1.4.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-24
+**Version**: 1.5.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-30

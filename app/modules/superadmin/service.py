@@ -10,13 +10,101 @@ from uuid import UUID
 import psycopg2
 from fastapi import HTTPException
 
+from app.core.blocks import VALID_BLOCKS, VALID_LEVELS
 from app.core.config import settings
-from app.core.database import _parse_db_url
+from app.core.database import _parse_db_url, db_connection
 from app.core.master_db import master_db_connection
 from app.core.security.hashing import hash_password
 from app.modules.superadmin.schemas import TenantCreate
 
 logger = logging.getLogger(__name__)
+
+
+# ── Block services ─────────────────────────────────────────────────────────────
+
+def get_users_with_blocks_service() -> list[dict]:
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT u.id, u.username, u.email, u.is_active,
+                       ubp.block_slug, ubp.level
+                FROM users u
+                LEFT JOIN user_block_permissions ubp ON ubp.user_id = u.id
+                ORDER BY u.username, ubp.block_slug
+            """)
+            rows = cur.fetchall()
+
+    users: dict[str, dict] = {}
+    for row in rows:
+        uid, username, email, is_active, block_slug, level = row
+        uid_str = str(uid)
+        if uid_str not in users:
+            users[uid_str] = {
+                "id": uid_str, "username": username,
+                "email": email, "is_active": is_active, "blocks": [],
+            }
+        if block_slug:
+            users[uid_str]["blocks"].append({"slug": block_slug, "level": level})
+    return list(users.values())
+
+
+def get_user_blocks_by_id_service(user_id: str) -> dict:
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT username FROM users WHERE id = %s", (user_id,))
+            row = cur.fetchone()
+            if not row:
+                raise HTTPException(404, "Usuario no encontrado")
+            username = row[0]
+
+            cur.execute("""
+                SELECT block_slug, level, granted_at
+                FROM user_block_permissions
+                WHERE user_id = %s
+            """, (user_id,))
+            assigned = {r[0]: {"level": r[1], "granted_at": r[2]} for r in cur.fetchall()}
+
+    blocks = []
+    for slug in VALID_BLOCKS:
+        if slug in assigned:
+            blocks.append({
+                "slug": slug,
+                "level": assigned[slug]["level"],
+                "granted_at": assigned[slug]["granted_at"],
+            })
+        else:
+            blocks.append({"slug": slug, "level": None, "granted_at": None})
+
+    return {"user_id": user_id, "username": username, "blocks": blocks}
+
+
+def set_user_blocks_service(user_id: str, blocks: list[dict], granted_by: str | None) -> dict:
+    for b in blocks:
+        if b["slug"] not in VALID_BLOCKS:
+            raise HTTPException(422, f"Bloque inválido: {b['slug']}")
+        if b["level"] not in VALID_LEVELS:
+            raise HTTPException(422, f"Nivel inválido: {b['level']}")
+
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT username FROM users WHERE id = %s", (user_id,))
+            row = cur.fetchone()
+            if not row:
+                raise HTTPException(404, "Usuario no encontrado")
+            username = row[0]
+
+            cur.execute("DELETE FROM user_block_permissions WHERE user_id = %s", (user_id,))
+            for b in blocks:
+                cur.execute("""
+                    INSERT INTO user_block_permissions (user_id, block_slug, level, granted_by)
+                    VALUES (%s, %s, %s, %s)
+                """, (user_id, b["slug"], b["level"], granted_by))
+        conn.commit()
+
+    return get_user_blocks_by_id_service(user_id)
+
+
+# ── Tenant services ────────────────────────────────────────────────────────────
 
 # Esquema base (pg_dump del estado actual) — usado para nuevas DBs de tenant
 _BASE_SCHEMA = "migrations/000_base_schema.sql"

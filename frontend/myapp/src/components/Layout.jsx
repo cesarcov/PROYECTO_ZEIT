@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, formatUsername } from "../hooks/useAuth";
+import { BLOCK_TO_MODULES } from "../constants/blocks";
 import ZeitLogo from "./ZeitLogo";
 import { BASE_URL } from "../services/api";
 
@@ -415,8 +416,13 @@ export default function Layout({ children }) {
 
   const W = collapsed ? SLIM : WIDE;
 
-  const userModules = auth.modules || [auth.role];
-  const visibleModules = MODULES.filter((m) => userModules.some(r => m.roles.includes(r)));
+  const visibleModules = auth.role === "superadmin"
+    ? MODULES
+    : MODULES.filter((m) =>
+        (Array.isArray(auth.blocks) ? auth.blocks : []).some(
+          (b) => BLOCK_TO_MODULES[b.slug]?.includes(m.key)
+        )
+      );
 
   const activeModule =
     visibleModules.find((m) =>
@@ -427,6 +433,32 @@ export default function Layout({ children }) {
     visibleModules[0] ||
     MODULES[0];
 
+  const handleStopImpersonation = () => {
+    const adminAccess = sessionStorage.getItem("admin_access_token");
+    const adminRefresh = sessionStorage.getItem("admin_refresh_token");
+    const adminUsername = sessionStorage.getItem("admin_username");
+
+    if (adminAccess) {
+      localStorage.setItem("access_token", adminAccess);
+      if (adminRefresh) {
+        localStorage.setItem("refresh_token", adminRefresh);
+      } else {
+        localStorage.removeItem("refresh_token");
+      }
+      if (adminUsername) {
+        localStorage.setItem("username", adminUsername);
+      } else {
+        localStorage.setItem("username", "admin");
+      }
+      
+      sessionStorage.removeItem("admin_access_token");
+      sessionStorage.removeItem("admin_refresh_token");
+      sessionStorage.removeItem("admin_username");
+      
+      window.location.href = "/admin/users";
+    }
+  };
+
   const handleLogout = () => {
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
@@ -436,6 +468,9 @@ export default function Layout({ children }) {
         body: JSON.stringify({ refresh_token: refreshToken }),
       }).catch(() => {});
     }
+    sessionStorage.removeItem("admin_access_token");
+    sessionStorage.removeItem("admin_refresh_token");
+    sessionStorage.removeItem("admin_username");
     localStorage.clear();
     navigate("/");
   };
@@ -474,6 +509,46 @@ export default function Layout({ children }) {
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      {sessionStorage.getItem("admin_access_token") && (
+        <div style={{
+          background: "linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)",
+          color: "white",
+          padding: "10px 20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: 13,
+          fontWeight: 700,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          position: "sticky",
+          top: 0,
+          zIndex: 2000,
+        }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span>⚠️</span>
+            <span>MODO IMPERSONACIÓN ACTIVO: Viendo el sistema como <strong>{formatUsername(auth.username)}</strong></span>
+          </span>
+          <button
+            onClick={handleStopImpersonation}
+            style={{
+              background: "white",
+              color: "#DC2626",
+              border: "none",
+              padding: "6px 14px",
+              borderRadius: 8,
+              fontWeight: 700,
+              fontSize: 11,
+              cursor: "pointer",
+              transition: "transform 0.1s, opacity 0.1s",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = 0.9}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = 1}
+          >
+            Detener Impersonación
+          </button>
+        </div>
+      )}
 
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <aside style={{
@@ -574,6 +649,21 @@ export default function Layout({ children }) {
         <div style={{ margin: "0 12px 10px", borderTop: "1px solid rgba(255,255,255,0.1)", flexShrink: 0 }} />
 
         {/* Sub-nav */}
+        {visibleModules.length === 0 && auth.role !== "superadmin" ? (
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 16px", textAlign: "center" }}>
+            {!collapsed && (
+              <>
+                <div style={{ fontSize: 22, marginBottom: 10, opacity: 0.5 }}>🔒</div>
+                <div style={{ color: "rgba(199,210,229,0.7)", fontSize: 11, fontWeight: 600, lineHeight: 1.5 }}>
+                  Sin módulos asignados
+                </div>
+                <div style={{ color: "rgba(199,210,229,0.45)", fontSize: 10, marginTop: 6, lineHeight: 1.5 }}>
+                  Contacta al TI para que te asigne acceso
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
         <nav style={{ flex: 1, padding: collapsed ? "0 8px" : "0 10px", overflowY: "auto", scrollbarWidth: "none" }}>
           {activeModule.groups.map((group, gi) => (
             <div key={group.title} style={{ marginBottom: gi < activeModule.groups.length - 1 ? 18 : 10 }}>
@@ -616,6 +706,7 @@ export default function Layout({ children }) {
             </div>
           ))}
         </nav>
+        )}
 
         {/* Usuario + Logout */}
         <div style={{ padding: collapsed ? "10px 8px" : "10px 10px", borderTop: "1px solid rgba(255,255,255,0.1)", flexShrink: 0 }}>

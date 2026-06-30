@@ -35,3 +35,8 @@ class RolePermissionsUpdate(BaseModel):
 
 class RoleCreate(BaseModel):
     name: str
+
+
+class UserPasswordReset(BaseModel):
+    new_password: str
+

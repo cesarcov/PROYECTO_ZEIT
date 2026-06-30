@@ -1,7 +1,42 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
+
+
+# ── Block schemas ──────────────────────────────────────────────────────────────
+
+class BlockAssignment(BaseModel):
+    slug: str
+    level: str
+
+
+class UserBlocksUpdate(BaseModel):
+    blocks: List[BlockAssignment]
+
+
+class UserBlockDetail(BaseModel):
+    slug: str
+    level: Optional[str] = None
+    granted_at: Optional[datetime] = None
+
+
+class UserBlocksDetailOut(BaseModel):
+    user_id: str
+    username: str
+    blocks: List[UserBlockDetail]
+
+
+class UserWithBlocksOut(BaseModel):
+    id: str
+    username: str
+    email: str
+    is_active: bool
+    blocks: List[BlockAssignment]
+
+
+# ── Tenant schemas ─────────────────────────────────────────────────────────────
+
 
 
 class TenantCreate(BaseModel):

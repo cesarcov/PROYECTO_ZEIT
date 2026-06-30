@@ -36,14 +36,16 @@ export default function Login() {
         setError(data.detail || "Usuario o contraseña incorrectos");
         return;
       }
-      const { access_token, refresh_token } = await res.json();
+      const data = await res.json();
+      const { access_token, refresh_token } = data;
       const payload = decodeJwt(access_token);
       const role = payload?.primary_module ?? "operations";
       const modules = payload?.modules ?? [role];
       localStorage.setItem("access_token",  access_token);
-      localStorage.setItem("refresh_token", refresh_token);
+      if (refresh_token) localStorage.setItem("refresh_token", refresh_token);
       localStorage.setItem("role", role);
       localStorage.setItem("modules", JSON.stringify(modules));
+      localStorage.setItem("blocks", JSON.stringify(data.blocks ?? []));
       localStorage.setItem("username", username);
       // Recarga completa para que el ThemeProvider lea el tema guardado en la cuenta.
       window.location.href = "/inicio";
@@ -184,14 +186,14 @@ export default function Login() {
                   display: "block", fontSize: 11, fontWeight: 700,
                   color: "var(--text-muted)", textTransform: "uppercase",
                   letterSpacing: "0.08em", marginBottom: 6,
-                }}>Usuario</label>
+                }}>Usuario o Correo</label>
                 <input
                   className="login-input"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required autoFocus
-                  placeholder="Nombre de usuario"
+                  placeholder="Nombre de usuario o correo"
                   style={{
                     width: "100%", padding: "11px 14px",
                     border: "1.5px solid var(--border)", borderRadius: 10,
@@ -271,61 +273,6 @@ export default function Login() {
                 ) : "Ingresar al sistema →"}
               </button>
             </form>
-          </div>
-
-          {/* Acceso rápido demo */}
-          <div style={{
-            background: "var(--surface)",
-            borderRadius: 16,
-            border: "1px solid var(--border)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
-            padding: "14px 18px",
-          }}>
-            <p style={{
-              fontSize: 10, fontWeight: 700, color: "var(--text-muted)",
-              textTransform: "uppercase", letterSpacing: "0.1em",
-              margin: "0 0 10px",
-            }}>
-              Acceso rápido · Demo
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3, maxHeight: "240px", overflowY: "auto", paddingRight: "4px" }}>
-              {[
-                { u: "admin",              p: "admin123", r: "Admin Maestro · TI",     color: "#5B21B6" },
-                { u: "frank_sonco",        p: "123456",   r: "Gerente General",        color: "#1F2937" },
-                { u: "juliet_alvis",       p: "123456",   r: "Administradora · Jefe",  color: "#B45309" },
-                { u: "yasmyn_machuca",     p: "123456",   r: "Asistente Admin",        color: "#EA580C" },
-                { u: "wilfredo_flores",    p: "123456",   r: "Jefe de Operaciones",    color: "#065F46" },
-                { u: "cesar_huamani",      p: "123456",   r: "Jefe Logística / Ing.",  color: "var(--primary)" },
-                { u: "tiburoncito_junior", p: "123456",   r: "Asistente Logística",    color: "var(--primary)" },
-                { u: "felipe_choque",      p: "123456",   r: "Técnico de Servicios",   color: "#0891B2" },
-                { u: "lagartija_segura",   p: "123456",   r: "Ing. de Seguridad",      color: "#16A34A" },
-              ].map((user) => (
-
-                <button
-                  key={user.u}
-                  className="quick-btn"
-                  onClick={() => fillUser(user.u, user.p)}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "space-between",
-                    padding: "8px 12px", borderRadius: 10,
-                    border: "1px solid transparent", background: "transparent",
-                    cursor: "pointer", textAlign: "left",
-                  }}
-                >
-                  <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 12, color: "var(--text)" }}>{user.u}</span>
-                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>· {user.p}</span>
-                  </span>
-                  <span style={{
-                    fontSize: 9, fontWeight: 700, color: "white",
-                    background: user.color,
-                    padding: "3px 8px", borderRadius: 99,
-                  }}>
-                    {user.r}
-                  </span>
-                </button>
-              ))}
-            </div>
           </div>
 
         </div>

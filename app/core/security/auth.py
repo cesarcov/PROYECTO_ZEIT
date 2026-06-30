@@ -6,6 +6,20 @@ from app.core.security.hashing import verify_password
 import hashlib
 import secrets
 
+
+def get_user_blocks(user_id: str) -> list[dict]:
+    """Retorna los bloques asignados al usuario. Nunca lanza excepción; retorna [] si no hay filas."""
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT block_slug, level FROM user_block_permissions WHERE user_id = %s",
+                    (user_id,),
+                )
+                return [{"slug": row[0], "level": row[1]} for row in cur.fetchall()]
+    except Exception:
+        return []
+
 # ===============================
 # JWT CONFIG
 # ===============================
@@ -59,6 +73,7 @@ def authenticate_user(username: str, password: str):
                 "permissions": ["superadmin:*"],
                 "primary_module": "superadmin",
                 "modules": ["superadmin"],
+                "blocks": "all",
             }
         return None
 
@@ -67,8 +82,8 @@ def authenticate_user(username: str, password: str):
             cur.execute("""
                 SELECT id, username, hashed_password, is_active
                 FROM users
-                WHERE username = %s
-            """, (username,))
+                WHERE username = %s OR email = %s
+            """, (username, username))
             user = cur.fetchone()
 
             if not user:
@@ -102,6 +117,7 @@ def authenticate_user(username: str, password: str):
 
     modules = _compute_modules(role_names)
     primary_module = modules[0]
+    blocks = get_user_blocks(str(user_id))
 
     return {
         "id": user_id,
@@ -109,6 +125,7 @@ def authenticate_user(username: str, password: str):
         "permissions": permissions,
         "primary_module": primary_module,
         "modules": modules,
+        "blocks": blocks,
     }
 
 def create_access_token(
@@ -118,6 +135,7 @@ def create_access_token(
     modules: list[str] | None = None,
     expires_delta: timedelta | None = None,
     role: str | None = None,
+    blocks: list | str | None = None,
 ):
     expire = datetime.utcnow() + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -128,6 +146,7 @@ def create_access_token(
         "permissions": permissions,
         "primary_module": primary_module,
         "modules": modules or [primary_module],
+        "blocks": blocks if blocks is not None else [],
         "iat": datetime.utcnow(),
         "exp": expire,
     }
@@ -302,7 +321,8 @@ def rotate_refresh_token(refresh_token: str):
 
         conn.commit()
 
-    return user_id, new_refresh
+    blocks = get_user_blocks(str(user_id))
+    return user_id, new_refresh, blocks
 
 def revoke_refresh_token(refresh_token: str) -> bool:
     token_hash = hashlib.sha256(refresh_token.encode()).hexdigest()

@@ -14,6 +14,7 @@ from app.core.security.auth import (
     get_user_permissions,
     get_user_primary_module,
     get_user_modules,
+    get_user_blocks,
 )
 from app.core.security.dependencies import get_current_user
 from app.core.security.preferences_service import (
@@ -53,13 +54,15 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
         primary_module=user["primary_module"],
         modules=user.get("modules", [user["primary_module"]]),
         role=user.get("role"),
+        blocks=user.get("blocks"),
     )
 
     # El superadmin no tiene refresh token (no existe en ninguna DB de tenant)
     if user.get("role") == "superadmin":
         return {
             "access_token": access_token,
-            "token_type": "bearer"
+            "token_type": "bearer",
+            "blocks": user.get("blocks"),
         }
 
     # 🔐 Crear refresh token para usuarios normales
@@ -69,7 +72,8 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "blocks": user.get("blocks", []),
     }
 
 @router.post("/refresh")
@@ -80,7 +84,7 @@ def refresh_token_endpoint(payload: RefreshTokenRequest):
     if not result:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-    user_id, new_refresh = result
+    user_id, new_refresh, blocks = result
 
     permissions = get_user_permissions(user_id)
     modules = get_user_modules(user_id)
@@ -91,12 +95,14 @@ def refresh_token_endpoint(payload: RefreshTokenRequest):
         permissions=permissions,
         primary_module=primary_module,
         modules=modules,
+        blocks=blocks,
     )
 
     return {
         "access_token": new_access,
         "refresh_token": new_refresh,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "blocks": blocks,
     }
 
 @router.post("/logout")
@@ -115,12 +121,15 @@ def me(current_user=Depends(get_current_user)):
     Devuelve el usuario autenticado con sus permisos.
     Útil para que el frontend hidrate el contexto de sesión.
     """
+    user_id = current_user["id"]
+    blocks = "all" if current_user.get("role") == "superadmin" else get_user_blocks(str(user_id))
     return {
-        "id": current_user["id"],
+        "id": user_id,
         "username": current_user["username"],
         "email": current_user["email"],
         "permissions": current_user["permissions"],
         "avatar_url": current_user.get("avatar_url"),
+        "blocks": blocks,
     }
 
 

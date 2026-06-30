@@ -11,12 +11,18 @@ from app.modules.superadmin.schemas import (
     TenantOutDetail,
     TenantOutCreated,
     TenantStatusUpdate,
+    UserBlocksUpdate,
+    UserBlocksDetailOut,
+    UserWithBlocksOut,
 )
 from app.modules.superadmin.service import (
     provision_tenant,
     list_tenants,
     get_tenant,
     update_tenant_status,
+    get_users_with_blocks_service,
+    get_user_blocks_by_id_service,
+    set_user_blocks_service,
 )
 
 router = APIRouter(prefix="/superadmin", tags=["Superadmin"])
@@ -51,3 +57,26 @@ def patch_tenant_status(
     _=Depends(require_superadmin),
 ):
     return update_tenant_status(tenant_id, payload.is_active)
+
+
+# ── Block management endpoints ─────────────────────────────────────────────────
+
+@router.get("/users", response_model=List[UserWithBlocksOut])
+def list_users_with_blocks(_=Depends(require_superadmin)):
+    return get_users_with_blocks_service()
+
+
+@router.get("/users/{user_id}/blocks", response_model=UserBlocksDetailOut)
+def get_user_blocks_detail(user_id: str, _=Depends(require_superadmin)):
+    return get_user_blocks_by_id_service(user_id)
+
+
+@router.put("/users/{user_id}/blocks", response_model=UserBlocksDetailOut)
+def set_user_blocks(
+    user_id: str,
+    payload: UserBlocksUpdate,
+    current_user=Depends(require_superadmin),
+):
+    blocks = [{"slug": b.slug, "level": b.level} for b in payload.blocks]
+    granted_by = current_user.get("id") if current_user.get("id") != "superadmin" else None
+    return set_user_blocks_service(user_id, blocks, granted_by)

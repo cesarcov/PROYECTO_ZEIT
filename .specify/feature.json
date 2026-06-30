@@ -1,1 +1,3 @@
-{"feature_directory": "specs/007-multi-tenant"}
+{
+  "feature_directory": "specs/008-control-acceso-bloques"
+}

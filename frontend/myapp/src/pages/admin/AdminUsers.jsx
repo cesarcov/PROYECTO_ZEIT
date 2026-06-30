@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../services/api";
@@ -301,8 +302,76 @@ function DeleteUserModal({ user, onClose, onSuccess }) {
   );
 }
 
+
+function ResetPasswordModal({ user, onClose, onSuccess }) {
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newPassword.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+    setLoading(true); setError("");
+    try {
+      await apiFetch(`/admin/users/${user.id}/reset-password`, {
+        method: "POST",
+        body: JSON.stringify({ new_password: newPassword }),
+      });
+      onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal title="Restablecer contraseña" subtitle={`Usuario: ${formatUsername(user.username)}`} onClose={onClose} maxWidth={400}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div>
+          <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>
+            Nueva contraseña *
+          </label>
+          <input
+            type="password"
+            style={inputStyle}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Ingrese la nueva contraseña temporal"
+            required
+            autoFocus
+          />
+        </div>
+
+        {error && (
+          <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", color: "#DC2626", fontSize: 13 }}>
+            {error}
+          </div>
+        )}
+
+        <div style={{ display: "flex", gap: 10, paddingTop: 4 }}>
+          <button type="button" onClick={onClose}
+            style={{ flex: 1, padding: "10px 0", background: "white", color: "#374151", border: "1px solid #E5E7EB", borderRadius: 10, fontSize: 13, fontWeight: 500, cursor: "pointer" }}
+          >
+            Cancelar
+          </button>
+          <button type="submit" disabled={loading}
+            style={{ flex: 1, padding: "10px 0", background: "var(--primary)", color: "white", border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.6 : 1 }}
+          >
+            {loading ? "Guardando..." : "Restablecer"}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+
 export default function AdminUsers() {
-  const { canExact, role } = useAuth();
+  const { canExact, role, userId } = useAuth();
   const canManage = canExact("admin:users");
   const isMaster = role === "admin";
 
@@ -313,9 +382,42 @@ export default function AdminUsers() {
   const [showCreate, setShowCreate] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
+  const [resettingUser, setResettingUser] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
+  const [impersonatingId, setImpersonatingId] = useState(null);
   const [toast, setToast]         = useState(null);
   const [visiblePasswords, setVisiblePasswords] = useState([]);
+
+  const handleImpersonate = async (user) => {
+    setImpersonatingId(user.id);
+    try {
+      const res = await apiFetch(`/admin/users/${user.id}/impersonate`, { method: "POST" });
+      const { access_token, refresh_token } = res;
+      if (access_token) {
+        sessionStorage.setItem("admin_access_token", localStorage.getItem("access_token"));
+        sessionStorage.setItem("admin_refresh_token", localStorage.getItem("refresh_token") || "");
+        sessionStorage.setItem("admin_username", localStorage.getItem("username") || "");
+        
+        localStorage.setItem("access_token", access_token);
+        if (refresh_token) {
+          localStorage.setItem("refresh_token", refresh_token);
+        } else {
+          localStorage.removeItem("refresh_token");
+        }
+        localStorage.setItem("username", user.username);
+        
+        showToast(`Impersonando a ${formatUsername(user.username)}...`);
+        setTimeout(() => {
+          window.location.href = "/inicio";
+        }, 1000);
+      }
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      setImpersonatingId(null);
+    }
+  };
+
 
   const togglePasswordVisibility = (userId) => {
     setVisiblePasswords(prev =>
@@ -388,15 +490,25 @@ export default function AdminUsers() {
               {!canManage && <span style={{ marginLeft: 10, fontSize: 11, fontWeight: 700, color: "#B45309", background: "#FFFBEB", border: "1px solid #FCD34D", borderRadius: 99, padding: "2px 8px" }}>Solo lectura</span>}
             </p>
           </div>
-          {canManage && (
-            <button
-              onClick={() => setShowCreate(true)}
-              style={{ flexShrink: 0, padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
-            >
-              <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
-              Nuevo usuario
-            </button>
-          )}
+          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+            {isSuperadmin && (
+              <Link
+                to="/superadmin/users"
+                style={{ padding: "8px 16px", background: "transparent", color: "var(--primary)", border: "2px solid var(--primary)", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}
+              >
+                🔐 Gestionar Bloques de Acceso
+              </Link>
+            )}
+            {canManage && (
+              <button
+                onClick={() => setShowCreate(true)}
+                style={{ padding: "8px 18px", background: "var(--primary)", color: "white", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+              >
+                <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
+                Nuevo usuario
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Buscador */}
@@ -479,6 +591,26 @@ export default function AdminUsers() {
                     <td style={{ padding: "14px 20px" }}>
                       {canManage ? (
                         <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                          {isMaster && u.id !== userId && (
+                            <button
+                              onClick={() => handleImpersonate(u)}
+                              disabled={impersonatingId === u.id}
+                              title="Impersonar usuario (Iniciar sesión como él)"
+                              style={{ fontSize: 11, padding: "5px 10px", borderRadius: 7, background: "#EFF6FF", color: "#1D4ED8", border: "1px solid #BFDBFE", fontWeight: 600, cursor: "pointer" }}
+                              onMouseEnter={(e) => e.currentTarget.style.background = "#DBEAFE"}
+                              onMouseLeave={(e) => e.currentTarget.style.background = "#EFF6FF"}
+                            >
+                              {impersonatingId === u.id ? "..." : "👤👁️ Impersonar"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setResettingUser(u)}
+                            style={{ fontSize: 11, padding: "5px 12px", borderRadius: 7, background: "white", color: "#374151", border: "1px solid #E5E7EB", fontWeight: 600, cursor: "pointer" }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = "#F9FAFB"}
+                            onMouseLeave={(e) => e.currentTarget.style.background = "white"}
+                          >
+                            Contraseña
+                          </button>
                           <button
                             onClick={() => setEditingUser(u)}
                             style={{ fontSize: 11, padding: "5px 12px", borderRadius: 7, background: "white", color: "#374151", border: "1px solid #E5E7EB", fontWeight: 600, cursor: "pointer" }}
@@ -544,6 +676,14 @@ export default function AdminUsers() {
           roles={roles}
           onClose={() => setEditingUser(null)}
           onSuccess={() => { showToast(`Roles de ${editingUser.username} actualizados.`); setEditingUser(null); loadData(); }}
+        />
+      )}
+
+      {canManage && resettingUser && (
+        <ResetPasswordModal
+          user={resettingUser}
+          onClose={() => setResettingUser(null)}
+          onSuccess={() => { showToast(`Contraseña de ${resettingUser.username} restablecida.`); setResettingUser(null); }}
         />
       )}
 

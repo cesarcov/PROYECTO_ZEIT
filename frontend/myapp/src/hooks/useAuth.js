@@ -31,7 +31,8 @@ export function useAuth() {
   }
 
   const permissions = payload.permissions || [];
-  const isAdmin = permissions.some((p) => p.startsWith("admin:"));
+  const isSuperadmin = payload.role === "superadmin";
+  const isAdmin = isSuperadmin || permissions.some((p) => p.startsWith("admin:"));
   const role = localStorage.getItem("role") || payload.primary_module || "operations";
   const username = localStorage.getItem("username") || payload.sub || "usuario";
 
@@ -41,19 +42,30 @@ export function useAuth() {
     || payload.modules
     || [role];
 
+  // blocks: lista de bloques asignados o "all" para superadmin
+  const storedBlocks = localStorage.getItem("blocks");
+  const blocks = isSuperadmin
+    ? "all"
+    : ((storedBlocks ? JSON.parse(storedBlocks) : null) || payload.blocks || []);
+
   return {
     isAuthenticated: true,
     userId: payload.sub,
     username,
     role,
     modules,
+    blocks,
     permissions,
     isAdmin,
-    // Admin siempre pasa; los demás necesitan el prefijo exacto
+    isSuperadmin,
     can: (prefix) => isAdmin || permissions.some((p) => p.startsWith(prefix)),
     hasPermission: (exact) => isAdmin || permissions.includes(exact),
-    // Sin atajo isAdmin — para distinguir solo-lectura vs gestión completa dentro del panel admin
     canExact: (exact) => permissions.includes(exact),
+    canEditBlock: (slug) => {
+      if (isSuperadmin) return true;
+      const block = (Array.isArray(blocks) ? blocks : []).find((b) => b.slug === slug);
+      return block?.level === "edit";
+    },
   };
 }
 
