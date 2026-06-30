@@ -425,7 +425,7 @@ export default function Layout({ children }) {
       );
 
   const activeModule =
-    visibleModules.find((m) =>
+    [...visibleModules].sort((a, b) => b.home.length - a.home.length).find((m) =>
       m.groups.some((g) => g.items.some((i) => location.pathname.startsWith(i.path))) ||
       location.pathname.startsWith(m.home)
     ) ||
