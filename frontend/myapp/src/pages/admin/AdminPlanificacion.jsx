@@ -23,6 +23,7 @@ const ESTADO_COLOR    = {
 
 // Cabeceras y anchos mínimos de columna
 const COLS = [
+  { label: "Acción",       minW: 55  },
   { label: "Item",         minW: 50  },
   { label: "Prioridad",    minW: 100 },
   { label: "Tarea ✱",      minW: 240 },
@@ -36,7 +37,6 @@ const COLS = [
   { label: "Seguimiento",  minW: 155 },
   { label: "Notas",        minW: 170 },
   { label: "Progreso",     minW: 80  },
-  { label: "Acción",       minW: 55  },
 ];
 
 function fmtDate(dateStr) {
@@ -1234,6 +1234,8 @@ export default function AdminPlanificacion() {
 
                 {/* Filtros inline por columna */}
                 <tr style={{ background: "var(--primary)", borderBottom: "1.5px solid rgba(255,255,255,0.08)" }}>
+                  {/* Acción (sin filtro) */}
+                  <td style={{ padding: "4px" }}></td>
                   {/* Item (sin filtro) */}
                   <td style={{ padding: "4px" }}></td>
                   {/* Prioridad */}
@@ -1337,8 +1339,6 @@ export default function AdminPlanificacion() {
                   </td>
                   {/* Spacer */}
                   <td></td>
-                  {/* Spacer */}
-                  <td></td>
                 </tr>
               </thead>
               <tbody>
@@ -1357,6 +1357,17 @@ export default function AdminPlanificacion() {
                   return (
                     <tr key={row.id} style={{ background: rowBg, borderBottom: "1px solid #F0F0F0" }}>
                       
+                      {/* Acciones */}
+                      <td style={{ padding: "2px 6px", textAlign: "center" }}>
+                        <RowActionsMenu
+                          row={row}
+                          onEdit={openActivityDetail}
+                          onDuplicate={duplicateRow}
+                          onCarryOver={carryOverRow}
+                          onDelete={deleteRow}
+                        />
+                      </td>
+
                       {/* Item */}
                       <td style={{ padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "#6B7280", textAlign: "center" }}>
                         {idx + 1}
@@ -1487,16 +1498,6 @@ export default function AdminPlanificacion() {
                         <ProgressBar pct={row.progreso_pct} />
                       </td>
 
-                      {/* Acciones */}
-                      <td style={{ padding: "2px 6px", textAlign: "center" }}>
-                        <RowActionsMenu
-                          row={row}
-                          onEdit={openActivityDetail}
-                          onDuplicate={duplicateRow}
-                          onCarryOver={carryOverRow}
-                          onDelete={deleteRow}
-                        />
-                      </td>
                     </tr>
                   );
                 })}
