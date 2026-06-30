@@ -129,6 +129,7 @@ def me(current_user=Depends(get_current_user)):
         "email": current_user["email"],
         "permissions": current_user["permissions"],
         "avatar_url": current_user.get("avatar_url"),
+        "full_name": current_user.get("full_name"),
         "blocks": blocks,
     }
 
@@ -204,6 +205,31 @@ def update_avatar_url(
             """, (payload.avatar_url, user_id))
         conn.commit()
     return {"status": "ok", "avatar_url": payload.avatar_url}
+
+
+class ProfileUpdate(BaseModel):
+    full_name: str
+
+
+@router.put("/me/profile")
+def update_profile(
+    payload: ProfileUpdate,
+    current_user=Depends(get_current_user)
+):
+    user_id = str(current_user["id"])
+    if not payload.full_name.strip():
+        raise HTTPException(status_code=400, detail="El nombre completo no puede estar vacío.")
+
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE users
+                SET full_name = %s
+                WHERE id = %s
+            """, (payload.full_name.strip(), user_id))
+        conn.commit()
+
+    return {"status": "ok", "full_name": payload.full_name.strip()}
 
 
 # ── Preferencias del usuario (incluye el tema de la interfaz) ──────────────────

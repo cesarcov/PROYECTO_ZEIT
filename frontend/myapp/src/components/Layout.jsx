@@ -526,7 +526,7 @@ export default function Layout({ children }) {
         }}>
           <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span>⚠️</span>
-            <span>MODO IMPERSONACIÓN ACTIVO: Viendo el sistema como <strong>{formatUsername(auth.username)}</strong></span>
+            <span>MODO IMPERSONACIÓN ACTIVO: Viendo el sistema como <strong>{userProfile?.full_name || formatUsername(auth.username)}</strong></span>
           </span>
           <button
             onClick={handleStopImpersonation}
@@ -980,7 +980,7 @@ export default function Layout({ children }) {
                 />
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "start", gap: 1 }}>
                   <span style={{ color: "#1E293B", fontSize: 12, fontWeight: 700 }}>
-                    {formatUsername(auth.username)}
+                    {userProfile?.full_name || formatUsername(auth.username)}
                   </span>
                   <span style={{ color: "#64748B", fontSize: 10, fontWeight: 500 }}>
                     {ROLE_LABELS[auth.role] || auth.role}
@@ -1014,7 +1014,7 @@ export default function Layout({ children }) {
                     />
                     <div>
                       <p style={{ color: "white", fontWeight: 700, fontSize: 13, margin: 0 }}>
-                        {formatUsername(auth.username)}
+                        {userProfile?.full_name || formatUsername(auth.username)}
                       </p>
                       <p style={{ color: "rgba(199,210,229,0.55)", fontSize: 11, margin: "2px 0 0" }}>
                         {ROLE_LABELS[auth.role] || auth.role}
