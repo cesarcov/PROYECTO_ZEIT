@@ -314,7 +314,7 @@ export default function Profile() {
           )}
         </div>
 
-        {/* Card bloques de acceso */}
+        {/* Card permisos activos (Bloques) */}
         <div style={{
           background: "white", borderRadius: 14, border: "1px solid #E5E7EB",
           boxShadow: "0 1px 6px rgba(0,0,0,0.05)", overflow: "hidden",
@@ -322,21 +322,21 @@ export default function Profile() {
         }}>
           <div style={{ padding: "14px 20px", borderBottom: "1px solid #F3F4F6", background: "#FAFAFA" }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              Bloques de acceso asignados
+              Permisos activos
             </span>
           </div>
           <div style={{ padding: "16px 20px", display: "flex", flexWrap: "wrap", gap: 10 }}>
-            {profile?.blocks === "all" ? (
+            {auth.role === "admin" || profile?.blocks === "all" ? (
               <span style={{
                 background: "#EEF2FF", color: "#4F46E5",
                 border: "1px solid #C7D2FE",
                 fontSize: 12, fontWeight: 700,
                 padding: "6px 14px", borderRadius: 8,
               }}>
-                🌟 Acceso total (Superadmin)
+                🌟 Acceso total (Administrador)
               </span>
             ) : !profile?.blocks || profile.blocks.length === 0 ? (
-              <span style={{ fontSize: 13, color: "#9CA3AF" }}>Sin bloques de acceso asignados</span>
+              <span style={{ fontSize: 13, color: "#9CA3AF" }}>Sin bloques de acceso asignados (sin permisos)</span>
             ) : (
               profile.blocks.map((b) => {
                 const label = BLOCK_LABELS[b.slug] || b.slug;
@@ -364,34 +364,6 @@ export default function Profile() {
                 );
               })
             )}
-          </div>
-        </div>
-
-        {/* Card permisos */}
-        <div style={{
-          background: "white", borderRadius: 14, border: "1px solid #E5E7EB",
-          boxShadow: "0 1px 6px rgba(0,0,0,0.05)", overflow: "hidden",
-          marginBottom: 16,
-        }}>
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #F3F4F6", background: "#FAFAFA" }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-              Permisos activos
-            </span>
-          </div>
-          <div style={{ padding: "16px 20px", display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {auth.permissions.length === 0 ? (
-              <span style={{ fontSize: 13, color: "#9CA3AF" }}>Sin permisos especiales</span>
-            ) : auth.permissions.map((p) => (
-              <span key={p} style={{
-                background: "#F0FDF4", color: "#15803D",
-                border: "1px solid #BBF7D0",
-                fontSize: 11, fontWeight: 600,
-                padding: "4px 10px", borderRadius: 6,
-                fontFamily: "monospace",
-              }}>
-                {p}
-              </span>
-            ))}
           </div>
         </div>
 
