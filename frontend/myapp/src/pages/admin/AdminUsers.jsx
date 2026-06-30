@@ -491,7 +491,7 @@ export default function AdminUsers() {
             </p>
           </div>
           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            {isSuperadmin && (
+            {(isSuperadmin || isMaster) && (
               <Link
                 to="/superadmin/users"
                 style={{ padding: "8px 16px", background: "transparent", color: "var(--primary)", border: "2px solid var(--primary)", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}

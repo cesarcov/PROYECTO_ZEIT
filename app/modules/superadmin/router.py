@@ -34,6 +34,12 @@ def require_superadmin(current_user=Depends(get_current_user)):
     return current_user
 
 
+def require_superadmin_or_admin(current_user=Depends(get_current_user)):
+    if current_user.get("role") not in ("superadmin", "admin"):
+        raise HTTPException(403, "Acceso restringido.")
+    return current_user
+
+
 @router.post("/tenants", status_code=201, response_model=TenantOutCreated)
 @limiter.limit("10/minute")
 def create_tenant(request: Request, payload: TenantCreate, _=Depends(require_superadmin)):
@@ -62,12 +68,12 @@ def patch_tenant_status(
 # ── Block management endpoints ─────────────────────────────────────────────────
 
 @router.get("/users", response_model=List[UserWithBlocksOut])
-def list_users_with_blocks(_=Depends(require_superadmin)):
+def list_users_with_blocks(_=Depends(require_superadmin_or_admin)):
     return get_users_with_blocks_service()
 
 
 @router.get("/users/{user_id}/blocks", response_model=UserBlocksDetailOut)
-def get_user_blocks_detail(user_id: str, _=Depends(require_superadmin)):
+def get_user_blocks_detail(user_id: str, _=Depends(require_superadmin_or_admin)):
     return get_user_blocks_by_id_service(user_id)
 
 
@@ -75,7 +81,7 @@ def get_user_blocks_detail(user_id: str, _=Depends(require_superadmin)):
 def set_user_blocks(
     user_id: str,
     payload: UserBlocksUpdate,
-    current_user=Depends(require_superadmin),
+    current_user=Depends(require_superadmin_or_admin),
 ):
     blocks = [{"slug": b.slug, "level": b.level} for b in payload.blocks]
     granted_by = current_user.get("id") if current_user.get("id") != "superadmin" else None
