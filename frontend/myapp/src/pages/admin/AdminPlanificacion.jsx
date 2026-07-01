@@ -361,6 +361,7 @@ export default function AdminPlanificacion() {
   const auth = useAuth();
   const isMaster = auth.role === "admin";
   const [lastImport, setLastImport] = useState(null);
+  const [showDateDropdown, setShowDateDropdown] = useState(false);
 
   const [gridData, setGridData]       = useState([]);
   const [users, setUsers]             = useState([]);
@@ -589,6 +590,15 @@ export default function AdminPlanificacion() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function getFilterDateLabel() {
+    if (!fechaInicioRango && !fechaFinRango) return "Filtrar por fecha";
+    if (fechaInicioRango && fechaFinRango) {
+      return `${fmtDate(fechaInicioRango)} a ${fmtDate(fechaFinRango)}`;
+    }
+    if (fechaInicioRango) return `Desde ${fmtDate(fechaInicioRango)}`;
+    return `Hasta ${fmtDate(fechaFinRango)}`;
   }
 
   function buildExportParams(cfg) {
@@ -927,9 +937,10 @@ export default function AdminPlanificacion() {
               style={{
                 background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB",
                 borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6
               }}
             >
-              {importing ? "Importando..." : "⬆ Importar Excel"}
+              <span>{importing ? "..." : "📤 Importar"}</span>
             </button>
             {isMaster && lastImport && (
               <button
@@ -942,8 +953,9 @@ export default function AdminPlanificacion() {
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "#FEE2E2"}
                 onMouseLeave={e => e.currentTarget.style.background = "#FEF2F2"}
+                title={`Deshacer última importación (${lastImport.count} filas)`}
               >
-                ↩ Deshacer Importación ({lastImport.count} filas)
+                <span>↩ Deshacer</span>
               </button>
             )}
             <button
@@ -961,18 +973,20 @@ export default function AdminPlanificacion() {
               style={{
                 background: "white", color: "var(--primary)", border: "1px solid #D1D5DB",
                 borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6
               }}
             >
-              ⬇ Exportar Excel
+              <span>📥 Exportar</span>
             </button>
             <button
               onClick={addNewRow}
               style={{
                 background: "#F0FDF4", color: "#16A34A", border: "1px solid #86EFAC",
                 borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6
               }}
             >
-              + Nueva Actividad
+              <span>➕ Actividad</span>
             </button>
             <button
               onClick={handleBulkSave}
@@ -984,9 +998,10 @@ export default function AdminPlanificacion() {
                 cursor: hasDirty && !saving ? "pointer" : "default",
                 boxShadow: hasDirty ? "0 0 0 3px rgba(0,31,84,0.18)" : "none",
                 transition: "all 0.2s",
+                display: "flex", alignItems: "center", gap: 6
               }}
             >
-              {saveLabel}
+              <span>💾 {saving ? "Guardando..." : hasDirty ? "Guardar" : "Sin cambios"}</span>
             </button>
           </div>
         </div>
@@ -1074,20 +1089,89 @@ export default function AdminPlanificacion() {
             style={{ flex: 1, minWidth: 200, border: "1px solid #E5E7EB", borderRadius: 9, padding: "7px 12px", fontSize: 13 }}
           />
           
-          {["semana", "mes", "anio"].map(p => (
-            <button key={p} onClick={() => applyPeriodPreset(p)}
-              style={{ background: "var(--primary-soft)", color: "var(--primary)", border: "1px solid #D1D5DB", borderRadius: 8, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
-              {p === "semana" ? "Esta semana" : p === "mes" ? "Este mes" : "Este año"}
+          {/* Dropdown de Filtro de Fecha */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowDateDropdown(prev => !prev)}
+              style={{
+                background: (fechaInicioRango || fechaFinRango) ? "var(--primary-soft)" : "white",
+                color: "var(--primary)",
+                border: "1px solid #D1D5DB",
+                borderRadius: 9,
+                padding: "8px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 6
+              }}
+            >
+              📅 {getFilterDateLabel()}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                style={{ transform: showDateDropdown ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
             </button>
-          ))}
-
-          <div style={{ display: "flex", gap: 6, alignItems: "center", border: "1px solid #E5E7EB", borderRadius: 9, padding: "3px 10px", background: "white" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#6B7280" }}>Rango:</span>
-            <input type="date" value={fechaInicioRango} onChange={e => setFechaInicioRango(e.target.value)}
-              style={{ border: "none", fontSize: 12, outline: "none" }} />
-            <span style={{ fontSize: 11, color: "#9CA3AF" }}>a</span>
-            <input type="date" value={fechaFinRango} onChange={e => setFechaFinRango(e.target.value)}
-              style={{ border: "none", fontSize: 12, outline: "none" }} />
+            
+            {showDateDropdown && (
+              <>
+                <div onClick={() => setShowDateDropdown(false)} style={{ position: "fixed", inset: 0, zIndex: 99 }} />
+                <div style={{
+                  position: "absolute", top: "calc(100% + 6px)", right: 0,
+                  width: 280, background: "white",
+                  border: "1px solid #E5E7EB", borderRadius: 10,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                  zIndex: 100, padding: 14,
+                  display: "flex", flexDirection: "column", gap: 12
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#4B5563", textTransform: "uppercase", letterSpacing: "0.05em" }}>Filtrar por Período</div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {["semana", "mes", "anio"].map(p => (
+                      <button key={p} onClick={() => { applyPeriodPreset(p); setShowDateDropdown(false); }}
+                        style={{
+                          flex: 1, background: "#F3F4F6", color: "#374151", border: "1px solid #E5E7EB",
+                          borderRadius: 6, padding: "6px 8px", fontSize: 11, fontWeight: 600, cursor: "pointer"
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = "#E5E7EB"}
+                        onMouseLeave={e => e.currentTarget.style.background = "#F3F4F6"}
+                      >
+                        {p === "semana" ? "Semana" : p === "mes" ? "Mes" : "Año"}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: 8 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", display: "block", marginBottom: 4 }}>Rango personalizado</label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, border: "1px solid #E5E7EB", borderRadius: 6, padding: "4px 8px" }}>
+                        <span style={{ fontSize: 11, color: "#9CA3AF", width: 40 }}>Desde</span>
+                        <input type="date" value={fechaInicioRango} onChange={e => setFechaInicioRango(e.target.value)}
+                          style={{ border: "none", fontSize: 12, outline: "none", flex: 1 }} />
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, border: "1px solid #E5E7EB", borderRadius: 6, padding: "4px 8px" }}>
+                        <span style={{ fontSize: 11, color: "#9CA3AF", width: 40 }}>Hasta</span>
+                        <input type="date" value={fechaFinRango} onChange={e => setFechaFinRango(e.target.value)}
+                          style={{ border: "none", fontSize: 12, outline: "none", flex: 1 }} />
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "flex-end", gap: 6, borderTop: "1px solid #F3F4F6", paddingTop: 8 }}>
+                    <button
+                      onClick={() => { setFechaInicioRango(""); setFechaFinRango(""); setShowDateDropdown(false); }}
+                      style={{ background: "none", border: "none", color: "#6B7280", fontSize: 11, fontWeight: 600, cursor: "pointer", padding: "4px 8px" }}
+                    >
+                      Limpiar
+                    </button>
+                    <button
+                      onClick={() => setShowDateDropdown(false)}
+                      style={{ background: "var(--primary)", color: "white", border: "none", borderRadius: 6, padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {(busqueda || fechaInicioRango || fechaFinRango || Object.values(colFilters).some(Boolean)) && (
