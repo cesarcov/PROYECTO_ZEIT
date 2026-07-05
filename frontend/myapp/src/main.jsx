@@ -6,15 +6,8 @@ import App from './App.jsx'
 import { ThemeProvider } from './theme/ThemeProvider.jsx'
 import { getBrand, applyBrand, loadBrandFromServer } from './branding/brand.js'
 
-// Anti-parpadeo: aplica el tema guardado ANTES del primer render.
-// Solo se aceptan los 2 valores válidos; cualquier valor antiguo cae a zeit-claro.
-(() => {
-  try {
-    const VALIDOS = new Set(['zeit-claro', 'zeit-oscuro']);
-    const t = localStorage.getItem('zeit_tema');
-    document.documentElement.dataset.theme = VALIDOS.has(t) ? t : 'zeit-claro';
-  } catch { /* noop */ }
-})();
+// Tema fijo: solo modo claro.
+document.documentElement.dataset.theme = 'zeit-claro';
 
 // Marca cacheada al instante (colores/título/favicon), luego se confirma con el servidor.
 applyBrand(getBrand());
