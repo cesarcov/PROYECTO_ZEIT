@@ -9,3 +9,4 @@ class BrandingUpdate(BaseModel):
     color_primario: Optional[str] = None
     color_acento: Optional[str] = None
     color_accion: Optional[str] = None
+    color_texto_secundario: Optional[str] = None

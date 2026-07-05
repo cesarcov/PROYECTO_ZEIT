@@ -1,22 +1,23 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Versión: 1.4.0 → 1.5.0 (MINOR)
-Fecha: 2026-06-30
-Razón del bump: Art. 4 reestructurado completamente — se formalizan:
-  (a) jerarquía de 3 niveles (superadmin / admin / usuario),
-  (b) concepto de "bloques" de acceso (agrupación UI de módulos),
-  (c) niveles granulares view vs edit por bloque,
-  (d) principio anti-"ghost buttons" (consistencia UI-permiso, NO NEGOCIABLE).
-  El rol superadmin ya existía en feature 007; esta enmienda lo eleva a
-  principio de gobernanza con control total del ERP.
+Version: 1.5.0 → 1.6.0 (MINOR)
+Fecha: 2026-07-05
+Razón del bump: Art. 2 ampliado con dos reglas nuevas de diseño:
+  (a) los temas de preferencia se reducen a exactamente DOS: claro y oscuro.
+      Se elimina la apertura "como mínimo" para evitar proliferación de temas
+      no gestionados.
+  (b) Regla de contraste de colores (NO NEGOCIABLE): fondo oscuro exige texto
+      claro (ratio ≥ 4.5:1 WCAG AA); fondo claro exige texto oscuro (ratio ≥ 4.5:1).
+      Se prohíbe explícitamente texto oscuro sobre fondo oscuro y texto claro sobre
+      fondo claro. La regla se extiende a paletas white-label.
 
 Principios modificados:
-  Art. 4 "Control de Permisos" → restructurado en 4 subsecciones (4.1–4.4).
-  Sin cambios de nombre; el artículo es más explícito y normativo.
+  Art. 2 "Sistema de Temas" — "como mínimo claro y oscuro" → exactamente 2 temas.
+  Art. 2 "Contraste de Colores" — NUEVA subsección añadida (NO NEGOCIABLE).
 
-Secciones añadidas: Art. 4.1 (Jerarquía), 4.2 (Bloques), 4.3 (Scopes), 4.4 (Consistencia UI-Permiso).
-Secciones removidas: ninguna (Art. 4 anterior absorbido y expandido).
+Secciones añadidas: regla de contraste en Art. 2.
+Secciones removidas: ninguna.
 
 Plantillas / artefactos:
 - .specify/templates/plan-template.md   -> ✅ sin cambios (Constitution Check dinámico)
@@ -24,14 +25,12 @@ Plantillas / artefactos:
 - .specify/templates/tasks-template.md  -> ✅ sin cambios
 
 Follow-ups / TODOs:
-- ⚠ PENDIENTE: feature 008-permission-blocks aún no existe en specs/.
-  El TI (superadmin) requiere UI de gestión de bloques → iniciar con /speckit-specify.
-- ⚠ PENDIENTE: la tabla `user_block_permissions` (ver Art. 4.2) debe crearse
-  como migración nueva (039_user_block_permissions.sql o similar).
-- ⚠ PENDIENTE: endpoints de gestión de bloques deben añadirse al inventario
-  Art. 8.3 cuando se complete la feature.
-- ℹ INFO: el inventario Art. 8 sigue siendo válido (276 endpoints); ningún
-  endpoint fue añadido o eliminado en esta enmienda.
+- ⚠ PENDIENTE: implementar token CSS --text-primary como variable que cambia
+  según el tema activo, y auditarlo en todos los componentes existentes.
+- ⚠ PENDIENTE: agregar validación de contraste (ratio 4.5:1) al flujo de
+  configuración white-label en la pantalla AdminBranding.jsx.
+- ⚠ PENDIENTE (heredado 1.5.0): feature 008-permission-blocks — tabla
+  user_block_permissions y endpoints de bloque aún en desarrollo.
 -->
 
 # Constitución del Proyecto: ZEIT SOLUTIONS ERP
@@ -69,8 +68,10 @@ estrictamente estas reglas.
     marca principal. Toda superficie visible al usuario MUST mostrar "ZEIT SOLUTIONS";
     las cadenas y logos heredados "CeShark" se migran progresivamente a esta convención.
 *   **Sistema de Temas (Theming) — NO NEGOCIABLE para UI nueva:**
-    *   La interfaz MUST soportar temas configurables por el usuario, como mínimo
-        **claro** y **oscuro**.
+    *   La interfaz soporta exactamente **dos temas**: **claro** (`light`) y
+        **oscuro** (`dark`). No se crean, exponen ni gestionan temas adicionales sin
+        enmienda a esta constitución. La UI de preferencias MUST mostrar únicamente
+        estas dos opciones.
     *   Los colores se consumen mediante **tokens / variables de tema** (variables CSS
         o un theme provider), **NUNCA** como valores hex literales dispersos por los
         componentes.
@@ -78,6 +79,28 @@ estrictamente estas reglas.
         sin recargar la página.
     *   Introducir un componente con colores hardcodeados (fuera de los tokens) se
         considera incumplimiento de esta constitución.
+*   **Contraste de Colores — NO NEGOCIABLE:**
+    *   **Regla fundamental:** el color del texto MUST contrastar con el fondo sobre
+        el que se renderiza, de modo que cualquier usuario pueda leer el contenido
+        a simple vista, sin esfuerzo.
+    *   **Tema oscuro:** el fondo principal usa el Azul Oscuro (`#001F54`) o un tono
+        equivalente oscuro. El texto principal MUST ser claro (blanco o near-white,
+        ej. `#F0F4FF` / `#E8EEF9`), garantizando un ratio de contraste ≥ 4.5:1
+        (WCAG 2.1 nivel AA — mínimo aceptado).
+    *   **Tema claro:** el fondo principal es claro (blanco o near-white, ej. `#FFFFFF`
+        / `#F8FAFC`). El texto principal MUST ser oscuro (ej. `#111827` o `#1A2332`),
+        garantizando ratio ≥ 4.5:1.
+    *   Queda **prohibido** combinar texto oscuro sobre fondo oscuro, o texto claro
+        sobre fondo claro, en cualquier elemento informativo principal: cuerpo de texto,
+        etiquetas de campo, valores de tabla, encabezados, mensajes de estado y
+        botones primarios.
+    *   El token CSS `--text-primary` (y equivalentes: `--text-secondary`,
+        `--text-muted`) MUST definirse en función del tema activo como variable
+        reactiva. No puede ser un valor fijo que ignore el tema.
+    *   **White-label:** cualquier paleta personalizada de empresa MUST respetar esta
+        regla. El flujo de configuración de branding MUST advertir o bloquear
+        combinaciones que no alcancen el ratio 4.5:1 entre color de fondo y color de
+        texto principal configurados.
 *   **Paleta de Marca ZEIT SOLUTIONS (oficial):** Los tokens base derivan de la paleta
     corporativa:
     *   Azul Corporativo (primario): `#003A8C`
@@ -86,12 +109,14 @@ estrictamente estas reglas.
     *   Naranja Energía (acción / resaltado activo / CTAs): `#FF6B00`
     *   Gris Industrial (texto secundario / bordes): `#5A6573`
     *   Cada tema (claro/oscuro) mapea estos colores corporativos a sus tokens;
-        el tema oscuro usa el Azul Oscuro como base.
+        el tema oscuro usa el Azul Oscuro como base con texto near-white;
+        el tema claro usa fondo blanco/near-white con texto near-black.
     *   **White-label:** esta paleta es el **tema de marca por defecto**. Cuando una
         empresa configura su propia marca, el administrador define sus colores
         corporativos (primario/acento/acción), que **reemplazan** estos valores; las
         reglas específicas de ZEIT aplican al default ZEIT y **no obligan** a otras
-        empresas. El sistema MUST preservar legibilidad/contraste en cualquier paleta.
+        empresas. El sistema MUST preservar legibilidad/contraste (ratio ≥ 4.5:1)
+        en cualquier paleta.
 *   **Estilos y Tailwind:**
     *   Se utiliza Tailwind CSS v4 para utilidades generales en componentes atómicos.
     *   En las vistas principales (`pages/`), se permiten **estilos inline usando
@@ -513,4 +538,4 @@ Cualquier otro endpoint sin `require_permission` o `get_current_user` es una
     feature que agregue o elimine endpoints. El comando `/speckit-constitution` con
     solicitud de auditoría genera el inventario actualizado automáticamente.
 
-**Version**: 1.5.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-06-30
+**Version**: 1.6.0 | **Ratified**: 2026-06-11 | **Last Amended**: 2026-07-05

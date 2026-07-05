@@ -26,7 +26,7 @@ VARIANTS = {
 
 _COLS = [
     "nombre_producto", "eslogan", "logo_incluye_nombre",
-    "color_primario", "color_acento", "color_accion",
+    "color_primario", "color_acento", "color_accion", "color_texto_secundario",
     "logo_claro_path", "logo_oscuro_path", "isotipo_path", "favicon_path",
 ]
 
@@ -64,6 +64,7 @@ def get_branding_public() -> dict:
             "primary": b.get("color_primario"),
             "accent": b.get("color_acento"),
             "action": b.get("color_accion"),
+            "textSecondary": b.get("color_texto_secundario"),
         },
         "logos": {
             "claro": _url(b.get("logo_claro_path")),
@@ -77,13 +78,13 @@ def get_branding_public() -> dict:
 
 def update_branding(data: dict) -> dict:
     """Actualiza nombre/eslogan/colores/flag. Valida colores."""
-    for k in ("color_primario", "color_acento", "color_accion"):
+    for k in ("color_primario", "color_acento", "color_accion", "color_texto_secundario"):
         v = data.get(k)
         if v not in (None, "") and not HEX_RE.match(str(v)):
             raise ValueError(f"Color inválido en {k}: {v}")
 
     editable = ("nombre_producto", "eslogan", "logo_incluye_nombre",
-                "color_primario", "color_acento", "color_accion")
+                "color_primario", "color_acento", "color_accion", "color_texto_secundario")
     fields = {k: v for k, v in data.items() if k in editable}
     if fields:
         sets = sql.SQL(", ").join(
@@ -158,6 +159,7 @@ def reset_branding() -> dict:
                 """UPDATE branding SET
                     nombre_producto = NULL, eslogan = NULL, logo_incluye_nombre = TRUE,
                     color_primario = NULL, color_acento = NULL, color_accion = NULL,
+                    color_texto_secundario = NULL,
                     logo_claro_path = NULL, logo_oscuro_path = NULL,
                     isotipo_path = NULL, favicon_path = NULL, updated_at = NOW()
                    WHERE id = 1"""

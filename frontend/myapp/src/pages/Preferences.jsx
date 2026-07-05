@@ -127,7 +127,7 @@ export default function Preferences() {
         <SectionCard title="Apariencia">
           <SelectRow
             label="Tema"
-            desc="Color de la interfaz. 'Seguir el sistema' usa el modo claro/oscuro de tu equipo."
+            desc="Color de la interfaz. Claro usa fondos grises suaves, Oscuro usa el Azul Navy corporativo."
             value={tema}
             onChange={setTema}
             options={temas.map((t) => ({ value: t.id, label: t.label }))}
