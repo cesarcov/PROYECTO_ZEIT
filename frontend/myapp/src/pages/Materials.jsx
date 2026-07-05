@@ -800,7 +800,7 @@ export default function Materials() {
 
   const headerCell = {
     fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-    letterSpacing: "0.08em", color: "#94A3B8", padding: "10px 14px", textAlign: "left",
+    letterSpacing: "0.08em", color: "var(--primary-contrast)", padding: "10px 14px", textAlign: "left",
   };
 
   return (
@@ -815,8 +815,8 @@ export default function Materials() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Catálogo de Materiales</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{materials.length} materiales registrados</p>
+            <h1 className="text-xl font-bold" style={{ color: "var(--text)" }}>Catálogo de Materiales</h1>
+            <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>{materials.length} materiales registrados</p>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             {canValidate && pending.length > 0 && (
@@ -839,15 +839,15 @@ export default function Materials() {
         </div>
 
         {/* Toolbar */}
-        <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 12, padding: "12px 16px" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "12px 16px" }}>
           <div style={{ position: "relative", marginBottom: 10 }}>
-            <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#9CA3AF", pointerEvents: "none", fontSize: 14 }}>&#128269;</span>
+            <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", pointerEvents: "none", fontSize: 14 }}>&#128269;</span>
             <input type="text" placeholder="Buscar por nombre, código, marca, proveedor, alias..."
               value={search} onChange={(e) => setSearch(e.target.value)}
-              style={{ width: "100%", paddingLeft: 36, paddingRight: 16, paddingTop: 8, paddingBottom: 8, border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13, outline: "none", background: "white", boxSizing: "border-box", color: "#1F2937" }} />
+              style={{ width: "100%", paddingLeft: 36, paddingRight: 16, paddingTop: 8, paddingBottom: 8, border: "1px solid var(--border)", borderRadius: 8, fontSize: 13, outline: "none", background: "var(--surface-2)", boxSizing: "border-box", color: "var(--text)" }} />
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginRight: 4 }}>Categoría:</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginRight: 4 }}>Categoría:</span>
             <button onClick={() => setCatFilter("all")}
               style={{ fontSize: 12, padding: "3px 12px", borderRadius: 99, fontWeight: 700, border: "none", cursor: "pointer", background: catFilter === "all" ? "var(--primary)" : "#E5E7EB", color: catFilter === "all" ? "white" : "#6B7280" }}>
               Todos ({materials.length})
@@ -936,7 +936,7 @@ export default function Materials() {
         {tab === "catalog" && <>
 
         {/* Tabla */}
-        <div style={{ background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: 14, overflow: "hidden" }}>
+        <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: "var(--primary)" }}>

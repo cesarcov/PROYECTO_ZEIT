@@ -30,6 +30,83 @@
   --primary-dark: color-mix(in srgb, var(--primary) 60%, #000);
 }
 
+/* ── Tema oscuro: overrides para clases Tailwind hardcodeadas ──────────────
+   Muchos componentes usan text-gray-X / bg-white / border-gray-X como
+   clases fijas. Estas reglas los adaptan al tema navy sin tocar los JSX. */
+[data-theme="zeit-oscuro"] .bg-white    { background-color: var(--surface)   !important; }
+[data-theme="zeit-oscuro"] .bg-gray-50  { background-color: var(--bg)        !important; }
+[data-theme="zeit-oscuro"] .bg-gray-100 { background-color: var(--surface-2) !important; }
+[data-theme="zeit-oscuro"] .bg-gray-200 { background-color: var(--surface-2) !important; }
+
+[data-theme="zeit-oscuro"] .text-gray-900,
+[data-theme="zeit-oscuro"] .text-gray-800,
+[data-theme="zeit-oscuro"] .text-gray-700 { color: var(--text)       !important; }
+[data-theme="zeit-oscuro"] .text-gray-600,
+[data-theme="zeit-oscuro"] .text-gray-500,
+[data-theme="zeit-oscuro"] .text-gray-400 { color: var(--text-muted)  !important; }
+[data-theme="zeit-oscuro"] .text-gray-300 { color: var(--text-muted)  !important; opacity: 0.6; }
+
+[data-theme="zeit-oscuro"] .border-gray-100,
+[data-theme="zeit-oscuro"] .border-gray-200,
+[data-theme="zeit-oscuro"] .border-gray-300 { border-color: var(--border) !important; }
+
+/* Hover en filas de tabla */
+[data-theme="zeit-oscuro"] .hover\:bg-blue-50\/30:hover,
+[data-theme="zeit-oscuro"] .hover\:bg-gray-50:hover {
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent) !important;
+}
+
+/* Inputs, selects y textareas: fondo oscuro + texto claro */
+[data-theme="zeit-oscuro"] input:not([type="color"]):not([type="checkbox"]):not([type="radio"]),
+[data-theme="zeit-oscuro"] select,
+[data-theme="zeit-oscuro"] textarea {
+  background-color: var(--surface-2) !important;
+  color:            var(--text)       !important;
+  border-color:     var(--border)     !important;
+}
+[data-theme="zeit-oscuro"] input::placeholder,
+[data-theme="zeit-oscuro"] textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.7;
+}
+
+/* Cajas con fondo blanco/gris claro hardcodeado como style inline */
+[data-theme="zeit-oscuro"] [style*="background: white"],
+[data-theme="zeit-oscuro"] [style*="background:white"],
+[data-theme="zeit-oscuro"] [style*="background-color: white"] {
+  background-color: var(--surface) !important;
+}
+[data-theme="zeit-oscuro"] [style*="background: rgb(249, 250, 251)"],
+[data-theme="zeit-oscuro"] [style*="background-color: rgb(249, 250, 251)"] {
+  background-color: var(--surface) !important;
+}
+[data-theme="zeit-oscuro"] [style*="background: rgb(243, 244, 246)"],
+[data-theme="zeit-oscuro"] [style*="background-color: rgb(243, 244, 246)"] {
+  background-color: var(--surface-2) !important;
+}
+
+/* Texto dark (#1F2937 = rgb(31,41,55); #374151 = rgb(55,65,81)) */
+[data-theme="zeit-oscuro"] [style*="color: rgb(31, 41, 55)"],
+[data-theme="zeit-oscuro"] [style*="color: rgb(55, 65, 81)"],
+[data-theme="zeit-oscuro"] [style*="color: rgb(17, 24, 39)"],
+[data-theme="zeit-oscuro"] [style*="color: rgb(15, 23, 45)"] {
+  color: var(--text) !important;
+}
+
+/* Texto gris medio (#9CA3AF = rgb(156,163,175); #94A3B8 = rgb(148,163,184)) */
+[data-theme="zeit-oscuro"] [style*="color: rgb(156, 163, 175)"],
+[data-theme="zeit-oscuro"] [style*="color: rgb(148, 163, 184)"],
+[data-theme="zeit-oscuro"] [style*="color: rgb(107, 114, 128)"] {
+  color: var(--text-muted) !important;
+}
+
+/* Bordes inline hardcodeados */
+[data-theme="zeit-oscuro"] [style*="border: 1px solid rgb(229, 231, 235)"],
+[data-theme="zeit-oscuro"] [style*="border: 1px solid rgb(226, 232, 240)"],
+[data-theme="zeit-oscuro"] [style*="border-color: rgb(229, 231, 235)"] {
+  border-color: var(--border) !important;
+}
+
 [data-theme="zeit-oscuro"] {
   --bg: #001F54;
   --surface: #0D2545;
