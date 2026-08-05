@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
-import os
+from app.core.config import settings
 from app.core.database import db_connection
+from app.core.db import get_conn
+from app.core.login_guard import registrar_exito, registrar_fallo, segundos_de_bloqueo
 from app.core.rate_limit import limiter
+from app.core.storage import ArchivoInvalido, obtener_almacen, validar_y_normalizar
 from app.core.security.auth import (
     authenticate_user,
     create_access_token,
@@ -12,7 +15,6 @@ from app.core.security.auth import (
     rotate_refresh_token,
     revoke_refresh_token,
     get_user_permissions,
-    get_user_primary_module,
     get_user_modules,
     get_user_blocks,
 )
@@ -34,18 +36,41 @@ class LogoutRequest(BaseModel):
 
 
 @router.post("/login")
-@limiter.limit("10/minute")
+@limiter.limit(settings.LOGIN_RATE_LIMIT)
 def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+    """Autentica al usuario. F-000 / T-14.
+
+    Dos frenos complementarios contra la fuerza bruta:
+      · el decorador limita por IP (5/min por defecto);
+      · `login_guard` bloquea por USUARIO con espera creciente, así que
+        cambiar de IP no ayuda al atacante.
+    """
+    espera = segundos_de_bloqueo(form_data.username)
+    if espera:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=(
+                "Demasiados intentos fallidos. "
+                f"Vuelve a intentarlo en {espera} segundo(s)."
+            ),
+            headers={"Retry-After": str(espera)},
+        )
+
     user = authenticate_user(
         username=form_data.username,
         password=form_data.password
     )
 
     if not user:
+        registrar_fallo(form_data.username)
+        # El mensaje es idéntico para usuario inexistente y contraseña
+        # incorrecta: revelar la diferencia permite enumerar cuentas.
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales inválidas"
         )
+
+    registrar_exito(form_data.username)
 
     # 🔐 Crear access token
     access_token = create_access_token(
@@ -134,55 +159,36 @@ def me(current_user=Depends(get_current_user)):
     }
 
 
-_AVATARS_DIR = os.path.join("app", "storage", "avatars")
-
-
 @router.post("/me/avatar")
 def upload_avatar(
     file: UploadFile = File(...),
     current_user=Depends(get_current_user)
 ):
-    ext = os.path.splitext(file.filename or "")[1].lower()
-    if ext not in (".png", ".jpg", ".jpeg"):
-        raise HTTPException(status_code=422, detail="Formato no soportado (usar PNG o JPG)")
-    
-    # Validar tamaño (máximo 2 MB)
+    """Sube el avatar del usuario. F-000 / T-11.
+
+    El archivo se valida por su firma binaria y se re-encodea antes de
+    almacenarse (RN-02), y va a Supabase Storage si está configurado, para
+    sobrevivir a los redeploys de Render.
+    """
     content = file.file.read()
-    if len(content) > 2 * 1024 * 1024:
-        raise HTTPException(status_code=422, detail="El archivo supera 2 MB")
-        
-    os.makedirs(_AVATARS_DIR, exist_ok=True)
-    
-    # Nombre de archivo basado en el user_id para que sea único y reemplace el anterior
+    try:
+        limpio, ext, content_type = validar_y_normalizar(content)
+    except ArchivoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    if ext == ".svg":
+        raise HTTPException(status_code=422, detail="El avatar debe ser PNG, JPG o GIF.")
+
+    # El nombre deriva del user_id: único y reemplaza al anterior.
     user_id = str(current_user["id"])
-    filename = f"{user_id}{ext}"
-    dest = os.path.join(_AVATARS_DIR, filename)
-    
-    # Borrar cualquier extensión anterior para evitar basura
-    for e in (".png", ".jpg", ".jpeg"):
-        prev = os.path.join(_AVATARS_DIR, f"{user_id}{e}")
-        if prev != dest and os.path.exists(prev):
-            try:
-                os.remove(prev)
-            except OSError:
-                pass
-                
-    # Guardar
-    with open(dest, "wb") as f:
-        f.write(content)
-        
-    url = f"/avatar-assets/{filename}"
-    
-    # Guardar en base de datos
-    with db_connection() as conn:
+    almacen = obtener_almacen("avatars")
+    almacen.borrar_variantes(user_id, (".png", ".jpg", ".jpeg", ".gif"))
+    url = almacen.subir(f"{user_id}{ext}", limpio, content_type)
+
+    with get_conn(commit=True) as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                UPDATE users
-                SET avatar_url = %s
-                WHERE id = %s
-            """, (url, user_id))
-        conn.commit()
-        
+            cur.execute("UPDATE users SET avatar_url = %s WHERE id = %s", (url, user_id))
+
     return {"status": "ok", "avatar_url": url}
 
 

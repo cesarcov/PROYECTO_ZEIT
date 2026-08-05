@@ -5,6 +5,11 @@ import './theme/themes.css'
 import App from './App.jsx'
 import { ThemeProvider } from './theme/ThemeProvider.jsx'
 import { getBrand, applyBrand, loadBrandFromServer } from './branding/brand.js'
+import { initObservability } from './services/observability.js'
+
+// Sentry primero, para capturar también los fallos del propio arranque.
+// Sin VITE_SENTRY_DSN es un no-op (F-000 / T-04).
+initObservability();
 
 // Tema fijo: solo modo claro.
 document.documentElement.dataset.theme = 'zeit-claro';

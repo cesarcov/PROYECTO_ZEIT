@@ -1,71 +1,34 @@
-import psycopg2
-from psycopg2.pool import ThreadedConnectionPool
-import threading
-from contextlib import contextmanager
-from urllib.parse import urlparse
-from app.core.config import settings
+"""Compatibilidad — el acceso real a la base de datos vive en `app/core/db.py`.
 
-# Diccionario global para cachear los pools de conexiones por base de datos
-_pools = {}
-_pools_lock = threading.Lock()
+F-000 / T-08 — este módulo se mantiene porque hay ~340 llamadas repartidas en
+31 módulos que importan `db_connection` desde aquí. Todas delegan ya en el
+context manager único, así que heredan sus garantías (devolución al pool,
+rollback ante error, limpieza de transacciones huérfanas).
 
-def _parse_db_url(url: str) -> dict:
-    # Normalizar esquemas con driver (postgresql+asyncpg://, etc.)
-    normalized = url.split("://", 1)
-    scheme = normalized[0].split("+")[0]
-    parsed = urlparse(f"{scheme}://{normalized[1]}")
-    return {
-        "host": parsed.hostname,
-        "port": parsed.port or 5432,
-        "database": parsed.path.lstrip("/"),
-        "user": parsed.username,
-        "password": parsed.password,
-    }
+CÓDIGO NUEVO: importa desde `app.core.db`, no desde aquí.
 
-def get_connection_pool(db_config: dict) -> ThreadedConnectionPool:
-    """
-    Retorna o inicializa un pool de conexiones hilo-seguro para la configuración dada.
-    """
-    pool_key = (db_config.get("host"), db_config.get("port"), db_config.get("database"), db_config.get("user"))
-    with _pools_lock:
-        if pool_key not in _pools:
-            # Tamaño del pool configurable (por defecto Min=1, Max=5 para prevenir saturación en multi-tenant)
-            minconn = settings.DB_POOL_MIN
-            maxconn = settings.DB_POOL_MAX
-            _pools[pool_key] = ThreadedConnectionPool(minconn, maxconn, **db_config)
-    return _pools[pool_key]
+    from app.core.db import get_conn
 
-@contextmanager
+    with get_conn(commit=True) as conn:   # escritura
+        ...
+"""
+from app.core.db import (  # noqa: F401  (re-export deliberado)
+    cerrar_todos_los_pools,
+    get_conn,
+    get_connection_pool,
+    parse_db_url,
+    pool_stats,
+)
+
+# Alias histórico: `_parse_db_url` con guion bajo lo importa app/core/master_db.py.
+_parse_db_url = parse_db_url
+
+
 def db_connection():
-    from app.core.tenant_context import get_tenant_db
-    tenant_url = get_tenant_db()
-    _db = _parse_db_url(tenant_url if tenant_url else settings.DATABASE_URL)
-    
-    try:
-        pool = get_connection_pool(_db)
-        conn = pool.getconn()
-    except UnicodeDecodeError:
-        # On Spanish Windows, PostgreSQL returns error messages in Windows-1252
-        # (e.g. "autenticación" with byte 0xf3). psycopg2 tries to decode them
-        # as UTF-8 and crashes before raising the proper OperationalError.
-        # This almost always means the password in DATABASE_URL is wrong.
-        raise psycopg2.OperationalError(
-            "Error de autenticación o conexión con PostgreSQL. "
-            "Verifica que la contraseña en DATABASE_URL del .env sea correcta."
-        )
-    except Exception as e:
-        raise psycopg2.OperationalError(
-            f"Error al conectar con la base de datos o al obtener conexión del pool: {e}"
-        )
-        
-    try:
-        yield conn
-    except Exception:
-        conn.rollback()
-        raise
-    finally:
-        try:
-            pool.putconn(conn)
-        except Exception:
-            pass
+    """Alias histórico de `get_conn()` (sólo lectura; el commit es explícito).
 
+    Se conserva por los llamadores existentes. En código nuevo usa
+    `get_conn(commit=True)` para escrituras en vez de llamar a `conn.commit()`
+    a mano.
+    """
+    return get_conn(commit=False)

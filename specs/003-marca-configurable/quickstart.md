@@ -6,7 +6,7 @@
 
 - Migración `035_branding.sql` aplicada (`python run_migrations.py`).
 - Backend (`uvicorn ...`) + frontend (`npm run dev`) levantados.
-- Sesión como **admin** (ej. `admin` / `admin123`) y un usuario **no-admin** para la prueba de permisos.
+- Sesión como **admin** (credenciales en `TEST_ADMIN_USER` / `TEST_ADMIN_PASSWORD` del entorno) y un usuario **no-admin** para la prueba de permisos.
 - Dos imágenes de prueba (logo claro y oscuro) y una imagen inválida (o > 2 MB).
 
 ## Escenarios de aceptación

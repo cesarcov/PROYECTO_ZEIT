@@ -5,11 +5,12 @@ guardan en `app/storage/branding/` y se sirven vía `/branding-assets`.
 """
 import os
 import re
-from io import BytesIO
 
 from psycopg2 import sql
 
 from app.core.database import db_connection
+from app.core.db import get_conn
+from app.core.storage import obtener_almacen, validar_y_normalizar
 
 STORAGE_DIR = os.path.join("app", "storage", "branding")
 ASSET_BASE = "/branding-assets"
@@ -49,7 +50,17 @@ def _raw():
 
 
 def _url(path):
-    return f"{ASSET_BASE}/{os.path.basename(path)}" if path else None
+    """URL pública del logo.
+
+    Convive con dos formatos: las filas nuevas guardan la URL completa
+    (Supabase o `/branding-assets/...`), las antiguas guardaban la ruta del
+    disco (`app/storage/branding/claro.png`) y se traducen al vuelo.
+    """
+    if not path:
+        return None
+    if path.startswith(("http://", "https://", "/")):
+        return path
+    return f"{ASSET_BASE}/{os.path.basename(path)}"
 
 
 def get_branding_public() -> dict:
@@ -100,59 +111,45 @@ def update_branding(data: dict) -> dict:
     return get_branding_public()
 
 
-def _validate_image(content: bytes, ext: str):
-    if len(content) > MAX_BYTES:
-        raise ValueError("El archivo supera 2 MB")
-    if ext == ".svg":
-        head = content[:2048].lower()
-        if b"<svg" not in head and not content[:64].lstrip().lower().startswith(b"<?xml"):
-            raise ValueError("SVG inválido")
-        return
-    if ext in (".png", ".jpg", ".jpeg"):
-        try:
-            from PIL import Image
-            Image.open(BytesIO(content)).verify()
-        except Exception:
-            raise ValueError("La imagen no es válida")
-        return
-    raise ValueError("Formato no soportado (usar PNG, JPG o SVG)")
+# La validación de imágenes vive ahora en app/core/storage.py: es común a
+# logos y avatares, detecta el tipo por firma binaria y re-encodea (RN-02).
 
 
 def save_logo(variant: str, filename: str, content: bytes) -> str:
+    """Valida, re-encodea y sube el logo; guarda en la BD sólo la URL resultante.
+
+    F-000 / T-11 — el archivo va a Supabase Storage si está configurado (y
+    entonces sobrevive a los redeploys) o al disco local si no. `filename` ya
+    no decide nada: el tipo se detecta por la firma binaria del contenido
+    (RN-02), porque la extensión la controla quien sube el archivo.
+    """
     if variant not in VARIANTS:
         raise ValueError("Variante inválida")
-    ext = os.path.splitext(filename or "")[1].lower()
-    _validate_image(content, ext)
-    os.makedirs(STORAGE_DIR, exist_ok=True)
-    dest = os.path.join(STORAGE_DIR, f"{variant}{ext}")
-    # limpiar variantes previas de la misma con otra extensión
-    for e in (".png", ".jpg", ".jpeg", ".svg"):
-        prev = os.path.join(STORAGE_DIR, f"{variant}{e}")
-        if prev != dest and os.path.exists(prev):
-            try:
-                os.remove(prev)
-            except OSError:
-                pass
-    with open(dest, "wb") as f:
-        f.write(content)
+
+    limpio, ext, content_type = validar_y_normalizar(content)
+
+    almacen = obtener_almacen("branding")
+    # Se borran las variantes previas con otra extensión para no dejar huérfanos.
+    almacen.borrar_variantes(variant, (".png", ".jpg", ".jpeg", ".gif", ".svg"))
+    url = almacen.subir(f"{variant}{ext}", limpio, content_type)
+
     col = VARIANTS[variant]
-    with db_connection() as conn:
+    with get_conn(commit=True) as conn:
         with conn.cursor() as cur:
-            cur.execute(f"UPDATE branding SET {col} = %s, updated_at = NOW() WHERE id = 1", (dest,))
-        conn.commit()
-    return _url(dest)
+            cur.execute(
+                sql.SQL("UPDATE branding SET {} = %s, updated_at = NOW() WHERE id = 1").format(
+                    sql.Identifier(col)
+                ),
+                (url,),
+            )
+    return url
 
 
 def reset_branding() -> dict:
     """Limpia la config y borra los archivos → vuelve a ZEIT."""
-    raw = _raw()
-    for col in ("logo_claro_path", "logo_oscuro_path", "isotipo_path", "favicon_path"):
-        p = raw.get(col)
-        if p and os.path.exists(p):
-            try:
-                os.remove(p)
-            except OSError:
-                pass
+    almacen = obtener_almacen("branding")
+    for variante in VARIANTS:
+        almacen.borrar_variantes(variante, (".png", ".jpg", ".jpeg", ".gif", ".svg"))
     with db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(

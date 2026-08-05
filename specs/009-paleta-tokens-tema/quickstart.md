@@ -10,7 +10,7 @@
 - Backend corriendo en `http://127.0.0.1:8000`
 - Frontend corriendo en `http://localhost:5173`
 - Base de datos con migración `041` aplicada
-- Usuario `admin` con contraseña `admin123` (o similar)
+- Usuario administrador; credenciales en `TEST_ADMIN_USER` / `TEST_ADMIN_PASSWORD` del entorno
 - Usuario `superadmin` disponible
 
 ---

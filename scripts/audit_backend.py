@@ -6,7 +6,6 @@ Salida: specs/audit/YYYY-MM-DD_HH-MM_backend_audit.md
 """
 
 import json
-import os
 import re
 import subprocess
 import sys
@@ -473,7 +472,7 @@ def render_report(db, smoke, logs, debt, recs, baseline_diff, prev_ts):
         f"# Auditoria de Backend — {DATE_LABEL}",
         "",
         "> Reporte autogenerado por `scripts/audit_backend.py`  ",
-        f"> Proyecto: ERP Modular | Base de datos: PostgreSQL  ",
+        "> Proyecto: ERP Modular | Base de datos: PostgreSQL  ",
         f"> Comparado con baseline del: {prev_ts}",
         "",
         "---",
@@ -490,8 +489,8 @@ def render_report(db, smoke, logs, debt, recs, baseline_diff, prev_ts):
     lines += [
         "## Resumen ejecutivo",
         "",
-        f"| Area | Estado |",
-        f"|------|--------|",
+        "| Area | Estado |",
+        "|------|--------|",
         f"| Base de datos | {db_icon} — {len(counts)} tablas accesibles |",
         f"| Smoke tests | {smoke_icon} — {smoke.get('passed',0)} OK / {smoke.get('failed',0)} FALLO |",
         f"| Errores 500 (24h) | {errors_500} errores |",
@@ -647,7 +646,7 @@ def main():
     OUTPUT_FILE.write_text(report, encoding="utf-8")
     LATEST_FILE.write_text(report, encoding="utf-8")
 
-    print(f"\n[OK] Reporte guardado en:")
+    print("\n[OK] Reporte guardado en:")
     print(f"     {OUTPUT_FILE}")
     print(f"     {LATEST_FILE}  (siempre el ultimo)")
     print(f"\n     Smoke tests: {smoke['status']}")

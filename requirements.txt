@@ -18,6 +18,9 @@ apscheduler==3.10.4
 # Base de datos
 psycopg2-binary==2.9.11
 
+# Observabilidad
+sentry-sdk[fastapi]==2.19.2
+
 # Archivos / Excel / PDF
 pandas==2.2.3
 numpy==1.26.4

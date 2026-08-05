@@ -1,11 +1,9 @@
 import logging
 import os
 import time
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from app.core.rate_limit import limiter
@@ -34,13 +32,21 @@ from app.modules.requerimientos.router import router as requerimientos_router
 from app.modules.branding.router import router as branding_router
 from app.modules.superadmin.router import router as superadmin_router
 from app.modules.search.router import router as search_router
-from app.core.database import db_connection
+from app.core.config import settings
+from app.core.database import db_connection, pool_stats
+from app.core.errors import RequestIDMiddleware, rate_limit_handler, register_error_handlers
+from app.core.observability import init_sentry
+from app.core.storage import almacenamiento_es_persistente
 
 logger = logging.getLogger(__name__)
 
+# Sentry se inicializa ANTES de crear la app para que instrumente todo el
+# arranque, incluido el lifespan (F-000 / T-04). Sin SENTRY_DSN es un no-op.
+init_sentry()
+
 from contextlib import asynccontextmanager
 
-_dev = os.getenv("ENV", "development") != "production"
+_dev = not settings.is_production
 _start_time = time.time()
 
 
@@ -73,34 +79,29 @@ app = FastAPI(
 )
 
 
-@app.exception_handler(Exception)
-async def unhandled_exception_handler(request: Request, exc: Exception):
-    logger.exception("Error no controlado en %s %s: %s", request.method, request.url.path, exc)
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Error interno del servidor. Revisa los logs del API."},
-    )
+# Sobre único de errores + request_id (F-000 / T-03). Todo error del API sale
+# con la forma {"error":{"code","message","request_id"}}; los no controlados
+# nunca filtran el traceback al cliente.
+register_error_handlers(app)
 
 
 # ===============================
 # CORS (FRONTEND)
 # ===============================
-# Los locales quedan para desarrollo; en producción se añade(n) el/los dominio(s)
-# del frontend (Vercel) vía la env var CORS_ORIGINS (lista separada por comas),
-# sin tocar código. Ej: CORS_ORIGINS=https://mi-erp.vercel.app
-origins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-]
-origins += [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+# Orígenes EXACTOS. En producción sólo los declarados en CORS_ORIGINS; en
+# desarrollo `settings` añade además los puertos locales de Vite (F-000 / T-14).
+origins = settings.cors_origins_list
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+# Handler propio en vez del de slowapi: devuelve el sobre único y la cabecera
+# Retry-After, que el suyo no incluye (F-000 / T-14).
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 # Orden de middlewares (último en add_middleware = primero en ejecutarse):
-# SecurityHeaders → Tenant → SlowAPI → Audit → CORS (outermost, maneja preflight)
+# RequestID (outermost) → CORS → Audit → SlowAPI → Tenant → SecurityHeaders.
+# RequestID se añade el último a propósito: al quedar el más externo, cualquier
+# error nacido en cualquier capa ya tiene su `request_id` cuando el handler
+# construye el sobre.
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(TenantMiddleware)
 app.add_middleware(SlowAPIMiddleware)
@@ -110,8 +111,10 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Tenant-ID"],
+    allow_headers=["Content-Type", "Authorization", "X-Tenant-ID", "X-Request-ID"],
+    expose_headers=["X-Request-ID"],
 )
+app.add_middleware(RequestIDMiddleware)
 
 # ===============================
 # ROUTERS
@@ -155,20 +158,41 @@ def root():
 
 
 @app.get("/health")
-def health_check():
+def health_check(response: Response):
+    """Estado real del servicio — F-000 / T-05.
+
+    Devuelve 503 si la base de datos no responde, para que el monitor externo
+    (UptimeRobot) avise en vez de ver un 200 mentiroso. Los pings periódicos del
+    monitor además sirven de keep-alive y reducen los cold starts de Render.
+    """
     db_ok = False
+    db_error = None
+    inicio = time.perf_counter()
     try:
         with db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT 1")
                 db_ok = cur.fetchone()[0] == 1
-    except Exception:
-        pass
-    uptime_seconds = int(time.time() - _start_time)
-    status = "ok" if db_ok else "degraded"
-    return {
-        "status": status,
+    except Exception as exc:
+        # El detalle va a los logs; al cliente sólo el tipo de fallo, sin credenciales.
+        logger.error("Health check: la base de datos no responde: %s", exc)
+        db_error = type(exc).__name__
+    db_latency_ms = round((time.perf_counter() - inicio) * 1000, 1)
+
+    cuerpo = {
+        "status": "ok" if db_ok else "unhealthy",
         "db": "ok" if db_ok else "error",
-        "uptime_seconds": uptime_seconds,
-        "version": "1.0.0",
+        "db_latency_ms": db_latency_ms,
+        "pool": pool_stats(),
+        # OBJ-5: en false, los logos y avatares subidos se pierden en el
+        # próximo redeploy de Render (disco efímero).
+        "storage_persistente": almacenamiento_es_persistente(),
+        "uptime_seconds": int(time.time() - _start_time),
+        "version": settings.GIT_COMMIT,
+        "env": settings.ENV,
     }
+    if db_error:
+        cuerpo["db_error"] = db_error
+
+    response.status_code = 200 if db_ok else 503
+    return cuerpo

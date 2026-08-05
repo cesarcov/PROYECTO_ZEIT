@@ -1,0 +1,182 @@
+# Backup lógico diario de la base de datos — F-000 / T-13.
+#
+# OBJ-6: existe un backup propio y se restauró al menos una vez.
+#
+# Supabase hace sus propios backups, pero son suyos: si se pierde la cuenta, se
+# corrompe el proyecto o alguien borra datos por error y se descubre tarde, no
+# hay nada bajo nuestro control. Este workflow saca un `pg_dump` cifrado con
+# GPG y lo guarda como artefacto del repositorio.
+#
+# SECRETOS que hay que cargar en Settings → Secrets and variables → Actions:
+#   DATABASE_URL_BACKUP   cadena de conexión de sólo lectura a producción
+#   BACKUP_PASSPHRASE     frase larga para el cifrado GPG (guárdala aparte:
+#                         sin ella el backup es un ladrillo)
+name: Backup
+
+on:
+  schedule:
+    # 07:00 UTC = 02:00 en Lima. Fuera del horario de trabajo.
+    - cron: "0 7 * * *"
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: pg_dump cifrado
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar cliente de PostgreSQL 16
+        # El pg_dump que trae el runner puede ser más viejo que el servidor.
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends postgresql-client-16
+
+      - name: Verificar que los secretos están configurados
+        env:
+          DATABASE_URL_BACKUP: ${{ secrets.DATABASE_URL_BACKUP }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DATABASE_URL_BACKUP" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Faltan los secretos DATABASE_URL_BACKUP y/o BACKUP_PASSPHRASE."
+            exit 1
+          fi
+
+      - name: Volcar la base de datos
+        env:
+          DATABASE_URL_BACKUP: ${{ secrets.DATABASE_URL_BACKUP }}
+        run: |
+          set -euo pipefail
+          FECHA=$(date -u +%Y%m%d-%H%M)
+          echo "NOMBRE=erp-backup-$FECHA" >> "$GITHUB_ENV"
+          # --no-owner / --no-acl: el dump se restaura en cualquier servidor,
+          # sin depender de los roles concretos de Supabase.
+          pg_dump "$DATABASE_URL_BACKUP" \
+            --format=custom \
+            --no-owner \
+            --no-acl \
+            --file="erp-backup-$FECHA.dump"
+          ls -lh "erp-backup-$FECHA.dump"
+
+      - name: Cifrar el volcado
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          # El artefacto queda cifrado en reposo: aunque alguien acceda al
+          # almacenamiento de Actions, sin la frase no hay datos.
+          gpg --batch --yes --symmetric \
+              --cipher-algo AES256 \
+              --passphrase "$BACKUP_PASSPHRASE" \
+              --output "${NOMBRE}.dump.gpg" \
+              "${NOMBRE}.dump"
+          rm -f "${NOMBRE}.dump"
+          ls -lh "${NOMBRE}.dump.gpg"
+
+      - name: Guardar el artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.NOMBRE }}
+          path: ${{ env.NOMBRE }}.dump.gpg
+          # 30 días: cubre de sobra el tiempo en que se detecta una pérdida.
+          retention-days: 30
+          if-no-files-found: error
+
+  # ── Simulacro de restauración ──────────────────────────────────────────────
+  # Un backup que nunca se restauró no es un backup: es una esperanza.
+  # Este job restaura el volcado recién hecho en un Postgres vacío y corre la
+  # suite de integración CONTRA LOS DATOS RESTAURADOS.
+  simulacro-restauracion:
+    name: Simulacro de restauración
+    needs: backup
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: restore_ci
+          POSTGRES_PASSWORD: restore_ci_efimero
+          POSTGRES_DB: erp_restaurado
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ENV: development
+      DATABASE_URL: postgresql://restore_ci:restore_ci_efimero@localhost:5432/erp_restaurado
+      SECRET_KEY: clave-de-integracion-continua-no-usada-en-ningun-entorno-real
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar cliente de PostgreSQL 16
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends postgresql-client-16
+
+      - name: Descargar el backup recién creado
+        uses: actions/download-artifact@v4
+        with:
+          pattern: erp-backup-*
+          merge-multiple: true
+
+      - name: Descifrar y restaurar
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          ARCHIVO=$(ls erp-backup-*.dump.gpg | head -1)
+          echo "Restaurando $ARCHIVO"
+          gpg --batch --yes --decrypt \
+              --passphrase "$BACKUP_PASSPHRASE" \
+              --output restaurado.dump "$ARCHIVO"
+          # --no-owner: los roles de Supabase no existen en este contenedor.
+          # Se tolera el ruido de permisos, pero NO un fallo de datos: se
+          # verifica a continuación con una consulta real.
+          pg_restore --no-owner --no-acl --dbname="$DATABASE_URL" restaurado.dump || true
+
+      - name: Verificar que los datos llegaron
+        run: |
+          set -euo pipefail
+          USUARIOS=$(psql "$DATABASE_URL" -tAc "SELECT count(*) FROM users")
+          MATERIALES=$(psql "$DATABASE_URL" -tAc "SELECT count(*) FROM materials")
+          echo "usuarios restaurados: $USUARIOS"
+          echo "materiales restaurados: $MATERIALES"
+          if [ "$USUARIOS" -lt 1 ]; then
+            echo "::error::La restauración no trajo ningún usuario. El backup no sirve."
+            exit 1
+          fi
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Suite de integración sobre los datos restaurados
+        # Los tests que no dependen de credenciales de sesión validan que el
+        # esquema restaurado es funcional: la app arranca y consulta contra él.
+        run: pytest -q --no-cov
+
+      - name: Verificar el estado de las migraciones en la copia restaurada
+        run: python run_migrations.py --verify-only

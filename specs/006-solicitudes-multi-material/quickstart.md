@@ -72,7 +72,7 @@ curl -s -X POST http://127.0.0.1:8000/requests/material-requests \
 ```bash
 # 1. Login como admin
 ADMIN_TOKEN=$(curl -s -X POST http://127.0.0.1:8000/auth/login \
-  -d "username=admin&password=admin123" | jq -r .access_token)
+  -d "username=$TEST_ADMIN_USER&password=$TEST_ADMIN_PASSWORD" | jq -r .access_token)
 
 # 2. Aprobar la solicitud creada en Escenario 1
 REQUEST_ID="uuid-nueva-solicitud"

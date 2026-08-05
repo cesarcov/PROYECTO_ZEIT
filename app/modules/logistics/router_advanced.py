@@ -10,7 +10,6 @@ import io
 import qrcode
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
 from typing import Optional
 from app.core.database import db_connection
 from app.core.security.permissions import require_permission

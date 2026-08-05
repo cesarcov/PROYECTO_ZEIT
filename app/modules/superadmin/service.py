@@ -91,7 +91,7 @@ def set_user_blocks_service(user_id: str, blocks: list[dict], granted_by: str | 
             row = cur.fetchone()
             if not row:
                 raise HTTPException(404, "Usuario no encontrado")
-            username = row[0]
+            row[0]
 
             cur.execute("DELETE FROM user_block_permissions WHERE user_id = %s", (user_id,))
             for b in blocks:

@@ -3,21 +3,20 @@ Integración con Microsoft SharePoint Online mediante Microsoft Graph API.
 Permite autenticar de forma no interactiva (Client Credentials Flow)
 y subir archivos binarios (reportes) a una biblioteca de documentos de SharePoint.
 """
-import os
 import logging
 import requests
-from dotenv import load_dotenv
 
-# Cargar variables de entorno locales
-load_dotenv()
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-TENANT_ID = os.getenv("SHAREPOINT_TENANT_ID")
-CLIENT_ID = os.getenv("SHAREPOINT_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SHAREPOINT_CLIENT_SECRET")
-SITE_NAME = os.getenv("SHAREPOINT_SITE_NAME")
-FOLDER_PATH = os.getenv("SHAREPOINT_FOLDER_PATH", "Documentos compartidos/ERP_Reportes")
+# Toda variable de entorno se lee desde `settings` (F-000 / T-02): nadie llama
+# a os.getenv() fuera de app/core/config.py.
+TENANT_ID = settings.SHAREPOINT_TENANT_ID
+CLIENT_ID = settings.SHAREPOINT_CLIENT_ID
+CLIENT_SECRET = settings.SHAREPOINT_CLIENT_SECRET
+SITE_NAME = settings.SHAREPOINT_SITE_NAME
+FOLDER_PATH = settings.SHAREPOINT_FOLDER_PATH
 
 
 def get_access_token() -> str:

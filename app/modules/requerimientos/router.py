@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import Optional, List
+from typing import Optional
 from app.core.security.dependencies import get_current_user
 from .schemas import RequerimientoCreate, RequerimientoUpdate, BulkCostosPayload
 from . import service

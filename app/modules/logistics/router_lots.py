@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from app.core.database import db_connection
-from app.core.security.dependencies import get_current_user
 from app.core.security.permissions import require_permission
 
 router = APIRouter(prefix="/logistics/lots", tags=["Lotes"])

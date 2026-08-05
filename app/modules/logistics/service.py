@@ -1,6 +1,4 @@
-import app.core.security
 import json
-from decimal import Decimal
 from typing import Optional, Dict
 from uuid import UUID
 from fastapi import HTTPException
@@ -200,21 +198,23 @@ def get_current_stock_summary(material_id: Optional[str] = None) -> Dict:
             cur.execute(query, params)
             rows = cur.fetchall()
 
-    for mat, m_type, qty, from_wh, to_wh in rows:
-        stock.setdefault(mat, {})
+    # `add` se define FUERA del bucle y recibe el dict del material: definirla
+    # dentro capturaba `mat` por late binding, un bug latente (regla B023).
+    def add(por_almacen: Dict[str, float], wh, amount):
+        if not wh:
+            return
+        por_almacen[wh] = por_almacen.get(wh, 0) + amount
 
-        def add(wh, amount):
-            if not wh:
-                return
-            stock[mat][wh] = stock[mat].get(wh, 0) + amount
+    for mat, m_type, qty, from_wh, to_wh in rows:
+        por_almacen = stock.setdefault(mat, {})
 
         if m_type in ("IN", "RETURN"):
-            add(to_wh, qty)
+            add(por_almacen, to_wh, qty)
         elif m_type == "OUT":
-            add(from_wh, -qty)
+            add(por_almacen, from_wh, -qty)
         elif m_type == "TRANSFER":
-            add(from_wh, -qty)
-            add(to_wh, qty)
+            add(por_almacen, from_wh, -qty)
+            add(por_almacen, to_wh, qty)
 
     return stock
 
@@ -3610,7 +3610,7 @@ def export_materials_excel_service():
 
     # Hoja de resumen
     ws2 = wb.create_sheet("Resumen")
-    from app.core.export_utils import _fill, _font_bold_dark, _font_normal, _align, PRIMARY_HEX
+    from app.core.export_utils import _font_bold_dark, _font_normal
     ws2.column_dimensions["A"].width = 28
     ws2.column_dimensions["B"].width = 14
     ws2["A1"] = "Total de materiales registrados"
@@ -3641,7 +3641,7 @@ def export_materials_excel_service():
 def export_stock_excel_service():
     from app.core.export_utils import (
         write_title_row, write_header_row, write_data_row,
-        set_column_widths, fmt_num, excel_response, _fill, _font_bold_dark, ACCENT_HEX,
+        set_column_widths, fmt_num, excel_response,
     )
     import openpyxl
     from openpyxl.styles import Font, PatternFill

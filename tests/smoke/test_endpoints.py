@@ -1,31 +1,18 @@
 """Smoke tests — la app arranca y los endpoints críticos responden 200 con la forma esperada.
 
 Corren EN PROCESO con TestClient de FastAPI (no necesitan levantar uvicorn).
-Requisito: PostgreSQL local arriba (DB erp_logistica) y el usuario demo juliet_alvis.
+Requisito: PostgreSQL arriba y las credenciales de prueba en el entorno
+(TEST_USER / TEST_PASSWORD y compañía — ver `tests/conftest.py`).
 
 Estos tests son la compuerta antirregresión: si un cambio rompe un endpoint crítico,
 se ven en rojo en segundos en vez de descubrirse en producción.
 """
 import pytest
-from fastapi.testclient import TestClient
 
 from app.main import app
 
-USER = "juliet_alvis"
-PWD = "123456"
-
-
-@pytest.fixture(scope="module")
-def client():
-    with TestClient(app) as c:
-        yield c
-
-
-@pytest.fixture(scope="module")
-def auth(client):
-    r = client.post("/auth/login", data={"username": USER, "password": PWD})
-    assert r.status_code == 200, f"login falló: {r.status_code} {r.text[:200]}"
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+# Las fixtures `client`, `auth`, `admin_auth` y `superadmin_auth` viven en
+# tests/conftest.py y leen las credenciales del entorno (F-000 / T-01).
 
 
 def test_app_importa():
@@ -110,14 +97,6 @@ def test_user_preferences_rechaza_tema_invalido(client, auth):
 
 
 # ── Marca configurable / white-label (feature 003) ────────────────────────────
-
-@pytest.fixture(scope="module")
-def admin_auth(client):
-    r = client.post("/auth/login", data={"username": "admin", "password": "admin123"})
-    if r.status_code != 200:
-        pytest.skip("usuario admin (admin/admin123) no disponible")
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
-
 
 def test_branding_publico(client):
     """GET /branding es público (lo usa el login) y trae la marca + crédito."""
@@ -297,18 +276,6 @@ def test_material_request_legacy_compat(client, auth, _feature006_prereqs):
 
 # ── Arquitectura multi-tenant (feature 007) ───────────────────────────────────
 
-SUPERADMIN_USER = "superadmin"
-SUPERADMIN_PWD = "superadmin2026"
-
-
-@pytest.fixture(scope="module")
-def superadmin_auth(client):
-    r = client.post("/auth/login", data={"username": SUPERADMIN_USER, "password": SUPERADMIN_PWD})
-    if r.status_code != 200:
-        pytest.skip(f"Credenciales de superadmin no configuradas: {r.text[:200]}")
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
-
-
 @pytest.fixture(scope="module")
 def test_tenant_data(client, superadmin_auth):
     """Crea un tenant de prueba para los tests de feature 007 y lo mantiene durante la sesión."""
@@ -324,9 +291,12 @@ def test_tenant_data(client, superadmin_auth):
     return r.json()
 
 
-def test_superadmin_login(client):
+def test_superadmin_login(client, superadmin_creds):
     """El superadmin puede hacer login sin X-Tenant-ID y recibe un access_token (US1)."""
-    r = client.post("/auth/login", data={"username": SUPERADMIN_USER, "password": SUPERADMIN_PWD})
+    if not superadmin_creds:
+        pytest.skip("Credenciales de superadmin no configuradas en el entorno")
+    username, password = superadmin_creds
+    r = client.post("/auth/login", data={"username": username, "password": password})
     assert r.status_code == 200, f"Superadmin login falló: {r.text[:200]}"
     data = r.json()
     assert "access_token" in data
@@ -343,17 +313,20 @@ def test_create_tenant(client, test_tenant_data):
     assert test_tenant_data["is_active"] is True
 
 
-def test_tenant_isolation(client, test_tenant_data):
-    """El usuario juliet_alvis de la DB principal NO existe en el nuevo tenant (US2)."""
+def test_tenant_isolation(client, test_tenant_data, user_creds):
+    """El usuario de la DB principal NO existe en el nuevo tenant (US2)."""
+    if not user_creds:
+        pytest.skip("TEST_USER / TEST_PASSWORD no configurados en el entorno")
+    username, password = user_creds
     slug = test_tenant_data["slug"]
-    # juliet_alvis solo existe en erp_logistica, no en el tenant recién creado
+    # El usuario de prueba solo existe en la DB principal, no en el tenant recién creado.
     r = client.post(
         "/auth/login",
-        data={"username": USER, "password": PWD},
+        data={"username": username, "password": password},
         headers={"X-Tenant-ID": slug},
     )
     assert r.status_code == 401, (
-        f"juliet_alvis no debería existir en el tenant '{slug}', "
+        f"'{username}' no debería existir en el tenant '{slug}', "
         f"pero login devolvió {r.status_code}. Posible filtrado de datos entre DBs."
     )
 

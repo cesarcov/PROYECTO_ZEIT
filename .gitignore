@@ -30,3 +30,8 @@ Thumbs.db
 # Auditorías: baseline local y reporte latest (los timestamped sí se versionan)
 specs/audit/baseline.json
 specs/audit/latest.md
+
+# Artefactos de cobertura (T-06)
+.coverage
+coverage.xml
+htmlcov/

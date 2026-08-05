@@ -1,0 +1,10 @@
+# Dependencias SOLO de desarrollo y CI. No se instalan en Render.
+-r requirements.txt
+
+# Linter (F-000 / T-06)
+ruff==0.8.6
+
+# Tests
+pytest==8.3.4
+pytest-cov==6.0.0
+httpx==0.28.1

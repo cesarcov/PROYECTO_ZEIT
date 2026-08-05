@@ -250,11 +250,11 @@ def update_ot_service(ot_id: str, payload, user: dict) -> dict:
         fields.append("descripcion = %s"); vals.append(payload.descripcion)
     if payload.tipo is not None:
         if payload.tipo not in VALID_TIPOS:
-            raise HTTPException(400, f"tipo inválido")
+            raise HTTPException(400, "tipo inválido")
         fields.append("tipo = %s"); vals.append(payload.tipo)
     if payload.prioridad is not None:
         if payload.prioridad not in VALID_PRIORIDAD:
-            raise HTTPException(400, f"prioridad inválida")
+            raise HTTPException(400, "prioridad inválida")
         fields.append("prioridad = %s"); vals.append(payload.prioridad)
     if payload.asignado_a is not None:
         fields.append("asignado_a = %s::uuid"); vals.append(payload.asignado_a)
@@ -536,7 +536,6 @@ def pausar_tiempo_service(ot_id: str, user: dict, notas: str = None) -> dict:
             tiempo_id, inicio = row
             fin = datetime.now(timezone.utc)
             if inicio.tzinfo is None:
-                from datetime import timezone as tz
                 inicio = inicio.replace(tzinfo=timezone.utc)
             diff = fin - inicio
             horas = round(diff.total_seconds() / 3600, 4)
@@ -603,7 +602,7 @@ def cerrar_ot_service(ot_id: str, user: dict) -> dict:
                     float(cantidad),
                     str(almacen_id) if almacen_id else None,
                     f"OT-CIERRE-{ot_id[:8]}",
-                    f"Consumo registrado al cerrar OT",
+                    "Consumo registrado al cerrar OT",
                     str(user["id"]),
                 ))
                 movement_id = cur.fetchone()[0]

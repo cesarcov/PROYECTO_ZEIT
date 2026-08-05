@@ -1,8 +1,16 @@
 # Render Blueprint — backend FastAPI del ERP.
 # Despliegue: en Render → New + → Blueprint → selecciona el repo cesarcov/PROYECTO_ZEIT.
 # Render leerá este archivo y pedirá los valores marcados con "sync: false" (los
-# secretos) durante la creación. Los logos/estáticos los sirve el mismo backend.
+# secretos) durante la creación.
+#
+# F-000 / T-15 — dos servicios espejo:
+#   erp-backend          rama `main`     → PRODUCCIÓN
+#   erp-backend-staging  rama `staging`  → STAGING (base de datos separada)
+#
+# Regla: una migración corre en STAGING ANTES que en producción
+# (Definition of Done de CONSTITUTION.md).
 services:
+  # ── PRODUCCIÓN ──────────────────────────────────────────────────────────────
   - type: web
     name: erp-backend
     runtime: python
@@ -18,20 +26,96 @@ services:
       # --- No secretos (ya con valor) ---
       - key: PYTHON_VERSION
         value: "3.11.9"
+      - key: ENV
+        value: production
       - key: ALGORITHM
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "480"
+      - key: DB_POOL_MIN
+        value: "1"
+      - key: DB_POOL_MAX
+        value: "5"
+      - key: LOGIN_RATE_LIMIT
+        value: 5/minute
       # --- Secretos: Render los pedirá al crear el Blueprint ---
       - key: SECRET_KEY              # Usa el valor fuerte generado (NO el de dev)
         sync: false
-      - key: DATABASE_URL           # Cadena del Connection Pooler de Supabase
+      - key: DATABASE_URL            # Cadena del Connection Pooler de Supabase
         sync: false
-      - key: MASTER_DATABASE_URL    # Igual que DATABASE_URL por ahora
+      - key: MASTER_DATABASE_URL     # Igual que DATABASE_URL por ahora
         sync: false
       - key: SUPERADMIN_USERNAME
         sync: false
       - key: SUPERADMIN_PASSWORD_HASH
         sync: false
-      - key: CORS_ORIGINS           # URL del frontend en Vercel (se llena en el Paso 3)
+      - key: CORS_ORIGINS            # URL EXACTA del frontend en Vercel
         sync: false
+      # --- Observabilidad (T-04). Vacío = Sentry desactivado ---
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "0.1"
+      # --- Almacenamiento persistente (T-11). Sin esto los logos se pierden ---
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET_BRANDING
+        value: branding
+      - key: SUPABASE_BUCKET_AVATARS
+        value: avatars
+
+  # ── STAGING ─────────────────────────────────────────────────────────────────
+  # Espejo de producción con su PROPIA base de datos. Un push a `staging`
+  # despliega aquí sin tocar producción.
+  - type: web
+    name: erp-backend-staging
+    runtime: python
+    plan: free
+    region: virginia
+    branch: staging
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: ENV
+        value: staging
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "480"
+      - key: DB_POOL_MIN
+        value: "1"
+      - key: DB_POOL_MAX
+        value: "3"
+      - key: LOGIN_RATE_LIMIT
+        value: 5/minute
+      # CRÍTICO: esta cadena debe apuntar a una base de datos DISTINTA de la de
+      # producción. Si apunta a la misma, staging deja de ser staging.
+      - key: DATABASE_URL
+        sync: false
+      - key: MASTER_DATABASE_URL
+        sync: false
+      - key: SECRET_KEY              # Distinto al de producción: los tokens no
+        sync: false                  # deben ser válidos entre entornos.
+      - key: SUPERADMIN_USERNAME
+        sync: false
+      - key: SUPERADMIN_PASSWORD_HASH
+        sync: false
+      - key: CORS_ORIGINS            # URL del preview de Vercel para staging
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "1.0"                 # En staging interesa trazar todo.
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET_BRANDING
+        value: branding
+      - key: SUPABASE_BUCKET_AVATARS
+        value: avatars

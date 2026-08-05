@@ -4,7 +4,7 @@ import time
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.core.audit.context import audit_context
+from app.core.audit.context import audit_context, get_audit_context
 from app.core.audit.service import save_audit_log
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class AuditMiddleware(BaseHTTPMiddleware):
         finally:
             elapsed = round(time.time() - start_time, 3)
 
-            base_ctx = audit_context.get().copy()
+            base_ctx = get_audit_context()
             base_ctx.update({
                 "status": status,
                 "error_message": error,

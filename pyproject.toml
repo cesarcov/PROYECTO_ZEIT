@@ -1,0 +1,49 @@
+[tool.ruff]
+# F-000 / T-06 — configuración del linter del backend.
+line-length = 120
+target-version = "py311"
+extend-exclude = ["venv", "node_modules", "migrations", ".pytest_cache"]
+
+[tool.ruff.lint]
+# LÍNEA BASE DEL TRINQUETE: se empieza con las reglas que atrapan bugs reales
+# (errores de sintaxis, nombres indefinidos, imports y variables muertas) y NO
+# con las de estilo. Cada vez que el código quede limpio para un grupo nuevo,
+# se añade aquí y ya no se puede retroceder.
+#   E9  errores de sintaxis / runtime
+#   F   pyflakes: nombres indefinidos, imports y variables sin usar
+#   B   bugbear: patrones que casi siempre son un bug
+select = ["E9", "F", "B"]
+ignore = [
+    # `Depends(...)` / `File(...)` en argumentos por defecto ES el idiom de
+    # FastAPI. No es un bug aquí.
+    "B008",
+    # `raise ... from err` dentro de un except: mejora la traza pero son 33
+    # sitios. Siguiente escalón del trinquete, no bloquea esta fase.
+    "B904",
+    # `zip()` sin strict= : el código ya garantiza longitudes iguales.
+    "B905",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Los __init__.py re-exportan a propósito.
+"__init__.py" = ["F401"]
+# Los tests usan fixtures de pytest que parecen "argumentos sin usar".
+"tests/*" = ["F811"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Marca los tests que necesitan una base de datos real, para poder excluirlos:
+#   pytest -m "not db"
+markers = [
+    "db: requiere una base de datos PostgreSQL accesible",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["*/__pycache__/*", "*/venv/*", "*/tests/*"]
+
+[tool.coverage.report]
+# OBJ-8: la cobertura del backend no puede bajar de este número.
+# Es un trinquete: sube, nunca baja.
+fail_under = 30
+show_missing = true

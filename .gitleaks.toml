@@ -1,0 +1,64 @@
+# Configuración de gitleaks — F-000 / T-01
+# Regla 6 de CONSTITUTION.md: ningún secreto en el repositorio ni en la
+# documentación. Este archivo define qué se considera hallazgo y qué es ruido
+# conocido (valores de ejemplo evidentemente falsos).
+#
+# Uso local:
+#   gitleaks detect --config .gitleaks.toml --redact          # historial completo
+#   gitleaks protect --staged --config .gitleaks.toml --redact # antes de commitear
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "postgres-connection-string"
+description = "Cadena de conexión PostgreSQL con contraseña embebida"
+# Las clases de caracteres excluyen `{` a propósito: una f-string de Python que
+# arma la URL desde variables (postgresql://{u}:{p}@{host}/db) NO es un secreto.
+regex = '''postgres(?:ql)?(?:\+\w+)?://[^:\s/{]+:[^@\s{]+@[^\s/{]+'''
+tags = ["database", "credentials"]
+
+[[rules]]
+id = "jwt-secret-key"
+description = "SECRET_KEY de JWT con valor real"
+regex = '''(?i)secret_key\s*[=:]\s*['"]?[A-Za-z0-9+/_\-]{24,}['"]?'''
+tags = ["jwt", "credentials"]
+
+[allowlist]
+description = "Ruido conocido: dependencias, artefactos y valores de ejemplo falsos"
+
+# Los separadores aceptan / y \ porque el escaneo también corre en Windows.
+paths = [
+  '''(^|[\\/])node_modules[\\/]''',
+  '''(^|[\\/])venv[\\/]''',
+  '''(^|[\\/])dist[\\/]''',
+  '''(^|[\\/])__pycache__[\\/]''',
+  '''(^|[\\/])\.pytest_cache[\\/]''',
+  '''package-lock\.json$''',
+  # Migración histórica ya revertida por 037_drop_plain_password.sql. No se
+  # edita (regla 3) y su valor quedó inservible tras la rotación de T-01.
+  '''migrations[\\/]024_add_plain_password\.sql$''',
+]
+
+regexes = [
+  # Placeholders de .env.example y documentación: no son secretos reales.
+  '''cambia-esto''',
+  '''tu[-_]password''',
+  '''<[A-Z_]+>''',
+  '''CAMBIAME''',
+  '''postgresql://usuario:contrase''',
+  '''postgres:tu_password@localhost''',
+  # Placeholders genéricos de la documentación (specs/007-multi-tenant).
+  '''://user:pass@''',
+  '''://usuario:clave@''',
+  # Credenciales del contenedor efímero del CI: viven sólo dentro del job y la
+  # base de datos se destruye al terminar. No dan acceso a nada real.
+  '''erp_ci_efimero''',
+  '''restore_ci_efimero''',
+  '''ci-efimero-''',
+  # Cadenas de conexión de juguete en los tests (usuario 'u', clave 'p').
+  '''://u:p@''',
+  '''clave-de-integracion-continua-no-usada-en-ningun-entorno-real''',
+  # Hashes bcrypt de ejemplo en documentación (empiezan por $2b$ pero son falsos).
+  '''\$2b\$12\$EJEMPLO''',
+]

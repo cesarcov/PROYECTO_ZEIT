@@ -14,8 +14,7 @@ Uso:
 
 import os
 import sys
-import uuid
-from datetime import datetime, date
+from datetime import datetime
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -380,7 +379,6 @@ def _gen_cliente_code(cur, year: int) -> str:
 def seed_usuarios(conn) -> dict[str, str]:
     """Crea (o actualiza) los 5 usuarios. Retorna {username: user_id}."""
     result = {}
-    year = datetime.now().year
 
     with conn.cursor() as cur:
         for u in NUEVOS_USUARIOS:
@@ -509,7 +507,7 @@ def seed_cotizaciones(conn, cliente_ids: list[str], engineer_id: str) -> list[st
     year = datetime.now().year
 
     with conn.cursor() as cur:
-        for i, cot in enumerate(COTIZACIONES):
+        for _i, cot in enumerate(COTIZACIONES):
             # Contar planes existentes este año
             cur.execute(
                 "SELECT COUNT(*) FROM project_plans WHERE EXTRACT(YEAR FROM created_at)=%s",
@@ -541,7 +539,6 @@ def seed_cotizaciones(conn, cliente_ids: list[str], engineer_id: str) -> list[st
             # Obtener razón social y RUC del cliente
             cliente_nombre = None
             cliente_ruc = None
-            contacto_id = None
             if cliente_id:
                 cur.execute(
                     "SELECT razon_social, ruc FROM clientes WHERE id=%s", (cliente_id,)

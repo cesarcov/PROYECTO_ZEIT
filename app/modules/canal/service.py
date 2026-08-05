@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 from fastapi import HTTPException
 from app.core.database import db_connection
@@ -276,7 +275,7 @@ def assign_solicitud_service(solicitud_id: int, assigned_to: Optional[str], user
             row = cur.fetchone()
             if not row:
                 raise HTTPException(404, "Solicitud no encontrada")
-            sol_id, to_module = row[0], row[1]
+            _sol_id, to_module = row[0], row[1]
 
             is_admin = user.get("role") == "admin"
             username = user.get("username", "")

@@ -1,9 +1,9 @@
 from app.core.database import db_connection
-from app.core.audit.context import audit_context
+from app.core.audit.context import get_audit_context
 
 
 def save_audit_log(extra_data: dict = None):
-    ctx = audit_context.get().copy()
+    ctx = get_audit_context()
 
     if extra_data:
         ctx.update(extra_data)

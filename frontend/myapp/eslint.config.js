@@ -23,7 +23,20 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // ── LÍNEA BASE DEL TRINQUETE (F-000 / T-06) ─────────────────────────
+      // El código heredado arrastra 83 hallazgos. En vez de bloquear el CI de
+      // golpe (o desactivar las reglas y perderlas), se degradan a WARNING y
+      // el pipeline corre con `--max-warnings` fijado al recuento actual: se
+      // puede bajar, nunca subir. Cada vez que un grupo quede en cero, se
+      // vuelve a subir a 'error' aquí y ya no se puede retroceder.
+      // El número vive en el script `lint` de package.json.
+      'no-unused-vars': ['warn', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-empty': 'warn',
+      'no-useless-escape': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-refresh/only-export-components': 'warn',
     },
   },
 ])

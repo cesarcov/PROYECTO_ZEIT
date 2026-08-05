@@ -784,14 +784,14 @@ def get_resumen_service(plan_id: str) -> dict:
 
 def export_pdf_service(plan_id: str) -> StreamingResponse:
     try:
-        from reportlab.lib.pagesizes import A4, landscape
+        from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
         from reportlab.lib.units import cm
         from reportlab.platypus import (
-            SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
+            SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
         )
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+        from reportlab.lib.enums import TA_RIGHT
     except ImportError:
         raise HTTPException(500, "reportlab no está instalado. Ejecute: pip install reportlab")
 
@@ -833,7 +833,7 @@ def export_pdf_service(plan_id: str) -> StreamingResponse:
     fecha = datetime.now().strftime("%d/%m/%Y")
 
     PRIMARY = colors.HexColor("#0B2E33")
-    ACCENT = colors.HexColor("#B8E3E9")
+    colors.HexColor("#B8E3E9")
     LIGHT = colors.HexColor("#F0F7F8")
     WHITE = colors.white
     moneda = cfg[8] or "S/"
@@ -846,7 +846,7 @@ def export_pdf_service(plan_id: str) -> StreamingResponse:
     )
     styles = getSampleStyleSheet()
     bold_white = ParagraphStyle("bw", parent=styles["Normal"], textColor=WHITE, fontName="Helvetica-Bold", fontSize=9)
-    bold_dark = ParagraphStyle("bd", parent=styles["Normal"], textColor=PRIMARY, fontName="Helvetica-Bold", fontSize=8)
+    ParagraphStyle("bd", parent=styles["Normal"], textColor=PRIMARY, fontName="Helvetica-Bold", fontSize=8)
     normal = ParagraphStyle("n", parent=styles["Normal"], fontSize=8, leading=10)
     cap_style = ParagraphStyle("cap", parent=styles["Normal"], textColor=WHITE, fontName="Helvetica-Bold", fontSize=8)
     right_style = ParagraphStyle("r", parent=styles["Normal"], fontSize=8, alignment=TA_RIGHT)
@@ -1098,7 +1098,7 @@ def export_excel_service(plan_id: str) -> StreamingResponse:
             """, (plan_id,))
             consolidado = cur.fetchall()
 
-        resumen = _compute_resumen(conn, plan_id)
+        _compute_resumen(conn, plan_id)
 
     fecha = datetime.now().strftime("%d/%m/%Y")
     moneda_sym = cfg[8] or "S/"

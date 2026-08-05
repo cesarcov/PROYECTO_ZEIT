@@ -1,5 +1,4 @@
 """Append calibration and purchase services to service.py"""
-import os
 
 NEW_CODE = '''
 

@@ -1,51 +1,41 @@
 """Smoke tests para la feature 008-control-acceso-bloques.
 
 Patrón: save → test → restore para no dejar datos de test en producción.
-Requiere que SUPERADMIN_USERNAME y SUPERADMIN_PASSWORD_HASH estén en .env.
-Si las credenciales del superadmin no están configuradas, los tests se omiten.
+Las credenciales se leen del entorno vía las fixtures de `tests/conftest.py`
+(F-000 / T-01). Si no están configuradas, los tests se omiten.
 """
 import pytest
-import os
-from fastapi.testclient import TestClient
-from app.main import app
 
-SUPERADMIN_USER = os.getenv("SUPERADMIN_USERNAME", "")
-SUPERADMIN_PASS = os.getenv("SUPERADMIN_PLAIN_PASSWORD", "")
-
-REGULAR_USER = "juliet_alvis"
-REGULAR_PASS = "123456"
+# `client`, `auth`, `superadmin_auth` y `user_creds` vienen de tests/conftest.py.
 
 
 @pytest.fixture(scope="module")
-def client():
-    with TestClient(app) as c:
-        yield c
+def superadmin_token(client, superadmin_auth):
+    """Alias del superadmin que además verifica que recibe blocks='all'."""
+    r = client.get("/auth/me", headers=superadmin_auth)
+    assert r.status_code == 200, r.text[:200]
+    assert r.json().get("blocks") == "all", "superadmin debe recibir blocks='all'"
+    return superadmin_auth
 
 
 @pytest.fixture(scope="module")
-def superadmin_token(client):
-    if not SUPERADMIN_USER or not SUPERADMIN_PASS:
-        pytest.skip("SUPERADMIN_USERNAME / SUPERADMIN_PLAIN_PASSWORD no configurados en .env")
-    r = client.post("/auth/login", data={"username": SUPERADMIN_USER, "password": SUPERADMIN_PASS})
-    assert r.status_code == 200, f"login superadmin falló: {r.text[:200]}"
-    data = r.json()
-    assert data.get("blocks") == "all", "superadmin debe recibir blocks='all'"
-    return {"Authorization": f"Bearer {data['access_token']}"}
-
-
-@pytest.fixture(scope="module")
-def regular_user_id(client, superadmin_token):
+def regular_user_id(client, superadmin_token, user_creds):
+    if not user_creds:
+        pytest.skip("TEST_USER / TEST_PASSWORD no configurados en el entorno")
+    username, _ = user_creds
     r = client.get("/superadmin/users", headers=superadmin_token)
     assert r.status_code == 200
-    users = r.json()
-    for u in users:
-        if u["username"] == REGULAR_USER:
+    for u in r.json():
+        if u["username"] == username:
             return u["id"]
-    pytest.skip(f"Usuario {REGULAR_USER} no encontrado en /superadmin/users")
+    pytest.skip(f"Usuario {username} no encontrado en /superadmin/users")
 
 
-def test_login_returns_blocks(client):
-    r = client.post("/auth/login", data={"username": REGULAR_USER, "password": REGULAR_PASS})
+def test_login_returns_blocks(client, user_creds):
+    if not user_creds:
+        pytest.skip("TEST_USER / TEST_PASSWORD no configurados en el entorno")
+    username, password = user_creds
+    r = client.post("/auth/login", data={"username": username, "password": password})
     assert r.status_code == 200
     data = r.json()
     assert "blocks" in data, "La respuesta de login debe incluir el campo 'blocks'"
@@ -103,9 +93,7 @@ def test_invalid_slug_returns_422(client, superadmin_token, regular_user_id):
     assert r.status_code == 422, f"Slug inválido debería retornar 422, got {r.status_code}"
 
 
-def test_auth_me_returns_blocks(client):
-    r = client.post("/auth/login", data={"username": REGULAR_USER, "password": REGULAR_PASS})
-    token = r.json()["access_token"]
-    r2 = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+def test_auth_me_returns_blocks(client, auth):
+    r2 = client.get("/auth/me", headers=auth)
     assert r2.status_code == 200
     assert "blocks" in r2.json(), "/auth/me debe incluir el campo 'blocks'"

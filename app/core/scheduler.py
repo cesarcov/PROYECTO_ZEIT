@@ -46,6 +46,14 @@ def cleanup_audit_logs():
 
 
 def start_scheduler():
+    # Idempotente: el lifespan puede ejecutarse más de una vez en el mismo
+    # proceso (varios TestClient en la suite, recargas en desarrollo).
+    # Arrancar dos veces lanzaba SchedulerAlreadyRunningError y tumbaba el
+    # arranque entero (F-000 / T-06).
+    if scheduler.running:
+        logger.debug("[scheduler] ya estaba en marcha; no se reinicia")
+        return
+
     scheduler.add_job(
         cleanup_refresh_tokens,
         CronTrigger(hour=2, minute=0),
