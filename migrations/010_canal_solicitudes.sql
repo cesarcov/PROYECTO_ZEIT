@@ -5,7 +5,7 @@
 -- con hilo de mensajes.
 -- ============================================================
 
-CREATE TABLE canal_solicitudes (
+CREATE TABLE IF NOT EXISTS canal_solicitudes (
     id           SERIAL       PRIMARY KEY,
     code         VARCHAR(20)  UNIQUE NOT NULL,
     from_module  VARCHAR(50)  NOT NULL,
