@@ -86,10 +86,18 @@ jobs:
 
       - name: Lint (ruff)
         run: ruff check .
+      - name: Esperar a que Postgres esté listo
+        run: |
+          for i in $(seq 1 30); do
+          python -c "import psycopg2; psycopg2.connect('${{ env.DATABASE_URL }}')" 
+          echo "Esperando a que Postgres esté listo... intento $i"
+          sleep 1
+          done
 
       - name: Migraciones desde cero
         # OBJ-3: si una migración no aplica sobre una base vacía, el CI se pone
         # rojo aquí y no en producción.
+
         run: python run_migrations.py --strict
 
       - name: Sembrar usuarios de prueba
