@@ -2,7 +2,7 @@
 -- Migration 015: Baúles APU — kits preconfigurados de recursos
 -- ============================================================
 
-CREATE TABLE apu_baules (
+CREATE TABLE IF NOT EXISTS apu_baules (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nombre      TEXT NOT NULL,
     descripcion TEXT,
@@ -12,7 +12,7 @@ CREATE TABLE apu_baules (
     updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE apu_baul_items (
+CREATE TABLE IF NOT EXISTS apu_baul_items (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     baul_id         UUID NOT NULL REFERENCES apu_baules(id) ON DELETE CASCADE,
     tipo_recurso    TEXT NOT NULL CHECK (tipo_recurso IN ('MATERIAL', 'MANO_OBRA', 'EQUIPO')),

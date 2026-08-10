@@ -3,7 +3,7 @@
 -- ============================================================
 
 -- 1. Tabla de clientes
-CREATE TABLE clientes (
+CREATE TABLE IF NOT EXISTS clientes (
     id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     codigo           VARCHAR(20)  UNIQUE NOT NULL,          -- CLI-YYYY-NNNN
     razon_social     VARCHAR(200) NOT NULL,
@@ -19,8 +19,8 @@ CREATE TABLE clientes (
     updated_at       TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_clientes_ruc    ON clientes(ruc);
-CREATE INDEX idx_clientes_activo ON clientes(activo);
+CREATE INDEX IF NOT EXISTS idx_clientes_ruc    ON clientes(ruc);
+CREATE INDEX IF NOT EXISTS idx_clientes_activo ON clientes(activo);
 
 -- 2. Ampliar presupuesto_config con ciclo comercial
 ALTER TABLE presupuesto_config
@@ -33,5 +33,5 @@ ALTER TABLE presupuesto_config
 
 -- status válidos: BORRADOR | ENVIADA | APROBADA | RECHAZADA | EXPIRADA
 
-CREATE INDEX idx_presupuesto_config_cliente ON presupuesto_config(cliente_id);
-CREATE INDEX idx_presupuesto_config_status  ON presupuesto_config(status);
+CREATE INDEX IF NOT EXISTS idx_presupuesto_config_cliente ON presupuesto_config(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_presupuesto_config_status  ON presupuesto_config(status);

@@ -4,7 +4,7 @@
 -- ============================================================
 
 -- Proveedores
-CREATE TABLE proveedores (
+CREATE TABLE IF NOT EXISTS proveedores (
     id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     codigo       VARCHAR(20) UNIQUE NOT NULL,
     nombre       VARCHAR(200) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE proveedores (
 );
 
 -- Catálogo de precios: qué materiales ofrece cada proveedor y a qué precio
-CREATE TABLE material_proveedores (
+CREATE TABLE IF NOT EXISTS material_proveedores (
     id                  UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
     material_id         UUID          NOT NULL REFERENCES materials(id) ON DELETE CASCADE,
     proveedor_id        UUID          NOT NULL REFERENCES proveedores(id) ON DELETE CASCADE,
@@ -32,7 +32,7 @@ CREATE TABLE material_proveedores (
 );
 
 -- Órdenes de Compra
-CREATE TABLE ordenes_compra (
+CREATE TABLE IF NOT EXISTS ordenes_compra (
     id                UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
     code              VARCHAR(20)   UNIQUE NOT NULL,
     proveedor_id      UUID          NOT NULL REFERENCES proveedores(id),
@@ -53,7 +53,7 @@ CREATE TABLE ordenes_compra (
 );
 
 -- Ítems de la OC
-CREATE TABLE ordenes_compra_items (
+CREATE TABLE IF NOT EXISTS ordenes_compra_items (
     id                UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
     oc_id             UUID          NOT NULL REFERENCES ordenes_compra(id) ON DELETE CASCADE,
     material_id       UUID          NOT NULL REFERENCES materials(id),
@@ -65,9 +65,9 @@ CREATE TABLE ordenes_compra_items (
 );
 
 -- Índices
-CREATE INDEX idx_oc_proveedor  ON ordenes_compra(proveedor_id);
-CREATE INDEX idx_oc_status     ON ordenes_compra(status);
-CREATE INDEX idx_oc_plan       ON ordenes_compra(plan_id);
-CREATE INDEX idx_oc_items_oc   ON ordenes_compra_items(oc_id);
-CREATE INDEX idx_mat_prov_mat  ON material_proveedores(material_id);
-CREATE INDEX idx_mat_prov_prov ON material_proveedores(proveedor_id);
+CREATE INDEX IF NOT EXISTS idx_oc_proveedor  ON ordenes_compra(proveedor_id);
+CREATE INDEX IF NOT EXISTS idx_oc_status     ON ordenes_compra(status);
+CREATE INDEX IF NOT EXISTS idx_oc_plan       ON ordenes_compra(plan_id);
+CREATE INDEX IF NOT EXISTS idx_oc_items_oc   ON ordenes_compra_items(oc_id);
+CREATE INDEX IF NOT EXISTS idx_mat_prov_mat  ON material_proveedores(material_id);
+CREATE INDEX IF NOT EXISTS idx_mat_prov_prov ON material_proveedores(proveedor_id);

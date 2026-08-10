@@ -6,7 +6,7 @@
 -- ============================================================
 
 -- Recursos de Mano de Obra (tarifas por hora/día)
-CREATE TABLE recursos_mo (
+CREATE TABLE IF NOT EXISTS recursos_mo (
     id           UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     codigo       VARCHAR(20)  UNIQUE NOT NULL,      -- MO-001, MO-002, ...
     descripcion  VARCHAR(200) NOT NULL,              -- Técnico Electricista
@@ -20,7 +20,7 @@ CREATE TABLE recursos_mo (
 -- Partidas del presupuesto (estructura jerárquica tipo S10)
 -- Una partida es un ítem de trabajo con código, descripción y cantidad.
 -- Puede ser capítulo (agrupador sin APU) o partida normal (con APU).
-CREATE TABLE presupuesto_partidas (
+CREATE TABLE IF NOT EXISTS presupuesto_partidas (
     id           UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id      UUID         NOT NULL REFERENCES project_plans(id) ON DELETE CASCADE,
     codigo       VARCHAR(30)  NOT NULL,              -- 01, 01.01, 01.02, 02, ...
@@ -35,7 +35,7 @@ CREATE TABLE presupuesto_partidas (
 );
 
 -- Ítems APU de cada partida (recursos que componen el costo unitario)
-CREATE TABLE presupuesto_apu_items (
+CREATE TABLE IF NOT EXISTS presupuesto_apu_items (
     id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     partida_id      UUID         NOT NULL REFERENCES presupuesto_partidas(id) ON DELETE CASCADE,
     tipo_recurso    VARCHAR(20)  NOT NULL,  -- 'MATERIAL' | 'MANO_OBRA' | 'EQUIPO'
@@ -51,7 +51,7 @@ CREATE TABLE presupuesto_apu_items (
 
 -- Configuración del presupuesto (una por plan de proyecto)
 -- Guarda los porcentajes y datos del cliente para la cotización.
-CREATE TABLE presupuesto_config (
+CREATE TABLE IF NOT EXISTS presupuesto_config (
     id                   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id              UUID         UNIQUE NOT NULL REFERENCES project_plans(id) ON DELETE CASCADE,
     gastos_generales_pct DECIMAL(5,2) NOT NULL DEFAULT 12.00,  -- % sobre costo directo
@@ -69,9 +69,9 @@ CREATE TABLE presupuesto_config (
 );
 
 -- Índices
-CREATE INDEX idx_partidas_plan     ON presupuesto_partidas(plan_id);
-CREATE INDEX idx_partidas_parent   ON presupuesto_partidas(parent_id);
-CREATE INDEX idx_apu_partida       ON presupuesto_apu_items(partida_id);
-CREATE INDEX idx_apu_tipo          ON presupuesto_apu_items(tipo_recurso);
-CREATE INDEX idx_recursos_mo_cod   ON recursos_mo(codigo);
-CREATE INDEX idx_recursos_mo_activo ON recursos_mo(activo);
+CREATE INDEX IF NOT EXISTS idx_partidas_plan     ON presupuesto_partidas(plan_id);
+CREATE INDEX IF NOT EXISTS idx_partidas_parent   ON presupuesto_partidas(parent_id);
+CREATE INDEX IF NOT EXISTS idx_apu_partida       ON presupuesto_apu_items(partida_id);
+CREATE INDEX IF NOT EXISTS idx_apu_tipo          ON presupuesto_apu_items(tipo_recurso);
+CREATE INDEX IF NOT EXISTS idx_recursos_mo_cod   ON recursos_mo(codigo);
+CREATE INDEX IF NOT EXISTS idx_recursos_mo_activo ON recursos_mo(activo);

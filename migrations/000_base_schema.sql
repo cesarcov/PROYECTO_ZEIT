@@ -291,7 +291,7 @@ SET default_table_access_method = heap;
 -- Name: aprobaciones_gerencia; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.aprobaciones_gerencia (
+CREATE TABLE IF NOT EXISTS public.aprobaciones_gerencia (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     tipo character varying(30) NOT NULL,
     referencia_id uuid NOT NULL,
@@ -310,7 +310,7 @@ CREATE TABLE public.aprobaciones_gerencia (
 -- Name: apu_baul_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.apu_baul_items (
+CREATE TABLE IF NOT EXISTS public.apu_baul_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     baul_id uuid NOT NULL,
     tipo_recurso text NOT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE public.apu_baul_items (
 -- Name: apu_baules; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.apu_baules (
+CREATE TABLE IF NOT EXISTS public.apu_baules (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     nombre text NOT NULL,
     descripcion text,
@@ -344,7 +344,7 @@ CREATE TABLE public.apu_baules (
 -- Name: audit_logs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.audit_logs (
+CREATE TABLE IF NOT EXISTS public.audit_logs (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid,
     username text,
@@ -370,7 +370,7 @@ CREATE TABLE public.audit_logs (
 -- Name: branding; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.branding (
+CREATE TABLE IF NOT EXISTS public.branding (
     id integer DEFAULT 1 NOT NULL,
     nombre_producto text,
     eslogan text,
@@ -391,7 +391,7 @@ CREATE TABLE public.branding (
 -- Name: calibration_records; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.calibration_records (
+CREATE TABLE IF NOT EXISTS public.calibration_records (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     calibrated_at date NOT NULL,
@@ -408,7 +408,7 @@ CREATE TABLE public.calibration_records (
 -- Name: canal_mensajes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.canal_mensajes (
+CREATE TABLE IF NOT EXISTS public.canal_mensajes (
     id integer NOT NULL,
     solicitud_id integer NOT NULL,
     user_id uuid,
@@ -441,7 +441,7 @@ ALTER SEQUENCE public.canal_mensajes_id_seq OWNED BY public.canal_mensajes.id;
 -- Name: canal_solicitudes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.canal_solicitudes (
+CREATE TABLE IF NOT EXISTS public.canal_solicitudes (
     id integer NOT NULL,
     code character varying(20) NOT NULL,
     from_module character varying(50) NOT NULL,
@@ -482,7 +482,7 @@ ALTER SEQUENCE public.canal_solicitudes_id_seq OWNED BY public.canal_solicitudes
 -- Name: categorias_costo; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.categorias_costo (
+CREATE TABLE IF NOT EXISTS public.categorias_costo (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     codigo character varying(20) NOT NULL,
     nombre character varying(100) NOT NULL,
@@ -498,7 +498,7 @@ CREATE TABLE public.categorias_costo (
 -- Name: cliente_contactos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.cliente_contactos (
+CREATE TABLE IF NOT EXISTS public.cliente_contactos (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     cliente_id uuid NOT NULL,
     nombre character varying(255) NOT NULL,
@@ -514,7 +514,7 @@ CREATE TABLE public.cliente_contactos (
 -- Name: clientes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.clientes (
+CREATE TABLE IF NOT EXISTS public.clientes (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     codigo character varying(20) NOT NULL,
     razon_social character varying(200) NOT NULL,
@@ -535,7 +535,7 @@ CREATE TABLE public.clientes (
 -- Name: material_aliases; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_aliases (
+CREATE TABLE IF NOT EXISTS public.material_aliases (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     alias_name character varying(150) NOT NULL
@@ -546,7 +546,7 @@ CREATE TABLE public.material_aliases (
 -- Name: material_group_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_group_items (
+CREATE TABLE IF NOT EXISTS public.material_group_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     group_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -560,7 +560,7 @@ CREATE TABLE public.material_group_items (
 -- Name: material_groups; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_groups (
+CREATE TABLE IF NOT EXISTS public.material_groups (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name character varying(150) NOT NULL,
     description text,
@@ -575,7 +575,7 @@ CREATE TABLE public.material_groups (
 -- Name: material_proveedores; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_proveedores (
+CREATE TABLE IF NOT EXISTS public.material_proveedores (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     proveedor_id uuid NOT NULL,
@@ -591,7 +591,7 @@ CREATE TABLE public.material_proveedores (
 -- Name: material_request_audit; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_request_audit (
+CREATE TABLE IF NOT EXISTS public.material_request_audit (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_request_id uuid NOT NULL,
     action text NOT NULL,
@@ -607,7 +607,7 @@ CREATE TABLE public.material_request_audit (
 -- Name: material_request_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_request_items (
+CREATE TABLE IF NOT EXISTS public.material_request_items (
     id uuid NOT NULL,
     request_id uuid,
     material_id uuid,
@@ -619,7 +619,7 @@ CREATE TABLE public.material_request_items (
 -- Name: material_requests; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.material_requests (
+CREATE TABLE IF NOT EXISTS public.material_requests (
     id uuid NOT NULL,
     requested_by uuid,
     project_id uuid,
@@ -648,7 +648,7 @@ CREATE TABLE public.material_requests (
 -- Name: materials; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.materials (
+CREATE TABLE IF NOT EXISTS public.materials (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     code text NOT NULL,
     name text NOT NULL,
@@ -692,7 +692,7 @@ CREATE TABLE public.materials (
 -- Name: ordenes_compra; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ordenes_compra (
+CREATE TABLE IF NOT EXISTS public.ordenes_compra (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     code character varying(20) NOT NULL,
     proveedor_id uuid NOT NULL,
@@ -717,7 +717,7 @@ CREATE TABLE public.ordenes_compra (
 -- Name: ordenes_compra_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ordenes_compra_items (
+CREATE TABLE IF NOT EXISTS public.ordenes_compra_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     oc_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -733,7 +733,7 @@ CREATE TABLE public.ordenes_compra_items (
 -- Name: ordenes_trabajo; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ordenes_trabajo (
+CREATE TABLE IF NOT EXISTS public.ordenes_trabajo (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     code character varying(20) NOT NULL,
     plan_id uuid,
@@ -762,7 +762,7 @@ CREATE TABLE public.ordenes_trabajo (
 -- Name: ot_checklist; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ot_checklist (
+CREATE TABLE IF NOT EXISTS public.ot_checklist (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     ot_id uuid NOT NULL,
     orden integer DEFAULT 0 NOT NULL,
@@ -778,7 +778,7 @@ CREATE TABLE public.ot_checklist (
 -- Name: ot_materiales; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ot_materiales (
+CREATE TABLE IF NOT EXISTS public.ot_materiales (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     ot_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -796,7 +796,7 @@ CREATE TABLE public.ot_materiales (
 -- Name: ot_tiempos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.ot_tiempos (
+CREATE TABLE IF NOT EXISTS public.ot_tiempos (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     ot_id uuid NOT NULL,
     tecnico_id uuid,
@@ -811,7 +811,7 @@ CREATE TABLE public.ot_tiempos (
 -- Name: permissions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.permissions (
+CREATE TABLE IF NOT EXISTS public.permissions (
     code text NOT NULL,
     description text
 );
@@ -821,7 +821,7 @@ CREATE TABLE public.permissions (
 -- Name: physical_inventories; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.physical_inventories (
+CREATE TABLE IF NOT EXISTS public.physical_inventories (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     inv_number character varying(30),
     warehouse_id uuid NOT NULL,
@@ -840,7 +840,7 @@ CREATE TABLE public.physical_inventories (
 -- Name: physical_inventory_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.physical_inventory_items (
+CREATE TABLE IF NOT EXISTS public.physical_inventory_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     inventory_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -871,7 +871,7 @@ CREATE SEQUENCE public.physical_inventory_seq
 -- Name: planificacion_historial; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.planificacion_historial (
+CREATE TABLE IF NOT EXISTS public.planificacion_historial (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     actividad_id uuid NOT NULL,
     snapshot jsonb NOT NULL,
@@ -884,7 +884,7 @@ CREATE TABLE public.planificacion_historial (
 -- Name: planificacion_semanal; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.planificacion_semanal (
+CREATE TABLE IF NOT EXISTS public.planificacion_semanal (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     prioridad character varying(20),
     tarea character varying(500) NOT NULL,
@@ -910,7 +910,7 @@ CREATE TABLE public.planificacion_semanal (
 -- Name: planificacion_subtareas; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.planificacion_subtareas (
+CREATE TABLE IF NOT EXISTS public.planificacion_subtareas (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     actividad_id uuid NOT NULL,
     descripcion character varying(500) NOT NULL,
@@ -925,7 +925,7 @@ CREATE TABLE public.planificacion_subtareas (
 -- Name: presupuesto_apu_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.presupuesto_apu_items (
+CREATE TABLE IF NOT EXISTS public.presupuesto_apu_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     partida_id uuid NOT NULL,
     tipo_recurso character varying(20) NOT NULL,
@@ -943,7 +943,7 @@ CREATE TABLE public.presupuesto_apu_items (
 -- Name: presupuesto_config; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.presupuesto_config (
+CREATE TABLE IF NOT EXISTS public.presupuesto_config (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     plan_id uuid NOT NULL,
     gastos_generales_pct numeric(5,2) DEFAULT 12.00 NOT NULL,
@@ -972,7 +972,7 @@ CREATE TABLE public.presupuesto_config (
 -- Name: presupuesto_partidas; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.presupuesto_partidas (
+CREATE TABLE IF NOT EXISTS public.presupuesto_partidas (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     plan_id uuid NOT NULL,
     codigo character varying(30) NOT NULL,
@@ -991,7 +991,7 @@ CREATE TABLE public.presupuesto_partidas (
 -- Name: project_plan_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.project_plan_items (
+CREATE TABLE IF NOT EXISTS public.project_plan_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     plan_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -1008,7 +1008,7 @@ CREATE TABLE public.project_plan_items (
 -- Name: project_plan_submission_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.project_plan_submission_items (
+CREATE TABLE IF NOT EXISTS public.project_plan_submission_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     submission_id uuid NOT NULL,
     plan_item_id uuid NOT NULL,
@@ -1031,7 +1031,7 @@ CREATE TABLE public.project_plan_submission_items (
 -- Name: project_plan_submissions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.project_plan_submissions (
+CREATE TABLE IF NOT EXISTS public.project_plan_submissions (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     plan_id uuid NOT NULL,
     submission_number integer NOT NULL,
@@ -1048,7 +1048,7 @@ CREATE TABLE public.project_plan_submissions (
 -- Name: project_plans; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.project_plans (
+CREATE TABLE IF NOT EXISTS public.project_plans (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     project_id uuid,
     engineer_id uuid NOT NULL,
@@ -1066,7 +1066,7 @@ CREATE TABLE public.project_plans (
 -- Name: projects; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.projects (
+CREATE TABLE IF NOT EXISTS public.projects (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name character varying(150) NOT NULL,
     code character varying(50) NOT NULL,
@@ -1078,7 +1078,7 @@ CREATE TABLE public.projects (
 -- Name: proveedores; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.proveedores (
+CREATE TABLE IF NOT EXISTS public.proveedores (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     codigo character varying(20) NOT NULL,
     nombre character varying(200) NOT NULL,
@@ -1097,7 +1097,7 @@ CREATE TABLE public.proveedores (
 -- Name: purchase_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.purchase_items (
+CREATE TABLE IF NOT EXISTS public.purchase_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid,
     material_name_free text,
@@ -1119,7 +1119,7 @@ CREATE TABLE public.purchase_items (
 -- Name: recursos_mo; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.recursos_mo (
+CREATE TABLE IF NOT EXISTS public.recursos_mo (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     codigo character varying(20) NOT NULL,
     descripcion character varying(200) NOT NULL,
@@ -1135,7 +1135,7 @@ CREATE TABLE public.recursos_mo (
 -- Name: refresh_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.refresh_tokens (
+CREATE TABLE IF NOT EXISTS public.refresh_tokens (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     token_hash text NOT NULL,
@@ -1152,7 +1152,7 @@ CREATE TABLE public.refresh_tokens (
 -- Name: registro_productividad; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.registro_productividad (
+CREATE TABLE IF NOT EXISTS public.registro_productividad (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     fecha date DEFAULT CURRENT_DATE NOT NULL,
@@ -1170,7 +1170,7 @@ CREATE TABLE public.registro_productividad (
 -- Name: role_permissions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.role_permissions (
+CREATE TABLE IF NOT EXISTS public.role_permissions (
     role_id uuid NOT NULL,
     permission_code text NOT NULL
 );
@@ -1180,7 +1180,7 @@ CREATE TABLE public.role_permissions (
 -- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.roles (
+CREATE TABLE IF NOT EXISTS public.roles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL
 );
@@ -1190,7 +1190,7 @@ CREATE TABLE public.roles (
 -- Name: servicio_requerimiento_costos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.servicio_requerimiento_costos (
+CREATE TABLE IF NOT EXISTS public.servicio_requerimiento_costos (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     requerimiento_id uuid NOT NULL,
     categoria character varying(100) NOT NULL,
@@ -1208,7 +1208,7 @@ CREATE TABLE public.servicio_requerimiento_costos (
 -- Name: servicio_requerimientos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.servicio_requerimientos (
+CREATE TABLE IF NOT EXISTS public.servicio_requerimientos (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     cliente_id uuid NOT NULL,
     nombre_servicio character varying(255) NOT NULL,
@@ -1225,7 +1225,7 @@ CREATE TABLE public.servicio_requerimientos (
 -- Name: stock_dispatch_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_dispatch_items (
+CREATE TABLE IF NOT EXISTS public.stock_dispatch_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     dispatch_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -1242,7 +1242,7 @@ CREATE TABLE public.stock_dispatch_items (
 -- Name: stock_dispatches; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_dispatches (
+CREATE TABLE IF NOT EXISTS public.stock_dispatches (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     reservation_id uuid NOT NULL,
     warehouse_id uuid NOT NULL,
@@ -1270,7 +1270,7 @@ CREATE TABLE public.stock_dispatches (
 -- Name: stock_locations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_locations (
+CREATE TABLE IF NOT EXISTS public.stock_locations (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     warehouse_id uuid NOT NULL,
@@ -1290,7 +1290,7 @@ CREATE TABLE public.stock_locations (
 -- Name: stock_lot_movements; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_lot_movements (
+CREATE TABLE IF NOT EXISTS public.stock_lot_movements (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     lot_id uuid NOT NULL,
     movement_id uuid,
@@ -1305,7 +1305,7 @@ CREATE TABLE public.stock_lot_movements (
 -- Name: stock_lots; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_lots (
+CREATE TABLE IF NOT EXISTS public.stock_lots (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     lot_number character varying(100) NOT NULL,
@@ -1328,7 +1328,7 @@ CREATE TABLE public.stock_lots (
 -- Name: stock_movements; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_movements (
+CREATE TABLE IF NOT EXISTS public.stock_movements (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     movement_type text NOT NULL,
@@ -1351,7 +1351,7 @@ CREATE TABLE public.stock_movements (
 -- Name: stock_reservations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.stock_reservations (
+CREATE TABLE IF NOT EXISTS public.stock_reservations (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid,
     warehouse_id uuid,
@@ -1374,7 +1374,7 @@ CREATE TABLE public.stock_reservations (
 -- Name: tarifas_personal; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.tarifas_personal (
+CREATE TABLE IF NOT EXISTS public.tarifas_personal (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     rol character varying(100) NOT NULL,
     contexto character varying(30) NOT NULL,
@@ -1396,7 +1396,7 @@ CREATE TABLE public.tarifas_personal (
 -- Name: tool_assignments; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.tool_assignments (
+CREATE TABLE IF NOT EXISTS public.tool_assignments (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     project_id uuid NOT NULL,
@@ -1415,7 +1415,7 @@ CREATE TABLE public.tool_assignments (
 -- Name: tool_maintenance; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.tool_maintenance (
+CREATE TABLE IF NOT EXISTS public.tool_maintenance (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     material_id uuid NOT NULL,
     maintenance_type character varying(50) NOT NULL,
@@ -1430,7 +1430,7 @@ CREATE TABLE public.tool_maintenance (
 -- Name: user_roles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_roles (
+CREATE TABLE IF NOT EXISTS public.user_roles (
     user_id uuid NOT NULL,
     role_id uuid NOT NULL
 );
@@ -1440,7 +1440,7 @@ CREATE TABLE public.user_roles (
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.users (
+CREATE TABLE IF NOT EXISTS public.users (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     email text NOT NULL,
     hashed_password text NOT NULL,
@@ -1456,7 +1456,7 @@ CREATE TABLE public.users (
 -- Name: visitas_tecnicas; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.visitas_tecnicas (
+CREATE TABLE IF NOT EXISTS public.visitas_tecnicas (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     plan_id uuid NOT NULL,
     motivo character varying(500) NOT NULL,
@@ -1667,7 +1667,7 @@ CREATE VIEW public.vw_stock_availability AS
 -- Name: warehouse_transfer_items; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.warehouse_transfer_items (
+CREATE TABLE IF NOT EXISTS public.warehouse_transfer_items (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     transfer_id uuid NOT NULL,
     material_id uuid NOT NULL,
@@ -1695,7 +1695,7 @@ CREATE SEQUENCE public.warehouse_transfer_seq
 -- Name: warehouse_transfers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.warehouse_transfers (
+CREATE TABLE IF NOT EXISTS public.warehouse_transfers (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     transfer_number character varying(30),
     from_warehouse_id uuid NOT NULL,
@@ -1716,7 +1716,7 @@ CREATE TABLE public.warehouse_transfers (
 -- Name: warehouses; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.warehouses (
+CREATE TABLE IF NOT EXISTS public.warehouses (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL,
     location text,
@@ -2455,595 +2455,595 @@ ALTER TABLE ONLY public.warehouses
 -- Name: idx_aprobaciones_estado; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_aprobaciones_estado ON public.aprobaciones_gerencia USING btree (estado);
+CREATE INDEX IF NOT EXISTS idx_aprobaciones_estado ON public.aprobaciones_gerencia USING btree (estado);
 
 
 --
 -- Name: idx_aprobaciones_ref; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_aprobaciones_ref ON public.aprobaciones_gerencia USING btree (referencia_id);
+CREATE INDEX IF NOT EXISTS idx_aprobaciones_ref ON public.aprobaciones_gerencia USING btree (referencia_id);
 
 
 --
 -- Name: idx_aprobaciones_tipo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_aprobaciones_tipo ON public.aprobaciones_gerencia USING btree (tipo);
+CREATE INDEX IF NOT EXISTS idx_aprobaciones_tipo ON public.aprobaciones_gerencia USING btree (tipo);
 
 
 --
 -- Name: idx_apu_partida; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_apu_partida ON public.presupuesto_apu_items USING btree (partida_id);
+CREATE INDEX IF NOT EXISTS idx_apu_partida ON public.presupuesto_apu_items USING btree (partida_id);
 
 
 --
 -- Name: idx_apu_tipo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_apu_tipo ON public.presupuesto_apu_items USING btree (tipo_recurso);
+CREATE INDEX IF NOT EXISTS idx_apu_tipo ON public.presupuesto_apu_items USING btree (tipo_recurso);
 
 
 --
 -- Name: idx_audit_logs_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_audit_logs_created_at ON public.audit_logs USING btree (created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON public.audit_logs USING btree (created_at);
 
 
 --
 -- Name: idx_audit_logs_entity; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_audit_logs_entity ON public.audit_logs USING btree (entity, entity_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON public.audit_logs USING btree (entity, entity_id);
 
 
 --
 -- Name: idx_audit_logs_module; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_audit_logs_module ON public.audit_logs USING btree (module);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_module ON public.audit_logs USING btree (module);
 
 
 --
 -- Name: idx_audit_logs_user; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_audit_logs_user ON public.audit_logs USING btree (user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON public.audit_logs USING btree (user_id);
 
 
 --
 -- Name: idx_calibration_records_expires; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_calibration_records_expires ON public.calibration_records USING btree (expires_at);
+CREATE INDEX IF NOT EXISTS idx_calibration_records_expires ON public.calibration_records USING btree (expires_at);
 
 
 --
 -- Name: idx_calibration_records_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_calibration_records_material ON public.calibration_records USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_calibration_records_material ON public.calibration_records USING btree (material_id);
 
 
 --
 -- Name: idx_canal_msg_sol; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_canal_msg_sol ON public.canal_mensajes USING btree (solicitud_id);
+CREATE INDEX IF NOT EXISTS idx_canal_msg_sol ON public.canal_mensajes USING btree (solicitud_id);
 
 
 --
 -- Name: idx_canal_sol_from; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_canal_sol_from ON public.canal_solicitudes USING btree (from_module);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_from ON public.canal_solicitudes USING btree (from_module);
 
 
 --
 -- Name: idx_canal_sol_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_canal_sol_status ON public.canal_solicitudes USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_status ON public.canal_solicitudes USING btree (status);
 
 
 --
 -- Name: idx_canal_sol_to; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_canal_sol_to ON public.canal_solicitudes USING btree (to_module);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_to ON public.canal_solicitudes USING btree (to_module);
 
 
 --
 -- Name: idx_clientes_activo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_clientes_activo ON public.clientes USING btree (activo);
+CREATE INDEX IF NOT EXISTS idx_clientes_activo ON public.clientes USING btree (activo);
 
 
 --
 -- Name: idx_clientes_ruc; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_clientes_ruc ON public.clientes USING btree (ruc);
+CREATE INDEX IF NOT EXISTS idx_clientes_ruc ON public.clientes USING btree (ruc);
 
 
 --
 -- Name: idx_lot_movements_lot; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_lot_movements_lot ON public.stock_lot_movements USING btree (lot_id);
+CREATE INDEX IF NOT EXISTS idx_lot_movements_lot ON public.stock_lot_movements USING btree (lot_id);
 
 
 --
 -- Name: idx_mat_prov_mat; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_mat_prov_mat ON public.material_proveedores USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_mat_prov_mat ON public.material_proveedores USING btree (material_id);
 
 
 --
 -- Name: idx_mat_prov_prov; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_mat_prov_prov ON public.material_proveedores USING btree (proveedor_id);
+CREATE INDEX IF NOT EXISTS idx_mat_prov_prov ON public.material_proveedores USING btree (proveedor_id);
 
 
 --
 -- Name: idx_material_group_items_group; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_group_items_group ON public.material_group_items USING btree (group_id);
+CREATE INDEX IF NOT EXISTS idx_material_group_items_group ON public.material_group_items USING btree (group_id);
 
 
 --
 -- Name: idx_material_groups_category; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_groups_category ON public.material_groups USING btree (category);
+CREATE INDEX IF NOT EXISTS idx_material_groups_category ON public.material_groups USING btree (category);
 
 
 --
 -- Name: idx_material_requests_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_requests_created_at ON public.material_requests USING btree (created_at);
+CREATE INDEX IF NOT EXISTS idx_material_requests_created_at ON public.material_requests USING btree (created_at);
 
 
 --
 -- Name: idx_material_requests_sla_due_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_requests_sla_due_at ON public.material_requests USING btree (sla_due_at);
+CREATE INDEX IF NOT EXISTS idx_material_requests_sla_due_at ON public.material_requests USING btree (sla_due_at);
 
 
 --
 -- Name: idx_material_requests_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_requests_status ON public.material_requests USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_material_requests_status ON public.material_requests USING btree (status);
 
 
 --
 -- Name: idx_material_requests_status_sla; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_material_requests_status_sla ON public.material_requests USING btree (status, sla_due_at);
+CREATE INDEX IF NOT EXISTS idx_material_requests_status_sla ON public.material_requests USING btree (status, sla_due_at);
 
 
 --
 -- Name: idx_materials_estado; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_materials_estado ON public.materials USING btree (estado);
+CREATE INDEX IF NOT EXISTS idx_materials_estado ON public.materials USING btree (estado);
 
 
 --
 -- Name: idx_oc_items_oc; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_oc_items_oc ON public.ordenes_compra_items USING btree (oc_id);
+CREATE INDEX IF NOT EXISTS idx_oc_items_oc ON public.ordenes_compra_items USING btree (oc_id);
 
 
 --
 -- Name: idx_oc_ot_origen; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_oc_ot_origen ON public.ordenes_compra USING btree (ot_origen_id) WHERE (ot_origen_id IS NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_oc_ot_origen ON public.ordenes_compra USING btree (ot_origen_id) WHERE (ot_origen_id IS NOT NULL);
 
 
 --
 -- Name: idx_oc_plan; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_oc_plan ON public.ordenes_compra USING btree (plan_id);
+CREATE INDEX IF NOT EXISTS idx_oc_plan ON public.ordenes_compra USING btree (plan_id);
 
 
 --
 -- Name: idx_oc_proveedor; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_oc_proveedor ON public.ordenes_compra USING btree (proveedor_id);
+CREATE INDEX IF NOT EXISTS idx_oc_proveedor ON public.ordenes_compra USING btree (proveedor_id);
 
 
 --
 -- Name: idx_oc_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_oc_status ON public.ordenes_compra USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_oc_status ON public.ordenes_compra USING btree (status);
 
 
 --
 -- Name: idx_ot_asignado; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_asignado ON public.ordenes_trabajo USING btree (asignado_a);
+CREATE INDEX IF NOT EXISTS idx_ot_asignado ON public.ordenes_trabajo USING btree (asignado_a);
 
 
 --
 -- Name: idx_ot_check_ot; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_check_ot ON public.ot_checklist USING btree (ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_check_ot ON public.ot_checklist USING btree (ot_id);
 
 
 --
 -- Name: idx_ot_mat_oc; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_mat_oc ON public.ot_materiales USING btree (oc_id) WHERE (oc_id IS NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_ot_mat_oc ON public.ot_materiales USING btree (oc_id) WHERE (oc_id IS NOT NULL);
 
 
 --
 -- Name: idx_ot_mat_ot; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_mat_ot ON public.ot_materiales USING btree (ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_mat_ot ON public.ot_materiales USING btree (ot_id);
 
 
 --
 -- Name: idx_ot_plan; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_plan ON public.ordenes_trabajo USING btree (plan_id);
+CREATE INDEX IF NOT EXISTS idx_ot_plan ON public.ordenes_trabajo USING btree (plan_id);
 
 
 --
 -- Name: idx_ot_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_status ON public.ordenes_trabajo USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_ot_status ON public.ordenes_trabajo USING btree (status);
 
 
 --
 -- Name: idx_ot_time_ot; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_ot_time_ot ON public.ot_tiempos USING btree (ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_time_ot ON public.ot_tiempos USING btree (ot_id);
 
 
 --
 -- Name: idx_partidas_parent; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_partidas_parent ON public.presupuesto_partidas USING btree (parent_id);
+CREATE INDEX IF NOT EXISTS idx_partidas_parent ON public.presupuesto_partidas USING btree (parent_id);
 
 
 --
 -- Name: idx_partidas_plan; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_partidas_plan ON public.presupuesto_partidas USING btree (plan_id);
+CREATE INDEX IF NOT EXISTS idx_partidas_plan ON public.presupuesto_partidas USING btree (plan_id);
 
 
 --
 -- Name: idx_phys_inv_items; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_phys_inv_items ON public.physical_inventory_items USING btree (inventory_id);
+CREATE INDEX IF NOT EXISTS idx_phys_inv_items ON public.physical_inventory_items USING btree (inventory_id);
 
 
 --
 -- Name: idx_phys_inv_warehouse; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_phys_inv_warehouse ON public.physical_inventories USING btree (warehouse_id);
+CREATE INDEX IF NOT EXISTS idx_phys_inv_warehouse ON public.physical_inventories USING btree (warehouse_id);
 
 
 --
 -- Name: idx_plan_historial_actividad; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_historial_actividad ON public.planificacion_historial USING btree (actividad_id);
+CREATE INDEX IF NOT EXISTS idx_plan_historial_actividad ON public.planificacion_historial USING btree (actividad_id);
 
 
 --
 -- Name: idx_plan_items_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_items_material ON public.project_plan_items USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_plan_items_material ON public.project_plan_items USING btree (material_id);
 
 
 --
 -- Name: idx_plan_items_plan; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_items_plan ON public.project_plan_items USING btree (plan_id);
+CREATE INDEX IF NOT EXISTS idx_plan_items_plan ON public.project_plan_items USING btree (plan_id);
 
 
 --
 -- Name: idx_plan_sem_estado; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_sem_estado ON public.planificacion_semanal USING btree (estado);
+CREATE INDEX IF NOT EXISTS idx_plan_sem_estado ON public.planificacion_semanal USING btree (estado);
 
 
 --
 -- Name: idx_plan_sem_fecha_lim; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_sem_fecha_lim ON public.planificacion_semanal USING btree (fecha_limite);
+CREATE INDEX IF NOT EXISTS idx_plan_sem_fecha_lim ON public.planificacion_semanal USING btree (fecha_limite);
 
 
 --
 -- Name: idx_plan_sem_responsable; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_sem_responsable ON public.planificacion_semanal USING btree (responsable_id);
+CREATE INDEX IF NOT EXISTS idx_plan_sem_responsable ON public.planificacion_semanal USING btree (responsable_id);
 
 
 --
 -- Name: idx_plan_sub_actividad; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_plan_sub_actividad ON public.planificacion_subtareas USING btree (actividad_id);
+CREATE INDEX IF NOT EXISTS idx_plan_sub_actividad ON public.planificacion_subtareas USING btree (actividad_id);
 
 
 --
 -- Name: idx_presupuesto_config_cliente; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_presupuesto_config_cliente ON public.presupuesto_config USING btree (cliente_id);
+CREATE INDEX IF NOT EXISTS idx_presupuesto_config_cliente ON public.presupuesto_config USING btree (cliente_id);
 
 
 --
 -- Name: idx_presupuesto_config_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_presupuesto_config_status ON public.presupuesto_config USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_presupuesto_config_status ON public.presupuesto_config USING btree (status);
 
 
 --
 -- Name: idx_prod_fecha; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_prod_fecha ON public.registro_productividad USING btree (fecha);
+CREATE INDEX IF NOT EXISTS idx_prod_fecha ON public.registro_productividad USING btree (fecha);
 
 
 --
 -- Name: idx_prod_user_fecha; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_prod_user_fecha ON public.registro_productividad USING btree (user_id, fecha);
+CREATE INDEX IF NOT EXISTS idx_prod_user_fecha ON public.registro_productividad USING btree (user_id, fecha);
 
 
 --
 -- Name: idx_project_plans_engineer; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_project_plans_engineer ON public.project_plans USING btree (engineer_id);
+CREATE INDEX IF NOT EXISTS idx_project_plans_engineer ON public.project_plans USING btree (engineer_id);
 
 
 --
 -- Name: idx_project_plans_project; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_project_plans_project ON public.project_plans USING btree (project_id);
+CREATE INDEX IF NOT EXISTS idx_project_plans_project ON public.project_plans USING btree (project_id);
 
 
 --
 -- Name: idx_project_plans_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_project_plans_status ON public.project_plans USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_project_plans_status ON public.project_plans USING btree (status);
 
 
 --
 -- Name: idx_purchase_items_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_purchase_items_material ON public.purchase_items USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_purchase_items_material ON public.purchase_items USING btree (material_id);
 
 
 --
 -- Name: idx_purchase_items_project; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_purchase_items_project ON public.purchase_items USING btree (project_id);
+CREATE INDEX IF NOT EXISTS idx_purchase_items_project ON public.purchase_items USING btree (project_id);
 
 
 --
 -- Name: idx_purchase_items_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_purchase_items_status ON public.purchase_items USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_purchase_items_status ON public.purchase_items USING btree (status);
 
 
 --
 -- Name: idx_recursos_mo_activo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_recursos_mo_activo ON public.recursos_mo USING btree (activo);
+CREATE INDEX IF NOT EXISTS idx_recursos_mo_activo ON public.recursos_mo USING btree (activo);
 
 
 --
 -- Name: idx_recursos_mo_cod; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_recursos_mo_cod ON public.recursos_mo USING btree (codigo);
+CREATE INDEX IF NOT EXISTS idx_recursos_mo_cod ON public.recursos_mo USING btree (codigo);
 
 
 --
 -- Name: idx_refresh_tokens_expires; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_refresh_tokens_expires ON public.refresh_tokens USING btree (expires_at);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires ON public.refresh_tokens USING btree (expires_at);
 
 
 --
 -- Name: idx_refresh_tokens_user; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_refresh_tokens_user ON public.refresh_tokens USING btree (user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON public.refresh_tokens USING btree (user_id);
 
 
 --
 -- Name: idx_servicio_requerimiento_costos_req; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_servicio_requerimiento_costos_req ON public.servicio_requerimiento_costos USING btree (requerimiento_id);
+CREATE INDEX IF NOT EXISTS idx_servicio_requerimiento_costos_req ON public.servicio_requerimiento_costos USING btree (requerimiento_id);
 
 
 --
 -- Name: idx_servicio_requerimientos_cliente; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_servicio_requerimientos_cliente ON public.servicio_requerimientos USING btree (cliente_id);
+CREATE INDEX IF NOT EXISTS idx_servicio_requerimientos_cliente ON public.servicio_requerimientos USING btree (cliente_id);
 
 
 --
 -- Name: idx_stock_dispatches_reservation; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_dispatches_reservation ON public.stock_dispatches USING btree (reservation_id);
+CREATE INDEX IF NOT EXISTS idx_stock_dispatches_reservation ON public.stock_dispatches USING btree (reservation_id);
 
 
 --
 -- Name: idx_stock_locations_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_locations_material ON public.stock_locations USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_stock_locations_material ON public.stock_locations USING btree (material_id);
 
 
 --
 -- Name: idx_stock_lots_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_lots_material ON public.stock_lots USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_stock_lots_material ON public.stock_lots USING btree (material_id);
 
 
 --
 -- Name: idx_stock_lots_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_lots_status ON public.stock_lots USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_stock_lots_status ON public.stock_lots USING btree (status);
 
 
 --
 -- Name: idx_stock_lots_warehouse; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_lots_warehouse ON public.stock_lots USING btree (warehouse_id);
+CREATE INDEX IF NOT EXISTS idx_stock_lots_warehouse ON public.stock_lots USING btree (warehouse_id);
 
 
 --
 -- Name: idx_stock_movements_material; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_movements_material ON public.stock_movements USING btree (material_id);
+CREATE INDEX IF NOT EXISTS idx_stock_movements_material ON public.stock_movements USING btree (material_id);
 
 
 --
 -- Name: idx_stock_reservations_expires; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_reservations_expires ON public.stock_reservations USING btree (expires_at) WHERE (status = 'BLOCKED'::public.stock_reservation_status_enum);
+CREATE INDEX IF NOT EXISTS idx_stock_reservations_expires ON public.stock_reservations USING btree (expires_at) WHERE (status = 'BLOCKED'::public.stock_reservation_status_enum);
 
 
 --
 -- Name: idx_stock_reservations_request; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_reservations_request ON public.stock_reservations USING btree (request_id);
+CREATE INDEX IF NOT EXISTS idx_stock_reservations_request ON public.stock_reservations USING btree (request_id);
 
 
 --
 -- Name: idx_stock_reservations_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_stock_reservations_status ON public.stock_reservations USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_stock_reservations_status ON public.stock_reservations USING btree (status);
 
 
 --
 -- Name: idx_tarifas_activo; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_tarifas_activo ON public.tarifas_personal USING btree (activo);
+CREATE INDEX IF NOT EXISTS idx_tarifas_activo ON public.tarifas_personal USING btree (activo);
 
 
 --
 -- Name: idx_tarifas_contexto; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_tarifas_contexto ON public.tarifas_personal USING btree (contexto);
+CREATE INDEX IF NOT EXISTS idx_tarifas_contexto ON public.tarifas_personal USING btree (contexto);
 
 
 --
 -- Name: idx_tarifas_rol; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_tarifas_rol ON public.tarifas_personal USING btree (rol);
+CREATE INDEX IF NOT EXISTS idx_tarifas_rol ON public.tarifas_personal USING btree (rol);
 
 
 --
 -- Name: idx_tarifas_unico; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_tarifas_unico ON public.tarifas_personal USING btree (rol, contexto, ubicacion, modalidad) WHERE (activo = true);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tarifas_unico ON public.tarifas_personal USING btree (rol, contexto, ubicacion, modalidad) WHERE (activo = true);
 
 
 --
 -- Name: idx_transfers_from; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_transfers_from ON public.warehouse_transfers USING btree (from_warehouse_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_from ON public.warehouse_transfers USING btree (from_warehouse_id);
 
 
 --
 -- Name: idx_transfers_status; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_transfers_status ON public.warehouse_transfers USING btree (status);
+CREATE INDEX IF NOT EXISTS idx_transfers_status ON public.warehouse_transfers USING btree (status);
 
 
 --
 -- Name: idx_transfers_to; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_transfers_to ON public.warehouse_transfers USING btree (to_warehouse_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_to ON public.warehouse_transfers USING btree (to_warehouse_id);
 
 
 --
 -- Name: idx_visitas_estado; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_visitas_estado ON public.visitas_tecnicas USING btree (estado);
+CREATE INDEX IF NOT EXISTS idx_visitas_estado ON public.visitas_tecnicas USING btree (estado);
 
 
 --
 -- Name: idx_visitas_plan; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_visitas_plan ON public.visitas_tecnicas USING btree (plan_id);
+CREATE INDEX IF NOT EXISTS idx_visitas_plan ON public.visitas_tecnicas USING btree (plan_id);
 
 
 --
 -- Name: uq_active_reservation_per_request; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX uq_active_reservation_per_request ON public.stock_reservations USING btree (material_request_id) WHERE (status = ANY (ARRAY['BLOCKED'::public.stock_reservation_status_enum, 'CONFIRMED'::public.stock_reservation_status_enum]));
+CREATE UNIQUE INDEX IF NOT EXISTS uq_active_reservation_per_request ON public.stock_reservations USING btree (material_request_id) WHERE (status = ANY (ARRAY['BLOCKED'::public.stock_reservation_status_enum, 'CONFIRMED'::public.stock_reservation_status_enum]));
 
 
 --

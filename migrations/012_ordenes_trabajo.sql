@@ -4,7 +4,7 @@
 -- ============================================================
 
 -- Órdenes de Trabajo
-CREATE TABLE ordenes_trabajo (
+CREATE TABLE IF NOT EXISTS ordenes_trabajo (
     id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     code                VARCHAR(20) UNIQUE NOT NULL,
     plan_id             UUID        REFERENCES project_plans(id),
@@ -32,7 +32,7 @@ CREATE TABLE ordenes_trabajo (
 );
 
 -- Checklist de pasos de la OT
-CREATE TABLE ot_checklist (
+CREATE TABLE IF NOT EXISTS ot_checklist (
     id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     ot_id           UUID        NOT NULL REFERENCES ordenes_trabajo(id) ON DELETE CASCADE,
     orden           INTEGER     NOT NULL DEFAULT 0,
@@ -44,7 +44,7 @@ CREATE TABLE ot_checklist (
 );
 
 -- Materiales consumidos (al cerrar OT → stock_movement SALIDA)
-CREATE TABLE ot_materiales (
+CREATE TABLE IF NOT EXISTS ot_materiales (
     id                UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
     ot_id             UUID    NOT NULL REFERENCES ordenes_trabajo(id) ON DELETE CASCADE,
     material_id       UUID    NOT NULL REFERENCES materials(id),
@@ -57,7 +57,7 @@ CREATE TABLE ot_materiales (
 );
 
 -- Registro de tiempo de trabajo (cronómetro)
-CREATE TABLE ot_tiempos (
+CREATE TABLE IF NOT EXISTS ot_tiempos (
     id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     ot_id       UUID        NOT NULL REFERENCES ordenes_trabajo(id) ON DELETE CASCADE,
     tecnico_id  UUID        REFERENCES users(id),
@@ -68,9 +68,9 @@ CREATE TABLE ot_tiempos (
 );
 
 -- Índices
-CREATE INDEX idx_ot_plan      ON ordenes_trabajo(plan_id);
-CREATE INDEX idx_ot_asignado  ON ordenes_trabajo(asignado_a);
-CREATE INDEX idx_ot_status    ON ordenes_trabajo(status);
-CREATE INDEX idx_ot_mat_ot    ON ot_materiales(ot_id);
-CREATE INDEX idx_ot_check_ot  ON ot_checklist(ot_id);
-CREATE INDEX idx_ot_time_ot   ON ot_tiempos(ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_plan      ON ordenes_trabajo(plan_id);
+CREATE INDEX IF NOT EXISTS idx_ot_asignado  ON ordenes_trabajo(asignado_a);
+CREATE INDEX IF NOT EXISTS idx_ot_status    ON ordenes_trabajo(status);
+CREATE INDEX IF NOT EXISTS idx_ot_mat_ot    ON ot_materiales(ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_check_ot  ON ot_checklist(ot_id);
+CREATE INDEX IF NOT EXISTS idx_ot_time_ot   ON ot_tiempos(ot_id);
