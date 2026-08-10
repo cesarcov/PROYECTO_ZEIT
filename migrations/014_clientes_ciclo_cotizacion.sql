@@ -24,12 +24,12 @@ CREATE INDEX IF NOT EXISTS idx_clientes_activo ON clientes(activo);
 
 -- 2. Ampliar presupuesto_config con ciclo comercial
 ALTER TABLE presupuesto_config
-    ADD COLUMN cliente_id          UUID REFERENCES clientes(id),
-    ADD COLUMN numero_cotizacion   VARCHAR(20) UNIQUE,
-    ADD COLUMN status              VARCHAR(20) NOT NULL DEFAULT 'BORRADOR',
-    ADD COLUMN fecha_envio         TIMESTAMP,
-    ADD COLUMN fecha_respuesta     TIMESTAMP,
-    ADD COLUMN notas_comerciales   TEXT;
+    ADD COLUMN IF NOT EXISTS cliente_id          UUID REFERENCES clientes(id),
+    ADD COLUMN IF NOT EXISTS numero_cotizacion   VARCHAR(20) UNIQUE,
+    ADD COLUMN IF NOT EXISTS status              VARCHAR(20) NOT NULL DEFAULT 'BORRADOR',
+    ADD COLUMN IF NOT EXISTS fecha_envio         TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS fecha_respuesta     TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS notas_comerciales   TEXT;
 
 -- status válidos: BORRADOR | ENVIADA | APROBADA | RECHAZADA | EXPIRADA
 

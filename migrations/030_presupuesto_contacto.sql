@@ -1,4 +1,4 @@
--- Add column contacto_id to presupuesto_config
+-- ADD COLUMN IF NOT EXISTS contacto_id to presupuesto_config
 ALTER TABLE presupuesto_config ADD COLUMN IF NOT EXISTS contacto_id UUID REFERENCES cliente_contactos(id) ON DELETE SET NULL;
 
 -- Migrate existing contacts based on matching client_id and contact name if possible
