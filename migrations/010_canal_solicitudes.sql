@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS canal_solicitudes (
     resolved_at  TIMESTAMP
 );
 
-CREATE TABLE canal_mensajes (
+CREATE TABLE IF NOT EXISTS canal_mensajes (
     id           SERIAL    PRIMARY KEY,
     solicitud_id INTEGER   NOT NULL REFERENCES canal_solicitudes(id) ON DELETE CASCADE,
     user_id      UUID      REFERENCES users(id) ON DELETE SET NULL,
