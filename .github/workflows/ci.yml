@@ -105,7 +105,7 @@ jobs:
 
       - name: Tests + cobertura
         # OBJ-8: el trinquete de cobertura vive en pyproject.toml (fail_under).
-        run: pytest --cov --cov-report=term-missing --cov-report=xml
+        run: python -m pytest --cov --cov-report=term-missing --cov-report=xml
 
       - name: Publicar reporte de cobertura
         if: always()
