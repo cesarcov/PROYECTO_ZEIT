@@ -1,3 +1,4 @@
+import base64
 """Smoke tests — la app arranca y los endpoints críticos responden 200 con la forma esperada.
 
 Corren EN PROCESO con TestClient de FastAPI (no necesitan levantar uvicorn).
@@ -392,11 +393,7 @@ def test_avatar_upload_fails_for_invalid_format(client, auth):
 
 def test_avatar_upload_success(client, auth):
     # Crear un PNG mínimo de 1x1 píxel
-    png_data = (
-        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06"
-        b"\x00\x00\x00\x1f\x15c4\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01"
-        b"\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
-    )
+    png_data = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==')
     files = {"file": ("test.png", png_data, "image/png")}
     r = client.post("/auth/me/avatar", headers=auth, files=files)
     assert r.status_code == 200, r.text[:300]
