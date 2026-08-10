@@ -108,7 +108,10 @@ jobs:
         env:`
           TESTING: "true"`
           RATE_LIMIT_ENABLED: "false"`
-        run: python -m pytest --update-baseline --cov --cov-report=term-missing --cov-report=xml
+      env:
+        TESTING: "true"
+        RATE_LIMIT_ENABLED: "false"
+      run: python -m pytest --cov --cov-report=term-missing --cov-report=xml
 
       - name: Publicar reporte de cobertura
         if: always()
