@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS canal_mensajes (
     created_at   TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_canal_sol_from   ON canal_solicitudes(from_module);
-CREATE INDEX idx_canal_sol_to     ON canal_solicitudes(to_module);
-CREATE INDEX idx_canal_sol_status ON canal_solicitudes(status);
-CREATE INDEX idx_canal_msg_sol    ON canal_mensajes(solicitud_id);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_from   ON canal_solicitudes(from_module);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_to     ON canal_solicitudes(to_module);
+CREATE INDEX IF NOT EXISTS idx_canal_sol_status ON canal_solicitudes(status);
+CREATE INDEX IF NOT EXISTS idx_canal_msg_sol    ON canal_mensajes(solicitud_id);
