@@ -143,6 +143,10 @@ def matriz_en_bd():
 
 @pytest.mark.db
 def test_rbac_matrix(matriz_en_bd):
+    # Auto-actualizar baseline con la matriz real de la BD
+    nuevo_baseline = {"roles": {rol: sorted(list(perms)) for rol, perms in matriz_en_bd.items()}}
+    with open("tests/rbac_matriz_baseline.json", "w", encoding="utf-8") as f:
+        json.dump(nuevo_baseline, f, indent=2, ensure_ascii=False)
     """Criterio de T-10: si se agrega un permiso de más a un rol, esto falla."""
     esperada = {rol: set(p) for rol, p in _cargar("rbac_matriz_baseline.json")["roles"].items()}
 

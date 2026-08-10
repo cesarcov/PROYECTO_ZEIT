@@ -20,7 +20,9 @@ from fastapi.testclient import TestClient
 
 load_dotenv()
 
-from app.main import app  # noqa: E402  (después de load_dotenv, que puebla settings)
+from app.main import app
+if hasattr(app.state, "limiter"):
+    app.state.limiter.enabled = False  # noqa: E402  (después de load_dotenv, que puebla settings)
 
 
 def _creds(user_var: str, pass_var: str) -> tuple[str, str] | None:
