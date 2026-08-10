@@ -32,7 +32,7 @@ CARPETA = "migrations"
 _VERSION_RE = re.compile(r"^(\d+[a-z]?)")
 
 TABLA_CONTROL = """
-CREATE TABLE IF NOT EXISTS schema_migrations (
+CREATE TABLE IF NOT EXISTS public.schema_migrations (
     version     TEXT PRIMARY KEY,
     name        TEXT        NOT NULL,
     checksum    TEXT        NOT NULL,
@@ -86,7 +86,7 @@ def _descubrir() -> list[tuple[str, str, str, str]]:
 
 
 def _aplicadas(cur) -> dict[str, tuple[str, str]]:
-    cur.execute("SELECT version, name, checksum FROM schema_migrations")
+    cur.execute("SELECT version, name, checksum FROM public.schema_migrations")
     return {fila[0]: (fila[1], fila[2]) for fila in cur.fetchall()}
 
 
@@ -172,7 +172,7 @@ def ejecutar(dry_run=False, adopt=False, verify_only=False) -> int:
             with conn.cursor() as cur:
                 for version, nombre, _ruta, checksum in pendientes:
                     cur.execute(
-                        "INSERT INTO schema_migrations (version, name, checksum, applied_by) "
+                        "INSERT INTO public.schema_migrations (version, name, checksum, applied_by) "
                         "VALUES (%s, %s, %s, %s) ON CONFLICT (version) DO NOTHING",
                         (version, nombre, checksum, f"{usuario} (adopt)"),
                     )
@@ -198,7 +198,7 @@ def ejecutar(dry_run=False, adopt=False, verify_only=False) -> int:
                 with conn.cursor() as cur:
                     cur.execute(sql_texto)
                     cur.execute(
-                        "INSERT INTO schema_migrations (version, name, checksum, applied_by) "
+                        "INSERT INTO public.schema_migrations (version, name, checksum, applied_by) "
                         "VALUES (%s, %s, %s, %s)",
                         (version, nombre, checksum, usuario),
                     )
