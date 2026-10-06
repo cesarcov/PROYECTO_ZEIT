@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, formatUsername } from "../hooks/useAuth";
 import { BLOCK_TO_MODULES } from "../constants/blocks";
+import { areaDeRuta, rutaEstaOculta } from "../constants/areas";
 import ZeitLogo from "./ZeitLogo";
 import { BASE_URL } from "../services/api";
 
@@ -416,9 +417,26 @@ export default function Layout({ children }) {
 
   const W = collapsed ? SLIM : WIDE;
 
+  // ── Lanzamiento por fases ───────────────────────────────────────────────────
+  // Se quitan los items que apuntan a áreas aún no soltadas. Se filtra ITEM a
+  // ITEM, no módulo a módulo: el sidebar de Logística enlaza a /compras y
+  // /canal, y el de Admin a /admin/planificacion y /admin/clientes-dashboard.
+  // Filtrar por módulo dejaría esos enlaces muertos.
+  // El backend cierra esas rutas con 404 de todos modos; esto es cosmética
+  // honesta, no la medida de seguridad (regla 4 de CONSTITUTION.md).
+  const modulesTrasBeta = MODULES
+    .map((m) => ({
+      ...m,
+      groups: m.groups
+        .map((g) => ({ ...g, items: g.items.filter((i) => !rutaEstaOculta(i.path, auth)) }))
+        .filter((g) => g.items.length > 0),
+    }))
+    // Un módulo cuyo contenido desapareció por completo no se muestra.
+    .filter((m) => m.groups.length > 0 && !rutaEstaOculta(m.home, auth));
+
   const visibleModules = (auth.role === "superadmin" || auth.role === "admin")
-    ? MODULES
-    : MODULES.filter((m) =>
+    ? modulesTrasBeta
+    : modulesTrasBeta.filter((m) =>
         (Array.isArray(auth.blocks) ? auth.blocks : []).some(
           (b) => BLOCK_TO_MODULES[b.slug]?.includes(m.key)
         )
@@ -674,8 +692,12 @@ export default function Layout({ children }) {
               )}
               {group.items.map((item) => {
                 const active = isActive(item.path);
+                // Sólo lo ve el beta tester: a los demás el item ni aparece.
+                // Sirve para no olvidar qué está sin soltar al público.
+                const enBeta = auth.esBetaTester
+                  && (auth.modulosBeta || []).includes(areaDeRuta(item.path));
                 return (
-                  <TIP key={item.path} label={item.label}>
+                  <TIP key={item.path} label={enBeta ? `${item.label} (en beta)` : item.label}>
                     <Link to={item.path} style={{
                       display: "flex", alignItems: "center",
                       justifyContent: collapsed ? "center" : "flex-start",
@@ -697,6 +719,11 @@ export default function Layout({ children }) {
                       {!collapsed && item.path === "/materials" && pendingMaterials > 0 && (
                         <span style={{ marginLeft: "auto", background: "#EAB308", color: "white", borderRadius: 99, padding: "1px 7px", fontSize: 10, fontWeight: 800, lineHeight: "16px", flexShrink: 0 }}>
                           {pendingMaterials}
+                        </span>
+                      )}
+                      {!collapsed && enBeta && (
+                        <span style={{ marginLeft: "auto", border: "1px solid var(--action)", color: "var(--action)", borderRadius: 99, padding: "0 6px", fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", lineHeight: "15px", flexShrink: 0 }}>
+                          BETA
                         </span>
                       )}
                     </Link>

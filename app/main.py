@@ -32,6 +32,7 @@ from app.modules.requerimientos.router import router as requerimientos_router
 from app.modules.branding.router import router as branding_router
 from app.modules.superadmin.router import router as superadmin_router
 from app.modules.search.router import router as search_router
+from app.core.beta_gate import BetaGateMiddleware
 from app.core.config import settings
 from app.core.database import db_connection, pool_stats
 from app.core.errors import RequestIDMiddleware, rate_limit_handler, register_error_handlers
@@ -103,6 +104,10 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 # error nacido en cualquier capa ya tiene su `request_id` cuando el handler
 # construye el sobre.
 app.add_middleware(SecurityHeadersMiddleware)
+# Lanzamiento por fases: cierra con 404 las áreas que aún no se han soltado.
+# Va de los más internos, después del tenant, para que el 404 se decida ya
+# resuelto el contexto de la empresa.
+app.add_middleware(BetaGateMiddleware)
 app.add_middleware(TenantMiddleware)
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(AuditMiddleware)
@@ -187,6 +192,8 @@ def health_check(response: Response):
         # OBJ-5: en false, los logos y avatares subidos se pierden en el
         # próximo redeploy de Render (disco efímero).
         "storage_persistente": almacenamiento_es_persistente(),
+        # Áreas aún no soltadas al público (lanzamiento por fases).
+        "modulos_beta": settings.modulos_beta_list,
         "uptime_seconds": int(time.time() - _start_time),
         "version": settings.GIT_COMMIT,
         "env": settings.ENV,

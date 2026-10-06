@@ -69,6 +69,33 @@ Supabase — PostgreSQL (base de datos)
 
 ---
 
+## Lanzamiento por fases — Logística primero
+
+De los 17 módulos, **sólo Logística está soltada al público**. El resto existe,
+funciona a medias y se sigue desarrollando **en producción, sobre datos
+reales**, pero sólo lo ve el desarrollador. Un usuario normal no lo encuentra
+en el menú, no entra escribiendo la URL y no lo alcanza llamando al API: esas
+rutas le responden 404.
+
+| Área | Estado |
+|---|---|
+| Logística | **Pública** |
+| Administración (usuarios, roles, auditoría, marca) | **Pública** |
+| Solicitudes de material | **Pública** |
+| Perfil y Preferencias | **Pública** |
+| Operaciones · Cotizaciones · Compras · Clientes · Canal · Gerencia · Planificación · Requerimientos | En beta — sólo el desarrollador |
+
+Se controla con dos variables de entorno, sin tocar código ni base de datos:
+
+- `MODULOS_BETA` — áreas aún no soltadas.
+- `BETA_TESTERS` — quién puede verlas (ser administrador **no** basta).
+
+**Soltar un módulo al público** = quitarlo de `MODULOS_BETA` y redesplegar.
+Para dar marcha atrás, volver a añadirlo. Detalle en
+`zeit_specs/specs/001-lanzamiento-por-fases/spec.md`.
+
+---
+
 ## Módulos del sistema
 
 ### Backend — `app/modules/`

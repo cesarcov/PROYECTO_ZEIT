@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from app.core.beta_gate import es_beta_tester
 from app.core.config import settings
 from app.core.database import db_connection
 from app.core.db import get_conn
@@ -17,6 +18,7 @@ from app.core.security.auth import (
     get_user_permissions,
     get_user_modules,
     get_user_blocks,
+    get_username,
 )
 from app.core.security.dependencies import get_current_user
 from app.core.security.preferences_service import (
@@ -33,6 +35,20 @@ class RefreshTokenRequest(BaseModel):
     refresh_token: str
 class LogoutRequest(BaseModel):
     refresh_token: str
+
+
+def _estado_beta(username: str | None, role: str | None = None) -> dict:
+    """Qué áreas están sin soltar y si este usuario puede verlas.
+
+    El frontend lo usa para ocultar del sidebar lo que el backend ya cierra con
+    404. A un usuario normal se le devuelve la lista para que oculte esos
+    items; al beta tester se le devuelve igual, pero puede entrar.
+    """
+    tester = es_beta_tester(username, role)
+    return {
+        "modulos_beta": settings.modulos_beta_list,
+        "es_beta_tester": tester,
+    }
 
 
 @router.post("/login")
@@ -80,7 +96,11 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
         modules=user.get("modules", [user["primary_module"]]),
         role=user.get("role"),
         blocks=user.get("blocks"),
+        username=user["username"],
     )
+
+    # Lanzamiento por fases: el frontend necesita saber qué ocultar del sidebar.
+    beta = _estado_beta(user["username"], user.get("role"))
 
     # El superadmin no tiene refresh token (no existe en ninguna DB de tenant)
     if user.get("role") == "superadmin":
@@ -88,6 +108,7 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
             "access_token": access_token,
             "token_type": "bearer",
             "blocks": user.get("blocks"),
+            **beta,
         }
 
     # 🔐 Crear refresh token para usuarios normales
@@ -99,6 +120,7 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
         "refresh_token": refresh_token,
         "token_type": "bearer",
         "blocks": user.get("blocks", []),
+        **beta,
     }
 
 @router.post("/refresh")
@@ -114,6 +136,7 @@ def refresh_token_endpoint(payload: RefreshTokenRequest):
     permissions = get_user_permissions(user_id)
     modules = get_user_modules(user_id)
     primary_module = modules[0] if modules else "operations"
+    username = get_username(str(user_id))
 
     new_access = create_access_token(
         user_id=str(user_id),
@@ -121,6 +144,7 @@ def refresh_token_endpoint(payload: RefreshTokenRequest):
         primary_module=primary_module,
         modules=modules,
         blocks=blocks,
+        username=username,
     )
 
     return {
@@ -128,6 +152,7 @@ def refresh_token_endpoint(payload: RefreshTokenRequest):
         "refresh_token": new_refresh,
         "token_type": "bearer",
         "blocks": blocks,
+        **_estado_beta(username),
     }
 
 @router.post("/logout")
@@ -156,6 +181,7 @@ def me(current_user=Depends(get_current_user)):
         "avatar_url": current_user.get("avatar_url"),
         "full_name": current_user.get("full_name"),
         "blocks": blocks,
+        **_estado_beta(current_user["username"], current_user.get("role")),
     }
 
 

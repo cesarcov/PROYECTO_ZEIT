@@ -136,6 +136,7 @@ def create_access_token(
     expires_delta: timedelta | None = None,
     role: str | None = None,
     blocks: list | str | None = None,
+    username: str | None = None,
 ):
     expire = datetime.utcnow() + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -152,8 +153,22 @@ def create_access_token(
     }
     if role:
         payload["role"] = role
+    # El `username` viaja en el token para que el middleware del lanzamiento por
+    # fases sepa si quien llama es beta tester SIN tocar la base de datos en
+    # cada petición (app/core/beta_gate.py).
+    if username:
+        payload["username"] = username
 
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def get_username(user_id: str) -> str | None:
+    """Username de un usuario por su id. Lo necesita el refresh para re-emitir el token."""
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT username FROM users WHERE id = %s", (user_id,))
+            row = cur.fetchone()
+    return row[0] if row else None
 
 
 def get_user_permissions(user_id: str) -> list[str]:

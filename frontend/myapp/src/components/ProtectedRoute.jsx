@@ -1,11 +1,21 @@
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { rutaEstaOculta } from "../constants/areas";
 
 export default function ProtectedRoute({ children, requirePermission }) {
   const auth = useAuth();
+  const location = useLocation();
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/" replace />;
+  }
+
+  // Lanzamiento por fases: si el área aún no se ha soltado, esta ruta no
+  // existe para este usuario. Se redirige en silencio al inicio, igual que
+  // el backend responde 404 en lugar de 403: no se anuncia lo que no está
+  // listo. Teclear la URL a mano tampoco sirve.
+  if (rutaEstaOculta(location.pathname, auth)) {
+    return <Navigate to="/inicio" replace />;
   }
 
   if (requirePermission && !auth.can(requirePermission)) {

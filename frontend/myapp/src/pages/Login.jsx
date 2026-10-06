@@ -33,7 +33,9 @@ export default function Login() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.detail || "Usuario o contraseña incorrectos");
+        // El backend devuelve el sobre único {error:{code,message}} (F-000/T-03);
+        // `detail` se mantiene por compatibilidad.
+        setError(data.error?.message || data.detail || "Usuario o contraseña incorrectos");
         return;
       }
       const data = await res.json();
@@ -47,6 +49,11 @@ export default function Login() {
       localStorage.setItem("modules", JSON.stringify(modules));
       localStorage.setItem("blocks", JSON.stringify(data.blocks ?? []));
       localStorage.setItem("username", username);
+      // Lanzamiento por fases: qué áreas están sin soltar y si este usuario
+      // puede verlas. El backend las cierra con 404 igual; esto evita mostrar
+      // enlaces muertos en el sidebar.
+      localStorage.setItem("modulos_beta", JSON.stringify(data.modulos_beta ?? []));
+      localStorage.setItem("es_beta_tester", String(data.es_beta_tester === true));
       // Recarga completa para que el ThemeProvider lea el tema guardado en la cuenta.
       window.location.href = "/inicio";
     } catch {

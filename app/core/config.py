@@ -49,6 +49,16 @@ class Settings(BaseSettings):
     # Hash corto del commit desplegado; lo inyecta Render/CI. Cae a "dev".
     GIT_COMMIT: str = "dev"
 
+    # ── Lanzamiento por fases ─────────────────────────────────────────────────
+    # Áreas AÚN NO SOLTADAS al público, separadas por comas. Están cerradas con
+    # 404 en el backend y ocultas en el sidebar para todo el mundo salvo los
+    # beta testers. Soltar un módulo = quitarlo de esta lista y redesplegar.
+    # Nombres válidos: ver AREAS en app/core/areas.py.
+    MODULOS_BETA: str = ""
+    # Usuarios (por `username`) que SÍ ven y usan las áreas en beta. El
+    # superadmin siempre lo es. Fuera de esta lista, nadie: ni los admin.
+    BETA_TESTERS: str = ""
+
     # ── Rate limiting de login (T-14) ─────────────────────────────────────────
     LOGIN_RATE_LIMIT: str = "5/minute"
     LOGIN_MAX_FAILED_ATTEMPTS: int = 5
@@ -119,6 +129,28 @@ class Settings(BaseSettings):
             ]
         # dict.fromkeys preserva el orden y elimina duplicados.
         return list(dict.fromkeys(origins))
+
+    @property
+    def modulos_beta_list(self) -> list[str]:
+        """Áreas en beta, ya validadas contra el catálogo de `areas.py`.
+
+        Un nombre mal escrito se ignora (y se avisa en el arranque), para que
+        nadie crea que un módulo está cerrado cuando en realidad quedó abierto.
+        """
+        from app.core.areas import validar_areas_beta
+
+        declaradas = [a.strip().lower() for a in self.MODULOS_BETA.split(",") if a.strip()]
+        validas, _avisos = validar_areas_beta(declaradas)
+        return list(dict.fromkeys(validas))
+
+    @property
+    def beta_testers_list(self) -> list[str]:
+        """Usuarios que ven las áreas en beta, en minúsculas."""
+        return [u.strip().lower() for u in self.BETA_TESTERS.split(",") if u.strip()]
+
+    @property
+    def hay_modulos_en_beta(self) -> bool:
+        return bool(self.modulos_beta_list)
 
 
 LONGITUD_MINIMA_SECRET_KEY = 32

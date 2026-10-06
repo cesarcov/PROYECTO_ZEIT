@@ -15,6 +15,8 @@ export function useAuth() {
     role: null,
     permissions: [],
     isAdmin: false,
+    modulosBeta: [],
+    esBetaTester: false,
     can: () => false,
     hasPermission: () => false,
   };
@@ -48,6 +50,13 @@ export function useAuth() {
     ? "all"
     : ((storedBlocks ? JSON.parse(storedBlocks) : null) || payload.blocks || []);
 
+  // Lanzamiento por fases: áreas aún no soltadas al público y si este usuario
+  // puede verlas. Las guarda el login; el backend las cierra con 404 de todas
+  // formas, así que esto es sólo para no mostrar enlaces que darían error.
+  const storedBeta = localStorage.getItem("modulos_beta");
+  const modulosBeta = storedBeta ? JSON.parse(storedBeta) : [];
+  const esBetaTester = isSuperadmin || localStorage.getItem("es_beta_tester") === "true";
+
   return {
     isAuthenticated: true,
     userId: payload.sub,
@@ -58,6 +67,8 @@ export function useAuth() {
     permissions,
     isAdmin,
     isSuperadmin,
+    modulosBeta,
+    esBetaTester,
     can: (prefix) => isAdmin || permissions.some((p) => p.startsWith(prefix)),
     hasPermission: (exact) => isAdmin || permissions.includes(exact),
     canExact: (exact) => permissions.includes(exact),

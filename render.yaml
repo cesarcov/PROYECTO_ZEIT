@@ -38,6 +38,14 @@ services:
         value: "5"
       - key: LOGIN_RATE_LIMIT
         value: 5/minute
+      # --- Lanzamiento por fases ---
+      # Sólo Logística (+ Admin y Solicitudes) está soltada al público. El
+      # resto responde 404 salvo para los usuarios de BETA_TESTERS.
+      # SOLTAR UN MÓDULO = quitarlo de esta lista y redesplegar.
+      - key: MODULOS_BETA
+        value: operaciones,cotizaciones,compras,clientes,canal,gerencia,planificacion,requerimientos
+      - key: BETA_TESTERS        # tu username, para probar en producción
+        sync: false
       # --- Secretos: Render los pedirá al crear el Blueprint ---
       - key: SECRET_KEY              # Usa el valor fuerte generado (NO el de dev)
         sync: false
@@ -93,6 +101,10 @@ services:
         value: "3"
       - key: LOGIN_RATE_LIMIT
         value: 5/minute
+      # En STAGING no hay nada en beta: es el entorno donde pruebas los módulos
+      # sin soltar, antes de quitarlos de MODULOS_BETA en producción.
+      - key: MODULOS_BETA
+        value: ""
       # CRÍTICO: esta cadena debe apuntar a una base de datos DISTINTA de la de
       # producción. Si apunta a la misma, staging deja de ser staging.
       - key: DATABASE_URL
