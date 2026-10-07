@@ -1,6 +1,4 @@
 {
-  "descripcion": "Matriz roles x permisos aprobada. Si un rol gana o pierde un permiso sin actualizar este archivo, test_rbac_matrix falla. Ver tests/test_rbac_matrix.py. Incluye los grants de migrations/044.",
-  "congelado_en": "2026-08-05 (F-000 / T-10)",
   "roles": {
     "Administrador General": [
       "admin:audit",

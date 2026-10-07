@@ -35,3 +35,6 @@ specs/audit/latest.md
 .coverage
 coverage.xml
 htmlcov/
+
+# Toolkit de terceros instalado en el arbol de trabajo (no es codigo del ERP)
+ECC/

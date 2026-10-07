@@ -2,7 +2,10 @@
 # F-000 / T-06 — configuración del linter del backend.
 line-length = 120
 target-version = "py311"
-extend-exclude = ["venv", "node_modules", "migrations", ".pytest_cache"]
+# ECC/ es un toolkit de terceros instalado en el arbol de trabajo, con su
+# propio pyproject.toml y su propio estilo. No es codigo del ERP y no se
+# versiona: lintarlo sólo produce ruido (462 hallazgos ajenos).
+extend-exclude = ["venv", "node_modules", "migrations", ".pytest_cache", "ECC"]
 
 [tool.ruff.lint]
 # LÍNEA BASE DEL TRINQUETE: se empieza con las reglas que atrapan bugs reales

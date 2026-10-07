@@ -10,7 +10,7 @@ qué hacer, en vez de un traceback de pydantic o un fallo silencioso en runtime.
 import sys
 from typing import Literal
 
-from pydantic import Field, ValidationError, field_validator
+from pydantic import ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,7 +19,9 @@ class Settings(BaseSettings):
     ENV: Literal["development", "staging", "production"] = "development"
 
     # ── Seguridad / JWT ───────────────────────────────────────────────────────
-    SECRET_KEY: str = Field(min_length=32)
+    # OBLIGATORIA: sin ella el sistema no arranca (RN-03). Su LONGITUD, en
+    # cambio, sólo se avisa — ver `_avisar_si_la_clave_es_debil` más abajo.
+    SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     ALGORITHM: str = "HS256"
 
@@ -75,16 +77,6 @@ class Settings(BaseSettings):
 
     # ── Validaciones de negocio ───────────────────────────────────────────────
 
-    @field_validator("SECRET_KEY")
-    @classmethod
-    def _secret_key_no_es_placeholder(cls, v: str) -> str:
-        if "cambia-esto" in v.lower() or v.lower().startswith("changeme"):
-            raise ValueError(
-                "SECRET_KEY sigue siendo el valor de ejemplo. Genera uno real: "
-                "python -c \"import secrets; print(secrets.token_urlsafe(48))\""
-            )
-        return v
-
     @field_validator("GIT_COMMIT")
     @classmethod
     def _commit_desde_la_plataforma(cls, v: str) -> str:
@@ -129,9 +121,51 @@ class Settings(BaseSettings):
         return list(dict.fromkeys(origins))
 
 
+LONGITUD_MINIMA_SECRET_KEY = 32
+
+
+def _avisar_si_la_clave_es_debil(s: Settings) -> None:
+    """Avisa de una SECRET_KEY débil SIN impedir el arranque.
+
+    Por qué es un aviso y no un error: esta comprobación se añadió cuando el
+    sistema ya llevaba meses en producción. Negarse a arrancar por una clave
+    corta no la hace más fuerte — sólo tira el servicio, y encima en mitad de
+    un despliegue, que es el peor momento posible.
+
+    Es el mismo trinquete que el linter y la deuda RBAC: primero se avisa,
+    se comprueba que todos los entornos están limpios, y entonces se sube a
+    error. Cuando producción y staging tengan claves fuertes, esto pasa a ser
+    un fallo de arranque (y se añade su test).
+    """
+    problemas = []
+    if len(s.SECRET_KEY) < LONGITUD_MINIMA_SECRET_KEY:
+        problemas.append(
+            f"tiene {len(s.SECRET_KEY)} caracteres; el minimo recomendado es "
+            f"{LONGITUD_MINIMA_SECRET_KEY}"
+        )
+    if "cambia-esto" in s.SECRET_KEY.lower() or s.SECRET_KEY.lower().startswith("changeme"):
+        problemas.append("sigue siendo el valor de ejemplo de .env.example")
+
+    if not problemas:
+        return
+
+    print("\n" + "!" * 72, file=sys.stderr)
+    print(f"  AVISO DE SEGURIDAD - entorno '{s.ENV}'", file=sys.stderr)
+    print("  La SECRET_KEY que firma los tokens de sesion es DEBIL:", file=sys.stderr)
+    for problema in problemas:
+        print(f"    - {problema}", file=sys.stderr)
+    print("  Quien la adivine puede falsificar la sesion de cualquier usuario.", file=sys.stderr)
+    print("  Genera una fuerte:", file=sys.stderr)
+    print('    python -c "import secrets; print(secrets.token_urlsafe(48))"', file=sys.stderr)
+    print("  Al cambiarla, todas las sesiones abiertas se cierran (es lo esperado).", file=sys.stderr)
+    print("!" * 72 + "\n", file=sys.stderr)
+
+
 def _load() -> Settings:
     try:
-        return Settings()
+        s = Settings()
+        _avisar_si_la_clave_es_debil(s)
+        return s
     except ValidationError as exc:
         # Mensaje deliberadamente en ASCII: se lee en consolas Windows y en los
         # logs de Render sin depender de la codificación del terminal.
