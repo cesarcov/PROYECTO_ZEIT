@@ -730,6 +730,7 @@ hay solapamiento entre ellos.
 | Documento | Para qué sirve | Estado |
 |---|---|---|
 | **`PROYECTO_COMPLETO.md`** | **Este archivo. Punto de entrada único** | Al día |
+| `MIGRAR_A_OTRA_PC.md` | Mudar el proyecto a otra máquina sin perder nada | Al día |
 | `zeit_specs/CONSTITUTION.md` | Las 8 reglas de oro y el proceso. **Fuente de verdad** | Al día |
 | `zeit_specs/specs/000-fase-0-endurecimiento/` | Spec, tareas y evidencia del endurecimiento | Al día |
 | `zeit_specs/specs/000-fase-0-endurecimiento/runbook-manual.md` | Los 9 pasos de consola externa pendientes | Al día |
